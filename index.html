@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Notas Toxicología UNLP</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      margin: 0; padding: 0;
+    }
+    header {
+      background: #2d8390;
+      color: white;
+      padding: 0 1em;
+      display: flex;
+      align-items: center;
+      height: 120px;
+      gap: 1em;
+    }
+    .logo-izq {
+      height: 100%;
+    }
+    .logo-centro {
+      height: 100%;
+      aspect-ratio: 3 / 1;
+      object-fit: contain;
+    }
+    header h1 {
+      font-weight: 700;
+      font-size: 1.8em;
+      margin-left: auto;
+    }
+    main {
+      max-width: 600px;
+      background: white;
+      margin: 2em auto;
+      padding: 2em;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-top: 1em;
+      margin-bottom: 0.3em;
+    }
+    input[type="text"], input[type="email"] {
+      width: 100%;
+      padding: 0.6em;
+      font-size: 1.1em;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      transition: border-color 0.3s ease;
+    }
+    input[type="text"]:focus, input[type="email"]:focus {
+      border-color: #007acc;
+      outline: none;
+    }
+    button {
+      margin-top: 1.5em;
+      width: 100%;
+      padding: 0.8em;
+      background: #007acc;
+      color: white;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    button:hover {
+      background: #2d8390;
+    }
+    #resultado {
+      margin-top: 2em;
+      font-size: 1.15em;
+      line-height: 1.5;
+      color: #222;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    @media screen and (max-width: 600px) {
+      main {
+        margin: 1em;
+        padding: 1.2em;
+      }
+      #resultado {
+        font-size: 1em;
+      }
+    }
+    #resultado strong {
+      color: #007acc;
+    }
+    table {
+      margin-top: 1em;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 0.6em 0.9em;
+      text-align: center;
+    }
+    th {
+      background-color: #f5f5f5;
+      font-weight: 700;
+    }
+    #error {
+      color: #cc0000;
+      font-weight: 700;
+      margin-top: 1.5em;
+    }
+    .tabla-scroll {
+      overflow-x: auto;
+      max-width: 100%;
+    }
+    .tabla-scroll table {
+      min-width: 600px;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo Cátedra" class="logo-izq" />
+    <img src="logo1.png" alt="Logo Adicional" class="logo-centro" />
+    <h1>Plataforma para consulta de calificaciones durante su cursada.</h1>
+  </header>
+
+  <main>
+    <p>Aquí podrá observar sus calificaciones durante la cursada.</p>
+    <label for="legajo">Ingrese su legajo:</label>
+    <input type="text" id="legajo" placeholder="Ej: 12345/6" autocomplete="off" />
+
+    <label for="email">Ingrese su email asociado al SIU Guaraní*:</label>
+    <input type="email" id="email" placeholder="Ej: alumno@gmail/hotmail.com" autocomplete="off" />
+    <small style="color:#555; font-size:0.9em;">
+      *Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras. Esto permitirá acceder a sus notas de forma personal.
+    </small>
+
+    <button onclick="buscarNota()">Consultar Calificaciones</button>
+    <div id="resultado"></div>
+    <div id="error"></div>
+  </main>
+
+  <script>
+    const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?gid=919817434&single=true&output=csv';
+
+    function cargarDatos(url) {
+      return fetch(url)
+        .then(response => response.text())
+        .then(csvText => {
+          const parsed = Papa.parse(csvText, {
+            header: true,
+            skipEmptyLines: true,
+            delimiter: ","
+          });
+          return parsed;
+        });
+    }
+
+    async function buscarNota() {
+      const legajoInput = document.getElementById('legajo').value.trim().toLowerCase();
+      const emailInput = document.getElementById('email').value.trim().toLowerCase();
+      const resultado = document.getElementById('resultado');
+      const errorDiv = document.getElementById('error');
+      resultado.innerHTML = "";
+      errorDiv.textContent = "";
+
+      if (!legajoInput || !emailInput) {
+        errorDiv.textContent = "Por favor, ingrese legajo y email.";
+        return;
+      }
+
+      try {
+        const urlConTimestamp = urlBase + '&_ts=' + Date.now();
+        const parsed = await cargarDatos(urlConTimestamp);
+
+        const columnas = parsed.meta.fields;
+        const fila = parsed.data.find(row =>
+          row['Legajo'] && row['Email'] &&
+          row['Legajo'].trim().toLowerCase() === legajoInput &&
+          row['Email'].trim().toLowerCase() === emailInput
+        );
+
+        if (!fila) {
+          errorDiv.textContent = "Datos incorrectos. Verifique legajo y email.";
+          return;
+        }
+
+        const nombre = fila['Alumno'] || "Alumno";
+        const columnasExcluir = ['legajo', 'nombre', 'apellido', 'nombre y apellido', 'alumno', 'email'];
+
+        let tablaHTML = '<p><strong>Hola ' + nombre + ', tus notas son:</strong></p><div class="tabla-scroll"><table><thead><tr>';
+
+        columnas.forEach(col => {
+          if (!columnasExcluir.includes(col.toLowerCase())) {
+            tablaHTML += '<th>' + col + '</th>';
+          }
+        });
+
+        tablaHTML += '</tr></thead><tbody><tr>';
+
+        columnas.forEach(col => {
+          if (!columnasExcluir.includes(col.toLowerCase())) {
+            tablaHTML += '<td>' + (fila[col] || '-') + '</td>';
+          }
+        });
+
+        tablaHTML += '</tr></tbody></table></div>';
+        tablaHTML += '<p style="margin-top:2em; color:#000; font-size:0.95em;">Contacto: <strong>toxicoalumnos@gmail.com</strong></p>';
+        resultado.innerHTML = tablaHTML;
+
+      } catch {
+        errorDiv.textContent = "Error al cargar los datos. Intente nuevamente.";
+      }
+    }
+  </script>
+</body>
+</html>
