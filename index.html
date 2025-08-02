@@ -24,33 +24,41 @@
       background: #2d8390;
       color: white;
       padding: 0 1em;
+      height: 120px;
+
       display: flex;
       align-items: center;
-      height: 120px;
+      justify-content: space-between;
       gap: 1em;
     }
 
-    .logo-izq {
-      height: 100%;
-    }
-
-    .logo-centro {
-      height: 100%;
-      aspect-ratio: 3 / 1;
+    .logo-izq,
+    .logo-der {
+      max-height: 100px; /* o ajustá este valor si querés */
+      height: auto;
+      width: auto;
       object-fit: contain;
     }
 
-    header h1 {
-      margin-left: auto;
+    .logo-izq {
+      /* si querés, podés ajustar margenes acá */
     }
 
-    .facultad-unlp {
+    .logo-der {
+      /* Logo 2 que queda a la derecha */
+    }
+
+    .titulo-centro {
+      flex-grow: 1;
+      text-align: center;
       font-family: 'Montserrat', sans-serif;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: white;
       font-size: 1.8em;
+      margin: 0;
+      color: white;
+      user-select: none;
     }
 
     main {
@@ -182,8 +190,10 @@
 <body>
   <header>
     <img src="logo.png" alt="Logo Cátedra" class="logo-izq" />
-    <img src="logo1.png" alt="Logo Adicional" class="logo-centro" />
-    <h1 class="facultad-unlp">Plataforma de acceso a calificaciones</h1>
+    
+    <h1 class="titulo-centro">Plataforma de acceso a calificaciones</h1>
+    
+    <img src="logo2.png" alt="Logo Derecho" class="logo-der" />
   </header>
 
   <main>
@@ -281,6 +291,7 @@
   </script>
 </body>
 </html>
+
 
 
 
