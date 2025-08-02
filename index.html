@@ -20,28 +20,34 @@
       flex-direction: column;
     }
 
+    /* Header modificado */
     header {
       background: #2d8390;
       color: white;
-      padding: 0 1em;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      padding: 0 1em;
       height: 120px;
       gap: 1em;
     }
 
-    .logo-izq {
+    .header-col {
+      display: flex;
+      align-items: center;
       height: 100%;
     }
 
-    .logo-centro {
+    .header-col.izq img,
+    .header-col.der img {
       height: 100%;
-      aspect-ratio: 3 / 1;
       object-fit: contain;
     }
 
-    header h1 {
-      margin-left: auto;
+    .header-col.centro {
+      flex-grow: 1;
+      justify-content: center;
+      text-align: center;
     }
 
     .facultad-unlp {
@@ -51,6 +57,7 @@
       letter-spacing: 0.5px;
       color: white;
       font-size: 1.8em;
+      margin: 0;
     }
 
     main {
@@ -181,9 +188,17 @@
 </head>
 <body>
   <header>
-    <img src="logo.png" alt="Logo Cátedra" class="logo-izq" />
-    <img src="logo1.png" alt="Logo Adicional" class="logo-centro" />
-    <h1 class="facultad-unlp">Plataforma de acceso a calificaciones</h1>
+    <div class="header-col izq">
+      <img src="logo.png" alt="Logo Cátedra" />
+    </div>
+
+    <div class="header-col centro">
+      <h1 class="facultad-unlp">Plataforma de acceso a calificaciones</h1>
+    </div>
+
+    <div class="header-col der">
+      <img src="logo1.png" alt="Logo UNLP" />
+    </div>
   </header>
 
   <main>
@@ -281,4 +296,5 @@
   </script>
 </body>
 </html>
+
 
