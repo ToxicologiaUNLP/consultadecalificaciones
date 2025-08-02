@@ -32,12 +32,21 @@
       gap: 1em;
     }
 
-    .logo-izq,
-    .logo-der {
-      max-height: 100px;
+    .logo-izq {
+      max-height: 100px; /* tamaño grande */
       height: auto;
       width: auto;
       object-fit: contain;
+    }
+
+    .logo-der {
+      height: auto;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .logo-der.pequeño {
+      max-height: 60px; /* tamaño más chico para logo derecho */
     }
 
     .titulo-centro {
@@ -185,7 +194,7 @@
     
     <h1 class="titulo-centro">Plataforma de acceso a calificaciones</h1>
     
-    <img src="logo1.png" alt="Logo Derecho" class="logo-der" />
+    <img src="logo1.png" alt="Logo Derecho" class="logo-der pequeño" />
   </header>
 
   <main>
@@ -283,8 +292,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
