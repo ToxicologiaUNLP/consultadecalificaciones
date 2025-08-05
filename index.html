@@ -184,6 +184,23 @@
       padding: 1em;
       font-size: 0.9em;
     }
+
+    /* Loader giratorio */
+    #loader {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #loader img {
+      width: 80px;
+      animation: girar 1s linear infinite;
+    }
+
+    @keyframes girar {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
@@ -196,7 +213,7 @@
   </header>
 
   <main id="contenido">
-    <!-- Aquí irá el contenido dinámico -->
+    <!-- Contenido dinámico -->
   </main>
 
   <footer>
@@ -215,8 +232,6 @@
     async function verificarEstado() {
       try {
         const datos = await cargarDatos(urlBase + '&_ts=' + Date.now());
-        // La fila 0 es el encabezado, la fila 1 es el primer registro
-        // Leemos la columna "Estado" (columna K) de la fila 1 (índice 0 para arrays)
         const estado = datos.data[0]?.Estado?.trim().toLowerCase();
         const contenido = document.getElementById('contenido');
 
@@ -234,6 +249,10 @@
             </small>
 
             <button onclick="buscarNota()">Consultar</button>
+
+            <div id="loader">
+              <img src="logo.png" alt="Cargando...">
+            </div>
 
             <div id="resultado"></div>
             <div id="error"></div>
@@ -260,6 +279,8 @@
       const emailInput = document.getElementById('email').value.trim().toLowerCase();
       const resultado = document.getElementById('resultado');
       const errorDiv = document.getElementById('error');
+      const loader = document.getElementById('loader');
+
       resultado.innerHTML = "";
       errorDiv.textContent = "";
 
@@ -267,6 +288,8 @@
         errorDiv.textContent = "Por favor, ingrese legajo y email.";
         return;
       }
+
+      loader.style.display = "block"; // Mostrar loader
 
       try {
         const urlConTimestamp = urlBase + '&_ts=' + Date.now();
@@ -279,13 +302,15 @@
           row['Email'].trim().toLowerCase() === emailInput
         );
 
+        loader.style.display = "none"; // Ocultar loader
+
         if (!fila) {
           errorDiv.textContent = "Datos incorrectos. Verifique legajo/email.";
           return;
         }
 
         const nombre = fila['Alumno'] || "Alumno";
-        const columnasExcluir = ['legajo', 'nombre', 'apellido', 'nombre y apellido', 'alumno', 'email'];
+        const columnasExcluir = ['legajo', 'nombre', 'apellido', 'nombre y apellido', 'alumno', 'email', 'estado'];
 
         let tablaHTML = '<p><strong>Hola ' + nombre + ', tus notas son:</strong></p><div class="tabla-scroll"><table><thead><tr>';
         columnas.forEach(col => {
@@ -305,12 +330,12 @@
         resultado.innerHTML = tablaHTML;
 
       } catch (e) {
+        loader.style.display = "none"; // Ocultar loader en caso de error
         console.error("Error al cargar datos:", e);
         errorDiv.textContent = "Error al cargar los datos. Intente nuevamente.";
       }
     }
 
-    // Ejecutar verificación de estado al cargar la página
     document.addEventListener('DOMContentLoaded', verificarEstado);
   </script>
 </body>
