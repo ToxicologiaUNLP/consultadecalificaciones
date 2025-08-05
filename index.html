@@ -53,7 +53,7 @@
 
   <script>
     const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?gid=919817434&single=true&output=csv';
-    const urlEstado = 'PONER_AQUI_URL_CSV_CONFIGURACION';
+    const urlEstado = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?gid=741334934&single=true&output=csv';
 
     function cargarDatos(url) {
       return fetch(url).then(r => r.text()).then(csvText => Papa.parse(csvText, { header: true, skipEmptyLines: true }));
@@ -161,4 +161,5 @@
   </script>
 </body>
 </html>
+
 
