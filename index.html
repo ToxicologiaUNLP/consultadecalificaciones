@@ -25,6 +25,7 @@
       color: white;
       padding: 0 1em;
       height: 120px;
+
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -128,6 +129,7 @@
         margin: 1em;
         padding: 1.2em;
       }
+
       #resultado {
         font-size: 1em;
       }
@@ -143,11 +145,14 @@
       width: 100%;
     }
 
-    table, th, td {
+    table,
+    th,
+    td {
       border: 1px solid #ddd;
     }
 
-    th, td {
+    th,
+    td {
       padding: 0.6em 0.9em;
       text-align: center;
     }
@@ -190,8 +195,8 @@
     <img src="logo1.png" alt="Logo Derecho" class="logo-der pequeño" />
   </header>
 
-  <main>
-    <p style="color: red;">AÚN NO HAY NUEVAS CALIFICACIONES CARGADAS AL SISTEMA, AGUARDE LA CORRECIÓN.</p>
+  <main id="contenido">
+    <p style="color: black;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
 
     <label for="legajo">Ingrese su legajo:</label>
     <input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
@@ -212,23 +217,43 @@
   </footer>
 
   <script>
-    // URL pública de Hoja1 en formato CSV
-    const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?output=csv';
+    const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?gid=919817434&single=true&output=csv';
 
-    function cargarDatos(url) {
-      return fetch(url)
-        .then(response => response.text())
-        .then(csvText => {
-          const parsed = Papa.parse(csvText, {
-            header: true,
-            skipEmptyLines: true,
-            delimiter: ","
-          });
-          return parsed;
-        });
+    async function cargarDatos(url) {
+      const response = await fetch(url);
+      const text = await response.text();
+      return Papa.parse(text, { header: true, skipEmptyLines: true });
+    }
+
+    async function verificarEstado() {
+      try {
+        const parsed = await cargarDatos(urlBase + '&_ts=' + Date.now());
+        // Leemos la primera fila y la columna K (que es la columna 11, índice 10)
+        const fila1 = parsed.data[0];
+        if (!fila1) throw new Error('No se encontró datos en hoja');
+        const estadoRaw = Object.values(fila1)[10]; // índice 10 = columna K
+        const estado = (estadoRaw || '').trim().toLowerCase();
+
+        if (estado !== 'habilitado') {
+          document.getElementById('contenido').innerHTML = `
+            <p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
+              La plataforma no se encuentra habilitada debido a la carga de datos. Estará disponible nuevamente al finalizar el proceso.
+            </p>
+          `;
+          return false;
+        }
+        return true;
+      } catch (e) {
+        console.error('Error verificando estado:', e);
+        // En caso de error, permitir funcionamiento para no bloquear por error de conexión
+        return true;
+      }
     }
 
     async function buscarNota() {
+      const permitido = await verificarEstado();
+      if (!permitido) return; // Si no está habilitado, no buscar
+
       const legajoInput = document.getElementById('legajo').value.trim().toLowerCase();
       const emailInput = document.getElementById('email').value.trim().toLowerCase();
       const resultado = document.getElementById('resultado');
@@ -261,29 +286,35 @@
         const columnasExcluir = ['legajo', 'nombre', 'apellido', 'nombre y apellido', 'alumno', 'email'];
 
         let tablaHTML = '<p><strong>Hola ' + nombre + ', tus notas son:</strong></p><div class="tabla-scroll"><table><thead><tr>';
-
         columnas.forEach(col => {
           if (!columnasExcluir.includes(col.toLowerCase())) {
             tablaHTML += '<th>' + col + '</th>';
           }
         });
-
         tablaHTML += '</tr></thead><tbody><tr>';
-
         columnas.forEach(col => {
           if (!columnasExcluir.includes(col.toLowerCase())) {
             tablaHTML += '<td>' + (fila[col] || '-') + '</td>';
           }
         });
-
         tablaHTML += '</tr></tbody></table></div>';
         tablaHTML += '<p style="margin-top:2em; color:#000; font-size:0.95em;">Contacto: <strong>toxicoalumnos@gmail.com</strong></p>';
         resultado.innerHTML = tablaHTML;
 
-      } catch {
+      } catch (e) {
+        console.error('Error buscando nota:', e);
         errorDiv.textContent = "Error al cargar los datos. Intente nuevamente.";
       }
     }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const habilitado = await verificarEstado();
+      if (!habilitado) {
+        // Si no está habilitado, bloquea todo el contenido (ya lo hace verificarEstado)
+        // Podés agregar aquí otras acciones si querés
+      }
+    });
   </script>
 </body>
 </html>
+
