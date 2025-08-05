@@ -196,20 +196,7 @@
   </header>
 
   <main id="contenido">
-    <p style="color: black;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
-
-    <label for="legajo">Ingrese su legajo:</label>
-    <input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
-
-    <label for="email">Ingrese su email asociado al SIU Guaraní*:</label>
-    <input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
-    <small style="color:#555; font-size:0.9em;">
-      *Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras. Esto permitirá acceder a sus notas de forma personal.
-    </small>
-
-    <button onclick="buscarNota()">Consultar</button>
-    <div id="resultado"></div>
-    <div id="error"></div>
+    <!-- Aquí irá el contenido dinámico -->
   </main>
 
   <footer>
@@ -222,38 +209,53 @@
     async function cargarDatos(url) {
       const response = await fetch(url);
       const text = await response.text();
-      return Papa.parse(text, { header: true, skipEmptyLines: true });
+      return Papa.parse(text, { header: true, skipEmptyLines: true, delimiter: "," });
     }
 
     async function verificarEstado() {
       try {
-        const parsed = await cargarDatos(urlBase + '&_ts=' + Date.now());
-        // Leemos la primera fila y la columna K (que es la columna 11, índice 10)
-        const fila1 = parsed.data[0];
-        if (!fila1) throw new Error('No se encontró datos en hoja');
-        const estadoRaw = Object.values(fila1)[10]; // índice 10 = columna K
-        const estado = (estadoRaw || '').trim().toLowerCase();
+        const datos = await cargarDatos(urlBase + '&_ts=' + Date.now());
+        // La fila 0 es el encabezado, la fila 1 es el primer registro
+        // Leemos la columna "Estado" (columna K) de la fila 1 (índice 0 para arrays)
+        const estado = datos.data[0]?.Estado?.trim().toLowerCase();
+        const contenido = document.getElementById('contenido');
 
-        if (estado !== 'habilitado') {
-          document.getElementById('contenido').innerHTML = `
+        if (estado === 'habilitado') {
+          contenido.innerHTML = `
+            <p style="color: black;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
+
+            <label for="legajo">Ingrese su legajo:</label>
+            <input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
+
+            <label for="email">Ingrese su email asociado al SIU Guaraní*:</label>
+            <input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
+            <small style="color:#555; font-size:0.9em;">
+              *Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras. Esto permitirá acceder a sus notas de forma personal.
+            </small>
+
+            <button onclick="buscarNota()">Consultar</button>
+
+            <div id="resultado"></div>
+            <div id="error"></div>
+          `;
+        } else {
+          contenido.innerHTML = `
             <p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
               La plataforma no se encuentra habilitada debido a la carga de datos. Estará disponible nuevamente al finalizar el proceso.
             </p>
           `;
-          return false;
         }
-        return true;
-      } catch (e) {
-        console.error('Error verificando estado:', e);
-        // En caso de error, permitir funcionamiento para no bloquear por error de conexión
-        return true;
+      } catch (error) {
+        console.error("Error al verificar estado:", error);
+        document.getElementById('contenido').innerHTML = `
+          <p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
+            No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.
+          </p>
+        `;
       }
     }
 
     async function buscarNota() {
-      const permitido = await verificarEstado();
-      if (!permitido) return; // Si no está habilitado, no buscar
-
       const legajoInput = document.getElementById('legajo').value.trim().toLowerCase();
       const emailInput = document.getElementById('email').value.trim().toLowerCase();
       const resultado = document.getElementById('resultado');
@@ -299,22 +301,19 @@
         });
         tablaHTML += '</tr></tbody></table></div>';
         tablaHTML += '<p style="margin-top:2em; color:#000; font-size:0.95em;">Contacto: <strong>toxicoalumnos@gmail.com</strong></p>';
+
         resultado.innerHTML = tablaHTML;
 
       } catch (e) {
-        console.error('Error buscando nota:', e);
+        console.error("Error al cargar datos:", e);
         errorDiv.textContent = "Error al cargar los datos. Intente nuevamente.";
       }
     }
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      const habilitado = await verificarEstado();
-      if (!habilitado) {
-        // Si no está habilitado, bloquea todo el contenido (ya lo hace verificarEstado)
-        // Podés agregar aquí otras acciones si querés
-      }
-    });
+    // Ejecutar verificación de estado al cargar la página
+    document.addEventListener('DOMContentLoaded', verificarEstado);
   </script>
 </body>
 </html>
+
 
