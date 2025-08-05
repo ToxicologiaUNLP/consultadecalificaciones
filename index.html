@@ -5,185 +5,33 @@
   <title>Notas Toxicología UNLP</title>
   <link rel="icon" href="logo2.png" type="image/png">
 
-  <!-- Fuentes desde Google Fonts -->
+  <!-- Fuentes -->
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
 
   <style>
-    body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: #f0f4f8;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    header {
-      background: #2d8390;
-      color: white;
-      padding: 0 1em;
-      height: 120px;
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1em;
-    }
-
-    .logo-izq {
-      max-height: 100px; /* tamaño grande */
-      height: auto;
-      width: auto;
-      object-fit: contain;
-    }
-
-    .logo-der {
-      height: auto;
-      width: auto;
-      object-fit: contain;
-    }
-
-    .logo-der.pequeño {
-      max-height: 60px; /* tamaño más chico para logo derecho */
-    }
-
-    .titulo-centro {
-      flex-grow: 1;
-      text-align: center;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-size: 1.8em;
-      margin: 0;
-      color: white;
-      user-select: none;
-    }
-
-    main {
-      max-width: 600px;
-      background: white;
-      margin: 2em auto;
-      padding: 2em;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
-      flex-grow: 1;
-    }
-
-    label {
-      display: block;
-      font-weight: 600;
-      margin-top: 1em;
-      margin-bottom: 0.3em;
-    }
-
-    input[type="text"],
-    input[type="email"] {
-      width: 100%;
-      padding: 0.6em;
-      font-size: 1.1em;
-      border: 2px solid #ccc;
-      border-radius: 5px;
-      transition: border-color 0.3s ease;
-    }
-
-    input[type="text"]:focus,
-    input[type="email"]:focus {
-      border-color: #007acc;
-      outline: none;
-    }
-
-    button {
-      margin-top: 1.5em;
-      width: 100%;
-      padding: 0.8em;
-      background: #007acc;
-      color: white;
-      font-size: 1.2em;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    button:hover {
-      background: #2d8390;
-    }
-
-    #resultado {
-      margin-top: 2em;
-      font-size: 1.15em;
-      line-height: 1.5;
-      color: #222;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    @media screen and (max-width: 600px) {
-      main {
-        margin: 1em;
-        padding: 1.2em;
-      }
-
-      #resultado {
-        font-size: 1em;
-      }
-    }
-
-    #resultado strong {
-      color: #007acc;
-    }
-
-    table {
-      margin-top: 1em;
-      border-collapse: collapse;
-      width: 100%;
-    }
-
-    table,
-    th,
-    td {
-      border: 1px solid #ddd;
-    }
-
-    th,
-    td {
-      padding: 0.6em 0.9em;
-      text-align: center;
-    }
-
-    th {
-      background-color: #f5f5f5;
-      font-weight: 700;
-    }
-
-    #error {
-      color: #cc0000;
-      font-weight: 700;
-      margin-top: 1.5em;
-    }
-
-    .tabla-scroll {
-      overflow-x: auto;
-      max-width: 100%;
-    }
-
-    .tabla-scroll table {
-      min-width: 600px;
-    }
-
-    footer {
-      background: #2d8390;
-      color: white;
-      text-align: center;
-      padding: 1em;
-      font-size: 0.9em;
-    }
+    body {font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column;}
+    header {background: #2d8390; color: white; padding: 0 1em; height: 120px; display: flex; align-items: center; justify-content: space-between; gap: 1em;}
+    .logo-izq {max-height: 100px; height: auto; width: auto; object-fit: contain;}
+    .logo-der {height: auto; width: auto; object-fit: contain;}
+    .logo-der.pequeño {max-height: 60px;}
+    .titulo-centro {flex-grow: 1; text-align: center; font-family: 'Montserrat', sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; font-size: 1.8em; margin: 0; color: white; user-select: none;}
+    main {max-width: 600px; background: white; margin: 2em auto; padding: 2em; border-radius: 10px; box-shadow: 0 2px 8px rgb(0 0 0 / 0.15); flex-grow: 1;}
+    label {display: block; font-weight: 600; margin-top: 1em; margin-bottom: 0.3em;}
+    input[type="text"], input[type="email"] {width: 100%; padding: 0.6em; font-size: 1.1em; border: 2px solid #ccc; border-radius: 5px; transition: border-color 0.3s ease;}
+    input[type="text"]:focus, input[type="email"]:focus {border-color: #007acc; outline: none;}
+    button {margin-top: 1.5em; width: 100%; padding: 0.8em; background: #007acc; color: white; font-size: 1.2em; border: none; border-radius: 5px; cursor: pointer; font-weight: 700;}
+    button:hover {background: #2d8390;}
+    #resultado {margin-top: 2em; font-size: 1.15em; line-height: 1.5; color: #222; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word;}
+    #resultado strong {color: #007acc;}
+    table {margin-top: 1em; border-collapse: collapse; width: 100%;}
+    table, th, td {border: 1px solid #ddd;}
+    th, td {padding: 0.6em 0.9em; text-align: center;}
+    th {background-color: #f5f5f5; font-weight: 700;}
+    #error {color: #cc0000; font-weight: 700; margin-top: 1.5em;}
+    .tabla-scroll {overflow-x: auto; max-width: 100%;}
+    .tabla-scroll table {min-width: 600px;}
+    footer {background: #2d8390; color: white; text-align: center; padding: 1em; font-size: 0.9em;}
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
@@ -191,27 +39,12 @@
 <body>
   <header>
     <img src="logo.png" alt="Logo Cátedra" class="logo-izq" />
-    
     <h1 class="titulo-centro">Plataforma de acceso a calificaciones</h1>
-    
     <img src="logo1.png" alt="Logo Derecho" class="logo-der pequeño" />
   </header>
 
-  <main>
-    <p style="color: red;">AÚN NO HAY NUEVAS CALIFICACIONES CARGADAS AL SISTEMA, AGUARDE LA CORRECIÓN.</p>
-
-    <label for="legajo">Ingrese su legajo:</label>
-    <input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
-
-    <label for="email">Ingrese su email asociado al SIU Guaraní*:</label>
-    <input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
-    <small style="color:#555; font-size:0.9em;">
-      *Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras. Esto permitirá acceder a sus notas de forma personal.
-    </small>
-
-    <button onclick="buscarNota()">Consultar</button>
-    <div id="resultado"></div>
-    <div id="error"></div>
+  <main id="contenido">
+    <!-- Aquí se cargará el formulario o el mensaje -->
   </main>
 
   <footer>
@@ -220,18 +53,48 @@
 
   <script>
     const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?gid=919817434&single=true&output=csv';
+    const urlEstado = 'PONER_AQUI_URL_CSV_CONFIGURACION';
 
     function cargarDatos(url) {
-      return fetch(url)
-        .then(response => response.text())
-        .then(csvText => {
-          const parsed = Papa.parse(csvText, {
-            header: true,
-            skipEmptyLines: true,
-            delimiter: ","
-          });
-          return parsed;
-        });
+      return fetch(url).then(r => r.text()).then(csvText => Papa.parse(csvText, { header: true, skipEmptyLines: true }));
+    }
+
+    async function verificarEstadoPagina() {
+      try {
+        const parsed = await cargarDatos(urlEstado + '&_ts=' + Date.now());
+        if (parsed.data.length && parsed.data[0].estadoPagina) {
+          return parsed.data[0].estadoPagina.trim().toUpperCase();
+        }
+        return "INACTIVA";
+      } catch {
+        return "INACTIVA";
+      }
+    }
+
+    function mostrarFormulario() {
+      document.getElementById('contenido').innerHTML = `
+        <label for="legajo">Ingrese su legajo:</label>
+        <input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
+
+        <label for="email">Ingrese su email asociado al SIU Guaraní*:</label>
+        <input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
+        <small style="color:#555; font-size:0.9em;">
+          *Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras. Esto permitirá acceder a sus notas de forma personal.
+        </small>
+
+        <button onclick="buscarNota()">Consultar</button>
+        <div id="resultado"></div>
+        <div id="error"></div>
+      `;
+    }
+
+    function mostrarMensajeDeshabilitado() {
+      document.getElementById('contenido').innerHTML = `
+        <p style="color: red; font-weight: bold; text-align:center;">
+          La página no se encuentra habilitada debido a que se están realizando cargas de datos.<br>
+          Estará habilitada cuando finalicen las actualizaciones.
+        </p>
+      `;
     }
 
     async function buscarNota() {
@@ -248,9 +111,7 @@
       }
 
       try {
-        const urlConTimestamp = urlBase + '&_ts=' + Date.now();
-        const parsed = await cargarDatos(urlConTimestamp);
-
+        const parsed = await cargarDatos(urlBase + '&_ts=' + Date.now());
         const columnas = parsed.meta.fields;
         const fila = parsed.data.find(row =>
           row['Legajo'] && row['Email'] &&
@@ -266,22 +127,19 @@
         const nombre = fila['Alumno'] || "Alumno";
         const columnasExcluir = ['legajo', 'nombre', 'apellido', 'nombre y apellido', 'alumno', 'email'];
 
-        let tablaHTML = '<p><strong>Hola ' + nombre + ', tus notas son:</strong></p><div class="tabla-scroll"><table><thead><tr>';
-
+        let tablaHTML = `<p><strong>Hola ${nombre}, tus notas son:</strong></p>
+                         <div class="tabla-scroll"><table><thead><tr>`;
         columnas.forEach(col => {
           if (!columnasExcluir.includes(col.toLowerCase())) {
-            tablaHTML += '<th>' + col + '</th>';
+            tablaHTML += `<th>${col}</th>`;
           }
         });
-
         tablaHTML += '</tr></thead><tbody><tr>';
-
         columnas.forEach(col => {
           if (!columnasExcluir.includes(col.toLowerCase())) {
-            tablaHTML += '<td>' + (fila[col] || '-') + '</td>';
+            tablaHTML += `<td>${fila[col] || '-'}</td>`;
           }
         });
-
         tablaHTML += '</tr></tbody></table></div>';
         tablaHTML += '<p style="margin-top:2em; color:#000; font-size:0.95em;">Contacto: <strong>toxicoalumnos@gmail.com</strong></p>';
         resultado.innerHTML = tablaHTML;
@@ -290,6 +148,17 @@
         errorDiv.textContent = "Error al cargar los datos. Intente nuevamente.";
       }
     }
+
+    // Al iniciar
+    (async () => {
+      const estado = await verificarEstadoPagina();
+      if (estado === "ACTIVA") {
+        mostrarFormulario();
+      } else {
+        mostrarMensajeDeshabilitado();
+      }
+    })();
   </script>
 </body>
 </html>
+
