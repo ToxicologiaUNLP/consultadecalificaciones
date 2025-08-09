@@ -185,21 +185,42 @@
       font-size: 0.9em;
     }
 
-    /* Loader giratorio */
+    /* Nuevo loader de puntos suspensivos */
     #loader {
       display: none;
       text-align: center;
       margin-top: 20px;
+      font-size: 2em;
+      font-weight: bold;
+      color: black;
+      font-family: monospace;
+      letter-spacing: 0.2em;
     }
 
-    #loader img {
-      width: 80px;
-      animation: girar 1s linear infinite;
+    /* Animación de puntos */
+    @keyframes puntos {
+      0% { opacity: 0; }
+      50% { opacity: 1; }
+      100% { opacity: 0; }
     }
 
-    @keyframes girar {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+    #loader span {
+      opacity: 0;
+      animation-name: puntos;
+      animation-duration: 1.5s;
+      animation-iteration-count: infinite;
+    }
+
+    #loader span:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    #loader span:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+
+    #loader span:nth-child(3) {
+      animation-delay: 0.6s;
     }
   </style>
 
@@ -251,7 +272,7 @@
             <button id="btnConsultar">Consultar</button>
 
             <div id="loader">
-              <img src="logo.png" alt="Cargando...">
+              <span>.</span><span>.</span><span>.</span>
             </div>
 
             <div id="resultado"></div>
@@ -262,7 +283,7 @@
           const emailInput = document.getElementById('email');
           const btnConsultar = document.getElementById('btnConsultar');
 
-          // Al presionar Enter en cualquiera de los dos inputs, ejecuta buscarNota()
+          // Ejecutar buscarNota al presionar Enter en cualquiera de los inputs
           [legajoInput, emailInput].forEach(input => {
             input.addEventListener('keydown', (event) => {
               if (event.key === 'Enter') {
@@ -272,7 +293,7 @@
             });
           });
 
-          // Al hacer click en el botón, ejecuta buscarNota()
+          // Ejecutar buscarNota al hacer click en el botón
           btnConsultar.addEventListener('click', buscarNota);
 
         } else {
@@ -330,17 +351,20 @@
         const nombre = fila['Alumno'] || "Alumno";
         const columnasExcluir = ['legajo', 'nombre', 'apellido', 'nombre y apellido', 'alumno', 'email', 'estado'];
 
-        let tablaHTML = '<p><strong> '+ nombre + ', tus calificaciones son:</strong></p><div class="tabla-scroll"><table><thead><tr>';
-        columnas.forEach(col => {
-          if (!columnasExcluir.includes(col.toLowerCase())) {
-            tablaHTML += '<th>' + col + '</th>';
-          }
+        // Filtrar columnas que no están excluidas y que tienen datos no vacíos en la fila
+        const columnasVisibles = columnas.filter(col =>
+          !columnasExcluir.includes(col.toLowerCase()) &&
+          fila[col] &&
+          fila[col].trim() !== ''
+        );
+
+        let tablaHTML = '<p><strong> ' + nombre + ', tus calificaciones son:</strong></p><div class="tabla-scroll"><table><thead><tr>';
+        columnasVisibles.forEach(col => {
+          tablaHTML += '<th>' + col + '</th>';
         });
         tablaHTML += '</tr></thead><tbody><tr>';
-        columnas.forEach(col => {
-          if (!columnasExcluir.includes(col.toLowerCase())) {
-            tablaHTML += '<td>' + (fila[col] || '') + '</td>';
-          }
+        columnasVisibles.forEach(col => {
+          tablaHTML += '<td>' + fila[col] + '</td>';
         });
         tablaHTML += '</tr></tbody></table></div>';
         tablaHTML += '<p style="margin-top:2em; color:#000; font-size:0.95em;">Contacto: <strong>toxicoalumnos@gmail.com</strong></p>';
