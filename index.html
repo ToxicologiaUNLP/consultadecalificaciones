@@ -248,7 +248,7 @@
               *Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras. Esto permitirá acceder a sus notas de forma personal.
             </small>
 
-            <button onclick="buscarNota()">Consultar</button>
+            <button id="btnConsultar">Consultar</button>
 
             <div id="loader">
               <img src="logo.png" alt="Cargando...">
@@ -257,6 +257,24 @@
             <div id="resultado"></div>
             <div id="error"></div>
           `;
+
+          const legajoInput = document.getElementById('legajo');
+          const emailInput = document.getElementById('email');
+          const btnConsultar = document.getElementById('btnConsultar');
+
+          // Al presionar Enter en cualquiera de los dos inputs, ejecuta buscarNota()
+          [legajoInput, emailInput].forEach(input => {
+            input.addEventListener('keydown', (event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                buscarNota();
+              }
+            });
+          });
+
+          // Al hacer click en el botón, ejecuta buscarNota()
+          btnConsultar.addEventListener('click', buscarNota);
+
         } else {
           contenido.innerHTML = `
             <p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
@@ -312,19 +330,17 @@
         const nombre = fila['Alumno'] || "Alumno";
         const columnasExcluir = ['legajo', 'nombre', 'apellido', 'nombre y apellido', 'alumno', 'email', 'estado'];
 
-        // Filtrar columnas que tengan al menos un dato no vacío en alguna fila
-        const columnasConDatos = columnas.filter(col => {
-          if (columnasExcluir.includes(col.toLowerCase())) return false;
-          return parsed.data.some(row => row[col] && row[col].trim() !== '');
-        });
-
         let tablaHTML = '<p><strong> '+ nombre + ', tus calificaciones son:</strong></p><div class="tabla-scroll"><table><thead><tr>';
-        columnasConDatos.forEach(col => {
-          tablaHTML += '<th>' + col + '</th>';
+        columnas.forEach(col => {
+          if (!columnasExcluir.includes(col.toLowerCase())) {
+            tablaHTML += '<th>' + col + '</th>';
+          }
         });
         tablaHTML += '</tr></thead><tbody><tr>';
-        columnasConDatos.forEach(col => {
-          tablaHTML += '<td>' + (fila[col] || '') + '</td>';
+        columnas.forEach(col => {
+          if (!columnasExcluir.includes(col.toLowerCase())) {
+            tablaHTML += '<td>' + (fila[col] || '') + '</td>';
+          }
         });
         tablaHTML += '</tr></tbody></table></div>';
         tablaHTML += '<p style="margin-top:2em; color:#000; font-size:0.95em;">Contacto: <strong>toxicoalumnos@gmail.com</strong></p>';
