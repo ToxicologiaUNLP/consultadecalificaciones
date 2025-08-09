@@ -321,7 +321,8 @@
         tablaHTML += '</tr></thead><tbody><tr>';
         columnas.forEach(col => {
           if (!columnasExcluir.includes(col.toLowerCase())) {
-            tablaHTML += '<td>' + (fila[col] || '-') + '</td>';
+            // Aquí está el cambio: si no hay dato, mostramos cadena vacía en vez de '-'
+            tablaHTML += '<td>' + (fila[col] || '') + '</td>';
           }
         });
         tablaHTML += '</tr></tbody></table></div>';
