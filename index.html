@@ -312,7 +312,7 @@
         const nombre = fila['Alumno'] || "Alumno";
         const columnasExcluir = ['legajo', 'nombre', 'apellido', 'nombre y apellido', 'alumno', 'email', 'estado'];
 
-        let tablaHTML = '<p><strong>Hola ' + nombre + ', tus notas son:</strong></p><div class="tabla-scroll"><table><thead><tr>';
+        let tablaHTML = '<p><strong> '+ nombre + ', tus calificaciones son:</strong></p><div class="tabla-scroll"><table><thead><tr>';
         columnas.forEach(col => {
           if (!columnasExcluir.includes(col.toLowerCase())) {
             tablaHTML += '<th>' + col + '</th>';
