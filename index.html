@@ -225,10 +225,10 @@
 
     /* Marca de agua compacta y sutil en celdas de notas */
     #resultado table tbody td {
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="70" height="10"><text x="0" y="8" font-family="Segoe UI" font-size="6" fill="%23b0b0b0" fill-opacity="0.12">ToxicologíaUNLP</text></svg>');
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>');
       background-repeat: repeat;
-      background-position: center;
-      background-size: 70px 10px;
+      background-position: 0 0;
+      background-size: 60px 12px;
     }
   </style>
 
@@ -291,7 +291,6 @@
           const emailInput = document.getElementById('email');
           const btnConsultar = document.getElementById('btnConsultar');
 
-          // Ejecutar buscarNota al presionar Enter en cualquiera de los inputs
           [legajoInput, emailInput].forEach(input => {
             input.addEventListener('keydown', (event) => {
               if (event.key === 'Enter') {
@@ -301,13 +300,12 @@
             });
           });
 
-          // Ejecutar buscarNota al hacer click en el botón
           btnConsultar.addEventListener('click', buscarNota);
 
         } else {
           contenido.innerHTML = `
             <p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
-             La plataforma no se encuentra habilitada en este momento. Se habilitará nuevamente una vez finalizada la actividad en curso.
+              La plataforma no se encuentra habilitada en este momento. Se habilitará nuevamente una vez finalizada la actividad en curso.
             </p>
           `;
         }
@@ -336,7 +334,7 @@
         return;
       }
 
-      loader.style.display = "block"; // Mostrar loader
+      loader.style.display = "block";
 
       try {
         const urlConTimestamp = urlBase + '&_ts=' + Date.now();
@@ -349,38 +347,43 @@
           row['Email'].trim().toLowerCase() === emailInput
         );
 
-        loader.style.display = "none"; // Ocultar loader
+        loader.style.display = "none";
 
         if (!fila) {
           errorDiv.textContent = "Datos incorrectos. Verifique legajo/email.";
           return;
         }
 
-        const nombre = fila['Alumno'] || "Alumno";
-        const columnasExcluir = ['legajo', 'nombre', 'apellido', 'nombre y apellido', 'alumno', 'email', 'estado'];
+        const primeraColumna = columnas[0];
+        const nombre = fila[primeraColumna] || "Alumno";
 
-        // Filtrar columnas que no están excluidas y que tienen datos no vacíos en la fila
+        const columnasExcluir = [
+          'legajo', 'nombre', 'apellido', 'nombre y apellido',
+          'alumno', 'email', 'estado', primeraColumna.toLowerCase()
+        ];
+
         const columnasVisibles = columnas.filter(col =>
           !columnasExcluir.includes(col.toLowerCase()) &&
           fila[col] &&
           fila[col].trim() !== ''
         );
 
-        let tablaHTML = '<p><strong> ' + nombre + ', tus calificaciones son:</strong></p><div class="tabla-scroll"><table><thead><tr>';
+        let tablaHTML = `<p><strong>${nombre}, tus calificaciones son:</strong></p>
+        <div class="tabla-scroll"><table><thead><tr>`;
         columnasVisibles.forEach(col => {
-          tablaHTML += '<th>' + col + '</th>';
+          tablaHTML += `<th>${col}</th>`;
         });
-        tablaHTML += '</tr></thead><tbody><tr>';
+        tablaHTML += `</tr></thead><tbody><tr>`;
         columnasVisibles.forEach(col => {
-          tablaHTML += '<td>' + fila[col] + '</td>';
+          tablaHTML += `<td>${fila[col]}</td>`;
         });
-        tablaHTML += '</tr></tbody></table></div>';
-        tablaHTML += '<p style="margin-top:2em; color:#000; font-size:0.95em;">Contacto: <strong>toxicoalumnos@gmail.com</strong></p>';
+        tablaHTML += `</tr></tbody></table></div>`;
+        tablaHTML += `<p style="margin-top:2em; color:#000; font-size:0.40em;">Contacto: toxicoalumnos@gmail.com</p>`;
 
         resultado.innerHTML = tablaHTML;
 
       } catch (e) {
-        loader.style.display = "none"; // Ocultar loader en caso de error
+        loader.style.display = "none";
         console.error("Error al cargar datos:", e);
         errorDiv.textContent = "Error al cargar los datos. Intente nuevamente.";
       }
@@ -390,4 +393,3 @@
   </script>
 </body>
 </html>
-
