@@ -224,14 +224,11 @@
     }
 
     /* Marca de agua compacta y sutil en celdas de notas */
- /* Marca de agua compacta y sutil en celdas de notas */
-#resultado table tbody td {
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>');
-  background-repeat: repeat;
-  background-position: 0 0;
-  background-size: 60px 12px;
-}
-
+    #resultado table tbody td {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="70" height="10"><text x="0" y="8" font-family="Segoe UI" font-size="6" fill="%23b0b0b0" fill-opacity="0.12">ToxicologíaUNLP</text></svg>');
+      background-repeat: repeat;
+      background-position: center;
+      background-size: 70px 10px;
     }
   </style>
 
@@ -378,7 +375,7 @@
           tablaHTML += '<td>' + fila[col] + '</td>';
         });
         tablaHTML += '</tr></tbody></table></div>';
-        tablaHTML += '<p style="margin-top:2em; color:#000; font-size:0.70em;">Contacto: <strong>toxicoalumnos@gmail.com</strong></p>';
+        tablaHTML += '<p style="margin-top:2em; color:#000; font-size:0.95em;">Contacto: <strong>toxicoalumnos@gmail.com</strong></p>';
 
         resultado.innerHTML = tablaHTML;
 
