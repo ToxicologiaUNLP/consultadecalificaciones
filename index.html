@@ -113,7 +113,7 @@
     }
 
     #resultado {
-      margin-top: 1em; /* achicado de 2em */
+      margin-top: 1em;
       font-size: 1.15em;
       line-height: 1.5;
       color: #222;
@@ -122,6 +122,16 @@
       overflow-wrap: break-word;
       width: 100%;
       box-sizing: border-box;
+    }
+    #resultado > p {
+      margin-bottom: 0.3em;  /* Reducido margen debajo del párrafo con nombre */
+    }
+
+    #resultado .contacto {
+      font-size: 1.4em; /* texto más grande */
+      color: #000;
+      text-align: left; /* alineado a la izquierda */
+      margin-top: 0.5em;
     }
 
     @media screen and (max-width: 600px) {
@@ -133,6 +143,10 @@
       #resultado {
         font-size: 1em;
       }
+
+      #resultado .contacto {
+        font-size: 1.2em;
+      }
     }
 
     #resultado strong {
@@ -140,7 +154,7 @@
     }
 
     table {
-      margin-top: 0.5em; /* más pequeño para acercar la tabla al texto */
+      margin-top: 1em;
       border-collapse: collapse;
       width: 100%;
     }
@@ -229,17 +243,6 @@
       background-repeat: repeat;
       background-position: 0 0;
       background-size: 60px 12px;
-    }
-
-    /* Contacto abajo, centrado, ancho restringido */
-    #contacto {
-      margin-top: 1.2em;
-      color: #000;
-      font-size: 0.60em;
-      max-width: 280px;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: center;
     }
   </style>
 
@@ -389,8 +392,7 @@
           tablaHTML += `<td>${fila[col]}</td>`;
         });
         tablaHTML += `</tr></tbody></table></div>`;
-
-        tablaHTML += `<p id="contacto">Contacto: toxicoalumnos@gmail.com</p>`;
+        tablaHTML += `<p class="contacto">Contacto: toxicoalumnos@gmail.com</p>`;
 
         resultado.innerHTML = tablaHTML;
 
@@ -405,3 +407,4 @@
   </script>
 </body>
 </html>
+
