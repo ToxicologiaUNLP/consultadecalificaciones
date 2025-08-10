@@ -113,7 +113,7 @@
     }
 
     #resultado {
-      margin-top: 2em;
+      margin-top: 1em; /* achicado de 2em */
       font-size: 1.15em;
       line-height: 1.5;
       color: #222;
@@ -140,7 +140,7 @@
     }
 
     table {
-      margin-top: 1em;
+      margin-top: 0.5em; /* más pequeño para acercar la tabla al texto */
       border-collapse: collapse;
       width: 100%;
     }
@@ -229,6 +229,17 @@
       background-repeat: repeat;
       background-position: 0 0;
       background-size: 60px 12px;
+    }
+
+    /* Contacto abajo, centrado, ancho restringido */
+    #contacto {
+      margin-top: 1.2em;
+      color: #000;
+      font-size: 0.60em;
+      max-width: 280px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
     }
   </style>
 
@@ -378,7 +389,8 @@
           tablaHTML += `<td>${fila[col]}</td>`;
         });
         tablaHTML += `</tr></tbody></table></div>`;
-        tablaHTML += `<p style="margin-top:2em; color:#000; font-size:0.60em;">Contacto: toxicoalumnos@gmail.com</p>`;
+
+        tablaHTML += `<p id="contacto">Contacto: toxicoalumnos@gmail.com</p>`;
 
         resultado.innerHTML = tablaHTML;
 
