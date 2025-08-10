@@ -222,6 +222,14 @@
     #loader span:nth-child(3) {
       animation-delay: 0.6s;
     }
+
+    /* Marca de agua compacta y sutil en celdas de notas */
+    #resultado table tbody td {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="70" height="10"><text x="0" y="8" font-family="Segoe UI" font-size="6" fill="%23b0b0b0" fill-opacity="0.12">ToxicologíaUNLP</text></svg>');
+      background-repeat: repeat;
+      background-position: center;
+      background-size: 70px 10px;
+    }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
@@ -238,7 +246,7 @@
   </main>
 
   <footer>
-    © 2025 Cátedra de Toxicología, Facultad de Ciencias Médicas - UNLP. Todos los derechos reservados.
+    © 2025 Cátedra de Toxicología, Facultad de Ciencias Médicas - UNLP.
   </footer>
 
   <script>
@@ -299,7 +307,7 @@
         } else {
           contenido.innerHTML = `
             <p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
-              La plataforma no se encuentra habilitada debido a la carga de datos. Estará disponible nuevamente al finalizar el proceso.
+              La plataforma no se encuentra habilitada en este momento. Estará disponible nuevamente al finalizar la actividad que se encuentre llevada a cabo.
             </p>
           `;
         }
@@ -382,5 +390,4 @@
   </script>
 </body>
 </html>
-
 
