@@ -69,11 +69,6 @@
       border-radius: 10px;
       box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
       flex-grow: 1;
-
-      /* centrado vertical */
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
     }
 
     label {
@@ -114,24 +109,6 @@
 
     button:hover {
       background: #2d8390;
-    }
-
-    /* Botón de consulta / reclamo turquesa, centrado */
-    #btnConsulta {
-      width: auto;
-      padding: 0.6em 1.2em;
-      font-size: 1em;
-      margin: 1em auto 0 auto;
-      display: block;
-      background-color: #2d8390; /* turquesa */
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    #btnConsulta:hover {
-      background-color: #1f626e; /* un turquesa más oscuro al pasar mouse */
     }
 
     #resultado {
@@ -207,7 +184,6 @@
       font-size: 0.9em;
     }
 
-    /* Nuevo loader de puntos suspensivos */
     #loader {
       display: none;
       text-align: center;
@@ -219,7 +195,6 @@
       letter-spacing: 0.2em;
     }
 
-    /* Animación de puntos */
     @keyframes puntos {
       0% { opacity: 0; }
       50% { opacity: 1; }
@@ -233,24 +208,25 @@
       animation-iteration-count: infinite;
     }
 
-    #loader span:nth-child(1) {
-      animation-delay: 0s;
-    }
+    #loader span:nth-child(1) { animation-delay: 0s; }
+    #loader span:nth-child(2) { animation-delay: 0.3s; }
+    #loader span:nth-child(3) { animation-delay: 0.6s; }
 
-    #loader span:nth-child(2) {
-      animation-delay: 0.3s;
-    }
-
-    #loader span:nth-child(3) {
-      animation-delay: 0.6s;
-    }
-
-    /* Marca de agua compacta y sutil en celdas de notas */
     #resultado table tbody td {
       background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>');
       background-repeat: repeat;
       background-position: 0 0;
       background-size: 60px 12px;
+    }
+
+    #contacto {
+      margin-top: 1.2em;
+      color: #000;
+      font-size: 0.60em;
+      max-width: 280px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
     }
   </style>
 
@@ -288,7 +264,9 @@
 
         if (estado === 'habilitado') {
           contenido.innerHTML = `
-            <p style="color: black;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
+            <p style="color:black; margin:0.5em 0;">
+              Ingrese sus datos de la forma solicitada y el sistema le brindará la información.
+            </p>
 
             <label for="legajo">Legajo</label>
             <input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
@@ -307,10 +285,6 @@
 
             <div id="resultado"></div>
             <div id="error"></div>
-
-            <button id="btnConsulta" onclick="window.location.href='mailto:toxicoalumnos@gmail.com';">
-              Consulta / Reclamo
-            </button>
           `;
 
           const legajoInput = document.getElementById('legajo');
@@ -406,6 +380,23 @@
         tablaHTML += `</tr></tbody></table></div>`;
 
         resultado.innerHTML = tablaHTML;
+
+        // Agregar botón de consulta/reclamo después de mostrar las notas
+        const btnReclamo = document.createElement('button');
+        btnReclamo.textContent = 'Consulta / Reclamo';
+        btnReclamo.style.backgroundColor = '#2d8390';
+        btnReclamo.style.color = 'white';
+        btnReclamo.style.width = '100%';
+        btnReclamo.style.padding = '0.6em';
+        btnReclamo.style.fontSize = '1em';
+        btnReclamo.style.border = 'none';
+        btnReclamo.style.borderRadius = '5px';
+        btnReclamo.style.cursor = 'pointer';
+        btnReclamo.style.marginTop = '1em';
+        btnReclamo.onclick = () => {
+          window.location.href = 'mailto:toxicoalumnos@gmail.com';
+        };
+        resultado.appendChild(btnReclamo);
 
       } catch (e) {
         loader.style.display = "none";
