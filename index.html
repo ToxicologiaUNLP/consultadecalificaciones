@@ -31,9 +31,22 @@
       gap: 1em;
     }
 
-    .logo-izq { max-height: 100px; height: auto; width: auto; object-fit: contain; }
-    .logo-der { height: auto; width: auto; object-fit: contain; }
-    .logo-der.pequeño { max-height: 60px; }
+    .logo-izq {
+      max-height: 100px;
+      height: auto;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .logo-der {
+      height: auto;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .logo-der.pequeño {
+      max-height: 60px;
+    }
 
     .titulo-centro {
       flex-grow: 1;
@@ -65,7 +78,8 @@
       margin-bottom: 0.3em;
     }
 
-    input[type="text"], input[type="email"] {
+    input[type="text"],
+    input[type="email"] {
       width: 100%;
       padding: 0.6em;
       font-size: 1.1em;
@@ -74,36 +88,44 @@
       transition: border-color 0.3s ease;
     }
 
-    input[type="text"]:focus, input[type="email"]:focus {
+    input[type="text"]:focus,
+    input[type="email"]:focus {
       border-color: #007acc;
       outline: none;
     }
 
     button {
-      padding: 0.8em;
-      background: #2d8390; /* color turquesa que usamos */
+      padding: 0.6em 1em;
+      background: #2d8390; /* Color turquesa fijo */
       color: white;
-      font-size: 1.2em;
+      font-size: 1.1em;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       font-weight: 700;
-      display: block;
-      margin: 1em auto; /* centrado horizontalmente */
     }
 
-    button:hover { background: #2d8390; }
+    button:hover {
+      opacity: 0.9;
+    }
 
-    #btnConsultaReclamo {
+    #btnConsultar {
+      display: block;
+      margin: 1.5em auto 0 auto;
+    }
+
+    #btnReclamo {
+      display: block;
+      margin: 1.2em auto 0 auto;
       font-size: 0.9em;
       padding: 0.4em 0.8em;
     }
 
     #resultado {
-      margin-top: 1em;
+      margin-top: 0.8em;
       font-size: 1.15em;
       line-height: 1.5;
-      color: #222;
+      color: #000;
       white-space: pre-wrap;
       word-wrap: break-word;
       overflow-wrap: break-word;
@@ -111,34 +133,68 @@
       box-sizing: border-box;
     }
 
-    #resultado p strong {
-      display: block;
-      margin-bottom: 0.4em;
-      color: #000; /* color negro para nombre y frase */
+    @media screen and (max-width: 600px) {
+      main {
+        margin: 1em;
+        padding: 1.2em;
+      }
+
+      #resultado {
+        font-size: 1em;
+      }
     }
 
-    @media screen and (max-width: 600px) {
-      main { margin: 1em; padding: 1.2em; }
-      #resultado { font-size: 1em; }
+    #resultado strong {
+      color: #000;
     }
 
     table {
-      margin-top: 0.5em;
+      margin-top: 0.3em;
       border-collapse: collapse;
       width: 100%;
     }
 
-    table, th, td { border: 1px solid #ddd; }
-    th, td { padding: 0.6em 0.9em; text-align: center; }
-    th { background-color: #f5f5f5; font-weight: 700; }
+    table,
+    th,
+    td {
+      border: 1px solid #ddd;
+    }
 
-    #error { color: #cc0000; font-weight: 700; margin-top: 1.5em; }
+    th,
+    td {
+      padding: 0.6em 0.9em;
+      text-align: center;
+    }
 
-    .tabla-scroll { overflow-x: auto; max-width: 100%; }
-    .tabla-scroll table { min-width: 600px; }
+    th {
+      background-color: #f5f5f5;
+      font-weight: 700;
+    }
 
-    footer { background: #2d8390; color: white; text-align: center; padding: 1em; font-size: 0.9em; }
+    #error {
+      color: #cc0000;
+      font-weight: 700;
+      margin-top: 1.5em;
+    }
 
+    .tabla-scroll {
+      overflow-x: auto;
+      max-width: 100%;
+    }
+
+    .tabla-scroll table {
+      min-width: 600px;
+    }
+
+    footer {
+      background: #2d8390;
+      color: white;
+      text-align: center;
+      padding: 1em;
+      font-size: 0.9em;
+    }
+
+    /* Loader de puntos */
     #loader {
       display: none;
       text-align: center;
@@ -151,7 +207,9 @@
     }
 
     @keyframes puntos {
-      0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; }
+      0% { opacity: 0; }
+      50% { opacity: 1; }
+      100% { opacity: 0; }
     }
 
     #loader span {
@@ -165,6 +223,7 @@
     #loader span:nth-child(2) { animation-delay: 0.3s; }
     #loader span:nth-child(3) { animation-delay: 0.6s; }
 
+    /* Marca de agua compacta en celdas */
     #resultado table tbody td {
       background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>');
       background-repeat: repeat;
@@ -182,9 +241,13 @@
     <img src="logo1.png" alt="Logo Derecho" class="logo-der pequeño" />
   </header>
 
-  <main id="contenido"></main>
+  <main id="contenido">
+    <!-- Contenido dinámico -->
+  </main>
 
-  <footer>© 2025 Cátedra de Toxicología, Facultad de Ciencias Médicas - UNLP.</footer>
+  <footer>
+    © 2025 Cátedra de Toxicología, Facultad de Ciencias Médicas - UNLP.
+  </footer>
 
   <script>
     const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?gid=919817434&single=true&output=csv';
@@ -204,15 +267,22 @@
         if (estado === 'habilitado') {
           contenido.innerHTML = `
             <p style="color: black; margin:0.5em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
+
             <label for="legajo">Legajo</label>
             <input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
+
             <label for="email">Email asociado al SIU Guaraní*</label>
             <input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
             <small style="color:#555; font-size:0.9em;">
-              *Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.
+              *Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras. Esto permitirá acceder a sus notas de forma personal.
             </small>
+
             <button id="btnConsultar">Consultar</button>
-            <div id="loader"><span>.</span><span>.</span><span>.</span></div>
+
+            <div id="loader">
+              <span>.</span><span>.</span><span>.</span>
+            </div>
+
             <div id="resultado"></div>
             <div id="error"></div>
           `;
@@ -222,23 +292,30 @@
           const btnConsultar = document.getElementById('btnConsultar');
 
           [legajoInput, emailInput].forEach(input => {
-            input.addEventListener('keydown', event => {
-              if (event.key === 'Enter') { event.preventDefault(); buscarNota(); }
+            input.addEventListener('keydown', (event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                buscarNota();
+              }
             });
           });
 
           btnConsultar.addEventListener('click', buscarNota);
 
         } else {
-          contenido.innerHTML = `<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
-            La plataforma no se encuentra habilitada en este momento.
-          </p>`;
+          contenido.innerHTML = `
+            <p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
+              La plataforma no se encuentra habilitada en este momento. Se habilitará nuevamente una vez finalizada la actividad en curso.
+            </p>
+          `;
         }
       } catch (error) {
         console.error("Error al verificar estado:", error);
-        document.getElementById('contenido').innerHTML = `<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
-          No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.
-        </p>`;
+        document.getElementById('contenido').innerHTML = `
+          <p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
+            No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.
+          </p>
+        `;
       }
     }
 
@@ -260,7 +337,9 @@
       loader.style.display = "block";
 
       try {
-        const parsed = await cargarDatos(urlBase + '&_ts=' + Date.now());
+        const urlConTimestamp = urlBase + '&_ts=' + Date.now();
+        const parsed = await cargarDatos(urlConTimestamp);
+
         const columnas = parsed.meta.fields;
         const fila = parsed.data.find(row =>
           row['Legajo'] && row['Email'] &&
@@ -277,30 +356,41 @@
 
         const primeraColumna = columnas[0];
         const nombre = fila[primeraColumna] || "Alumno";
+
         const columnasExcluir = [
-          'legajo','nombre','apellido','nombre y apellido',
-          'alumno','email','estado',primeraColumna.toLowerCase()
+          'legajo', 'nombre', 'apellido', 'nombre y apellido',
+          'alumno', 'email', 'estado', primeraColumna.toLowerCase()
         ];
 
         const columnasVisibles = columnas.filter(col =>
           !columnasExcluir.includes(col.toLowerCase()) &&
-          fila[col] && fila[col].trim() !== ''
+          fila[col] &&
+          fila[col].trim() !== ''
         );
 
         let tablaHTML = `<p><strong>${nombre}, tus calificaciones son:</strong></p>
-          <div class="tabla-scroll"><table><thead><tr>`;
-        columnasVisibles.forEach(col => { tablaHTML += `<th>${col}</th>`; });
+        <div class="tabla-scroll"><table><thead><tr>`;
+        columnasVisibles.forEach(col => {
+          tablaHTML += `<th>${col}</th>`;
+        });
         tablaHTML += `</tr></thead><tbody><tr>`;
-        columnasVisibles.forEach(col => { tablaHTML += `<td>${fila[col]}</td>`; });
+        columnasVisibles.forEach(col => {
+          tablaHTML += `<td>${fila[col]}</td>`;
+        });
         tablaHTML += `</tr></tbody></table></div>`;
+
+        // Botón de Consulta/Reclamo
+        tablaHTML += `<button id="btnReclamo">Consulta / Reclamo</button>`;
 
         resultado.innerHTML = tablaHTML;
 
-        // Agregar botón Consulta / Reclamo después de mostrar notas
-        const btnReclamo = document.createElement('button');
-        btnReclamo.id = 'btnConsultaReclamo';
-        btnReclamo.textContent = 'Consulta / Reclamo';
-        resultado.appendChild(btnReclamo);
+        // Acción del botón
+        const btnReclamo = document.getElementById('btnReclamo');
+        btnReclamo.addEventListener('click', () => {
+          const body = `Me comunico desde la opción de consulta/reclamos de la plataforma de calificaciones.%0A%0AApellido y Nombre:%0ALegajo:%0AMotivo de la consulta/reclamo:`;
+          const mailtoLink = `mailto:toxicoalumnos@gmail.com?subject=Consulta/Reclamo%20-%20Plataforma%20de%20Calificaciones&body=${body}`;
+          window.location.href = mailtoLink;
+        });
 
       } catch (e) {
         loader.style.display = "none";
