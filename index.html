@@ -5,7 +5,6 @@
   <title>Notas Toxicología UNLP</title>
   <link rel="icon" href="logo2.png" type="image/png">
 
-  <!-- Fuentes desde Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
 
@@ -31,22 +30,9 @@
       gap: 1em;
     }
 
-    .logo-izq {
-      max-height: 100px;
-      height: auto;
-      width: auto;
-      object-fit: contain;
-    }
-
-    .logo-der {
-      height: auto;
-      width: auto;
-      object-fit: contain;
-    }
-
-    .logo-der.pequeño {
-      max-height: 60px;
-    }
+    .logo-izq { max-height: 100px; height: auto; width: auto; object-fit: contain; }
+    .logo-der { height: auto; width: auto; object-fit: contain; }
+    .logo-der.pequeño { max-height: 60px; }
 
     .titulo-centro {
       flex-grow: 1;
@@ -94,9 +80,11 @@
       outline: none;
     }
 
-    button {
-      margin-top: 1.5em;
-      padding: 0.8em;
+    /* Botón Consultar centrado horizontalmente */
+    #btnConsultar {
+      display: block;
+      margin: 1.5em auto 0 auto;
+      padding: 0.8em 1.5em;
       font-size: 1.2em;
       background-color: #2d8390;
       color: white;
@@ -104,129 +92,51 @@
       border-radius: 5px;
       cursor: pointer;
       font-weight: 700;
+      text-align: center;
+      white-space: nowrap;
     }
 
-    button:hover {
+    #btnConsultar:hover { background-color: #2d8390; }
+
+    /* Botón Consulta/Reclamo más pequeño y centrado texto */
+    #btnConsultaReclamo {
+      padding: 0.5em 1em;
+      font-size: 0.95em;
       background-color: #2d8390;
-    }
-
-    #resultado {
-      margin-top: 1em;
-      font-size: 1.15em;
-      line-height: 1.5;
-      color: #222;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    @media screen and (max-width: 600px) {
-      main {
-        margin: 1em;
-        padding: 1.2em;
-      }
-
-      #resultado {
-        font-size: 1em;
-      }
-    }
-
-    #resultado strong {
-      color: #000; /* texto en negro */
-    }
-
-    table {
-      margin-top: 0.5em;
-      border-collapse: collapse;
-      width: 100%;
-    }
-
-    table,
-    th,
-    td {
-      border: 1px solid #ddd;
-    }
-
-    th,
-    td {
-      padding: 0.6em 0.9em;
-      text-align: center;
-    }
-
-    th {
-      background-color: #f5f5f5;
-      font-weight: 700;
-    }
-
-    #error {
-      color: #cc0000;
-      font-weight: 700;
-      margin-top: 1.5em;
-    }
-
-    .tabla-scroll {
-      overflow-x: auto;
-      max-width: 100%;
-    }
-
-    .tabla-scroll table {
-      min-width: 600px;
-    }
-
-    footer {
-      background: #2d8390;
       color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 700;
       text-align: center;
-      padding: 1em;
-      font-size: 0.9em;
+      display: inline-block;
+      vertical-align: middle;
+      white-space: nowrap;
     }
 
-    #loader {
-      display: none;
-      text-align: center;
-      margin-top: 20px;
-      font-size: 2em;
-      font-weight: bold;
-      color: black;
-      font-family: monospace;
-      letter-spacing: 0.2em;
-    }
+    #resultado { margin-top: 1em; font-size: 1.15em; line-height: 1.5; color: #222; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; width: 100%; box-sizing: border-box; }
+    #resultado strong { color: #000; }
 
-    @keyframes puntos {
-      0% { opacity: 0; }
-      50% { opacity: 1; }
-      100% { opacity: 0; }
-    }
+    table { margin-top: 0.5em; border-collapse: collapse; width: 100%; }
+    table, th, td { border: 1px solid #ddd; }
+    th, td { padding: 0.6em 0.9em; text-align: center; }
+    th { background-color: #f5f5f5; font-weight: 700; }
 
-    #loader span {
-      opacity: 0;
-      animation-name: puntos;
-      animation-duration: 1.5s;
-      animation-iteration-count: infinite;
-    }
+    #error { color: #cc0000; font-weight: 700; margin-top: 1.5em; }
+    .tabla-scroll { overflow-x: auto; max-width: 100%; }
+    .tabla-scroll table { min-width: 600px; }
 
+    footer { background: #2d8390; color: white; text-align: center; padding: 1em; font-size: 0.9em; }
+
+    #loader { display: none; text-align: center; margin-top: 20px; font-size: 2em; font-weight: bold; color: black; font-family: monospace; letter-spacing: 0.2em; }
+    @keyframes puntos { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
+    #loader span { opacity: 0; animation-name: puntos; animation-duration: 1.5s; animation-iteration-count: infinite; }
     #loader span:nth-child(1) { animation-delay: 0s; }
     #loader span:nth-child(2) { animation-delay: 0.3s; }
     #loader span:nth-child(3) { animation-delay: 0.6s; }
 
-    #resultado table tbody td {
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>');
-      background-repeat: repeat;
-      background-position: 0 0;
-      background-size: 60px 12px;
-    }
-
-    #contacto {
-      margin-top: 1.2em;
-      color: #000;
-      font-size: 0.60em;
-      max-width: 280px;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: center;
-    }
+    #resultado table tbody td { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>'); background-repeat: repeat; background-position: 0 0; background-size: 60px 12px; }
+    #contacto { margin-top: 1.2em; color: #000; font-size: 0.60em; max-width: 280px; margin-left: auto; margin-right: auto; text-align: center; }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
@@ -238,9 +148,7 @@
     <img src="logo1.png" alt="Logo Derecho" class="logo-der pequeño" />
   </header>
 
-  <main id="contenido">
-    <!-- Contenido dinámico -->
-  </main>
+  <main id="contenido"></main>
 
   <footer>
     © 2025 Cátedra de Toxicología, Facultad de Ciencias Médicas - UNLP.
@@ -270,9 +178,7 @@
 
             <label for="email">Email asociado al SIU Guaraní*</label>
             <input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
-            <small style="color:#555; font-size:0.9em;">
-              *Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.
-            </small>
+            <small style="color:#555; font-size:0.9em;">*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
 
             <button id="btnConsultar">Consultar</button>
 
@@ -300,19 +206,11 @@
           btnConsultar.addEventListener('click', buscarNota);
 
         } else {
-          contenido.innerHTML = `
-            <p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
-              La plataforma no se encuentra habilitada en este momento. Se habilitará nuevamente una vez finalizada la actividad en curso.
-            </p>
-          `;
+          contenido.innerHTML = `<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">La plataforma no se encuentra habilitada en este momento. Se habilitará nuevamente una vez finalizada la actividad en curso.</p>`;
         }
       } catch (error) {
         console.error("Error al verificar estado:", error);
-        document.getElementById('contenido').innerHTML = `
-          <p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
-            No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.
-          </p>
-        `;
+        document.getElementById('contenido').innerHTML = `<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.</p>`;
       }
     }
 
@@ -367,20 +265,14 @@
 
         let tablaHTML = `<p style="color:black;"><strong>${nombre}, tus calificaciones son:</strong></p>
         <div class="tabla-scroll"><table><thead><tr>`;
-        columnasVisibles.forEach(col => {
-          tablaHTML += `<th>${col}</th>`;
-        });
+        columnasVisibles.forEach(col => { tablaHTML += `<th>${col}</th>`; });
         tablaHTML += `</tr></thead><tbody><tr>`;
-        columnasVisibles.forEach(col => {
-          tablaHTML += `<td>${fila[col]}</td>`;
-        });
+        columnasVisibles.forEach(col => { tablaHTML += `<td>${fila[col]}</td>`; });
         tablaHTML += `</tr></tbody></table></div>`;
 
-        // Botón de Consulta / Reclamo
+        // Botón de Consulta / Reclamo centrado y más pequeño
         tablaHTML += `<div style="text-align:center; margin-top:1em;">
-          <button id="btnConsultaReclamo" style="padding:0.4em 0.8em; font-size:0.9em; background-color:#2d8390; color:white; border:none; border-radius:5px; cursor:pointer;">
-            Consulta / Reclamo
-          </button>
+          <button id="btnConsultaReclamo">Consulta / Reclamo</button>
         </div>`;
 
         resultado.innerHTML = tablaHTML;
@@ -396,4 +288,6 @@
   </script>
 </body>
 </html>
+
+
 
