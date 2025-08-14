@@ -113,7 +113,7 @@
     }
 
     #resultado {
-      margin-top: 1em; /* achicado de 2em */
+      margin-top: 1em;
       font-size: 1.15em;
       line-height: 1.5;
       color: #222;
@@ -140,7 +140,7 @@
     }
 
     table {
-      margin-top: 0.5em; /* más pequeño para acercar la tabla al texto */
+      margin-top: 0.5em;
       border-collapse: collapse;
       width: 100%;
     }
@@ -185,7 +185,6 @@
       font-size: 0.9em;
     }
 
-    /* Nuevo loader de puntos suspensivos */
     #loader {
       display: none;
       text-align: center;
@@ -197,7 +196,6 @@
       letter-spacing: 0.2em;
     }
 
-    /* Animación de puntos */
     @keyframes puntos {
       0% { opacity: 0; }
       50% { opacity: 1; }
@@ -211,19 +209,6 @@
       animation-iteration-count: infinite;
     }
 
-    #loader span:nth-child(1) {
-      animation-delay: 0s;
-    }
-
-    #loader span:nth-child(2) {
-      animation-delay: 0.3s;
-    }
-
-    #loader span:nth-child(3) {
-      animation-delay: 0.6s;
-    }
-
-    /* Marca de agua compacta y sutil en celdas de notas */
     #resultado table tbody td {
       background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>');
       background-repeat: repeat;
@@ -231,7 +216,6 @@
       background-size: 60px 12px;
     }
 
-    /* Contacto abajo, centrado, ancho restringido */
     #contacto {
       margin-top: 1.2em;
       color: #000;
@@ -240,6 +224,22 @@
       margin-left: auto;
       margin-right: auto;
       text-align: center;
+    }
+
+    /* Botón pequeño para consulta */
+    #btnConsulta {
+      margin-top: 0.3em;
+      padding: 0.4em 0.8em;
+      font-size: 0.8em;
+      background-color: #007acc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #btnConsulta:hover {
+      background-color: #2d8390;
     }
   </style>
 
@@ -385,24 +385,6 @@
           tablaHTML += `<th>${col}</th>`;
         });
         tablaHTML += `</tr></thead><tbody><tr>`;
-        columnasVisibles.forEach(col => {
-          tablaHTML += `<td>${fila[col]}</td>`;
-        });
-        tablaHTML += `</tr></tbody></table></div>`;
+        columnasVis
 
-        tablaHTML += `<p id="contacto">toxicoalumnos@gmail.com</p>`;
-
-        resultado.innerHTML = tablaHTML;
-
-      } catch (e) {
-        loader.style.display = "none";
-        console.error("Error al cargar datos:", e);
-        errorDiv.textContent = "Error al cargar los datos. Intente nuevamente.";
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', verificarEstado);
-  </script>
-</body>
-</html>
 
