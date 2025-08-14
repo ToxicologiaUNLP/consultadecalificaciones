@@ -69,6 +69,11 @@
       border-radius: 10px;
       box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
       flex-grow: 1;
+
+      /* centrado vertical */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     label {
@@ -111,15 +116,22 @@
       background: #2d8390;
     }
 
-    /* Botón pequeño para consulta */
+    /* Botón de consulta / reclamo turquesa, centrado */
     #btnConsulta {
       width: auto;
-      padding: 0.5em 1em;
-      font-size: 0.9em;
-      margin-top: 0.5em;
+      padding: 0.6em 1.2em;
+      font-size: 1em;
+      margin: 1em auto 0 auto;
       display: block;
-      margin-left: auto;
-      margin-right: auto;
+      background-color: #2d8390; /* turquesa */
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #btnConsulta:hover {
+      background-color: #1f626e; /* un turquesa más oscuro al pasar mouse */
     }
 
     #resultado {
@@ -221,9 +233,17 @@
       animation-iteration-count: infinite;
     }
 
-    #loader span:nth-child(1) { animation-delay: 0s; }
-    #loader span:nth-child(2) { animation-delay: 0.3s; }
-    #loader span:nth-child(3) { animation-delay: 0.6s; }
+    #loader span:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    #loader span:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+
+    #loader span:nth-child(3) {
+      animation-delay: 0.6s;
+    }
 
     /* Marca de agua compacta y sutil en celdas de notas */
     #resultado table tbody td {
@@ -231,17 +251,6 @@
       background-repeat: repeat;
       background-position: 0 0;
       background-size: 60px 12px;
-    }
-
-    /* Contacto abajo, centrado, ancho restringido */
-    #contacto {
-      margin-top: 1.2em;
-      color: #000;
-      font-size: 0.60em;
-      max-width: 280px;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: center;
     }
   </style>
 
@@ -298,6 +307,10 @@
 
             <div id="resultado"></div>
             <div id="error"></div>
+
+            <button id="btnConsulta" onclick="window.location.href='mailto:toxicoalumnos@gmail.com';">
+              Consulta / Reclamo
+            </button>
           `;
 
           const legajoInput = document.getElementById('legajo');
@@ -391,9 +404,6 @@
           tablaHTML += `<td>${fila[col]}</td>`;
         });
         tablaHTML += `</tr></tbody></table></div>`;
-
-        // Botón de consulta/reclamo
-        tablaHTML += `<button id="btnConsulta" onclick="window.location.href='mailto:toxicoalumnos@gmail.com?subject=Consulta%20Plataforma%20de%20Calificaciones';">Consulta / Reclamo</button>`;
 
         resultado.innerHTML = tablaHTML;
 
