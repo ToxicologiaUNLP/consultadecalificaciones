@@ -96,11 +96,10 @@
 
     button {
       margin-top: 1.5em;
-      width: 100%;
       padding: 0.8em;
-      background: #007acc;
-      color: white;
       font-size: 1.2em;
+      background-color: #2d8390;
+      color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
@@ -108,7 +107,7 @@
     }
 
     button:hover {
-      background: #2d8390;
+      background-color: #2d8390;
     }
 
     #resultado {
@@ -135,7 +134,7 @@
     }
 
     #resultado strong {
-      color: #007acc;
+      color: #000; /* texto en negro */
     }
 
     table {
@@ -264,9 +263,7 @@
 
         if (estado === 'habilitado') {
           contenido.innerHTML = `
-            <p style="color:black; margin:0.5em 0;">
-              Ingrese sus datos de la forma solicitada y el sistema le brindará la información.
-            </p>
+            <p style="color: black; margin:0 0 0.8em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
 
             <label for="legajo">Legajo</label>
             <input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
@@ -274,7 +271,7 @@
             <label for="email">Email asociado al SIU Guaraní*</label>
             <input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
             <small style="color:#555; font-size:0.9em;">
-              *Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras. Esto permitirá acceder a sus notas de forma personal.
+              *Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.
             </small>
 
             <button id="btnConsultar">Consultar</button>
@@ -368,7 +365,7 @@
           fila[col].trim() !== ''
         );
 
-        let tablaHTML = `<p><strong>${nombre}, tus calificaciones son:</strong></p>
+        let tablaHTML = `<p style="color:black;"><strong>${nombre}, tus calificaciones son:</strong></p>
         <div class="tabla-scroll"><table><thead><tr>`;
         columnasVisibles.forEach(col => {
           tablaHTML += `<th>${col}</th>`;
@@ -379,24 +376,14 @@
         });
         tablaHTML += `</tr></tbody></table></div>`;
 
-        resultado.innerHTML = tablaHTML;
+        // Botón de Consulta / Reclamo
+        tablaHTML += `<div style="text-align:center; margin-top:1em;">
+          <button id="btnConsultaReclamo" style="padding:0.4em 0.8em; font-size:0.9em; background-color:#2d8390; color:white; border:none; border-radius:5px; cursor:pointer;">
+            Consulta / Reclamo
+          </button>
+        </div>`;
 
-        // Agregar botón de consulta/reclamo después de mostrar las notas
-        const btnReclamo = document.createElement('button');
-        btnReclamo.textContent = 'Consulta / Reclamo';
-        btnReclamo.style.backgroundColor = '#2d8390';
-        btnReclamo.style.color = 'white';
-        btnReclamo.style.width = '100%';
-        btnReclamo.style.padding = '0.6em';
-        btnReclamo.style.fontSize = '1em';
-        btnReclamo.style.border = 'none';
-        btnReclamo.style.borderRadius = '5px';
-        btnReclamo.style.cursor = 'pointer';
-        btnReclamo.style.marginTop = '1em';
-        btnReclamo.onclick = () => {
-          window.location.href = 'mailto:toxicoalumnos@gmail.com';
-        };
-        resultado.appendChild(btnReclamo);
+        resultado.innerHTML = tablaHTML;
 
       } catch (e) {
         loader.style.display = "none";
