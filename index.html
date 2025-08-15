@@ -18,14 +18,20 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      align-items: center;
     }
 
     header {
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
-      padding: 20px 0;
+      align-items: center;
+      width: 100%;
+      max-width: 600px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      height: 120px; /* Ajusta según necesites */
+      position: relative;
     }
 
     header img {
@@ -35,20 +41,24 @@
     }
 
     .titulo-centro {
-      margin-top: 15px;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
       font-family: 'Open Sans', sans-serif;
       font-weight: 700;
-      font-size: 2em; /* mismo tamaño que inscripciones */
+      font-size: 1.8em;
       color: #38828f;
       text-align: center;
       line-height: 1.2em;
       user-select: none;
+      width: 100%;
     }
 
     main {
       max-width: 600px;
+      width: 100%;
       background: white;
-      margin: 2em auto;
+      margin: 0 auto 2em auto;
       padding: 2em;
       border-radius: 10px;
       box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
@@ -95,8 +105,8 @@
     }
 
     #btnReclamo {
-      padding: 0.425em 0.85em; /* 15% más pequeño */
-      font-size: 0.85em;       /* 15% más pequeño */
+      padding: 0.425em 0.85em;
+      font-size: 0.85em;
       background: #2d8390;
       color: white;
       border: none;
@@ -170,7 +180,7 @@
     }
 
     footer {
-      background: #38828f; /* color turquesa para el footer */
+      background: #2d8390;
       color: white;
       text-align: center;
       padding: 1em;
@@ -385,5 +395,6 @@
   </script>
 </body>
 </html>
+
 
 
