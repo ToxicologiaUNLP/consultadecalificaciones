@@ -11,10 +11,9 @@
   <style>
     body {
       font-family: 'Open Sans', sans-serif;
-      background: #f9f4e6; /* mismo tono clarito que inscripciones */
+      background: #f9f9f9; /* mismo tono que inscripciones */
       margin: 0;
-      padding: 0;
-      min-height: 100vh;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -22,7 +21,7 @@
 
     header {
       text-align: center;
-      margin-top: 20px;
+      margin-bottom: 20px;
     }
 
     #logo {
@@ -34,7 +33,7 @@
     }
 
     .titulo-centro {
-      font-family: 'Open Sans', sans-serif; /* misma fuente que inscripciones */
+      font-family: 'Open Sans', sans-serif;
       font-weight: 700;
       font-size: 1.8em;
       text-align: center;
@@ -45,98 +44,7 @@
     main {
       width: 100%;
       max-width: 600px;
-      background: white;
-      padding: 2em;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
       flex-grow: 1;
-    }
-
-    label {
-      display: block;
-      font-weight: 600;
-      margin-top: 1em;
-      margin-bottom: 0.3em;
-    }
-
-    input[type="text"], input[type="email"] {
-      width: 100%;
-      padding: 0.6em;
-      font-size: 1.1em;
-      border: 2px solid #ccc;
-      border-radius: 5px;
-      transition: border-color 0.3s ease;
-    }
-
-    input[type="text"]:focus, input[type="email"]:focus {
-      border-color: #007acc;
-      outline: none;
-    }
-
-    button {
-      padding: 0.6em 1em;
-      background: #2d8390;
-      color: white;
-      font-size: 1.1em;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    button:hover {
-      opacity: 0.9;
-    }
-
-    #resultado {
-      margin-top: 0.8em;
-      font-size: 1.15em;
-      line-height: 1.5;
-      color: #000;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    #resultado strong {
-      color: #000;
-    }
-
-    table {
-      margin-top: 0.3em;
-      border-collapse: collapse;
-      width: 100%;
-    }
-
-    table, th, td {
-      border: 1px solid #ddd;
-    }
-
-    th, td {
-      padding: 0.6em 0.9em;
-      text-align: center;
-    }
-
-    th {
-      background-color: #f5f5f5;
-      font-weight: 700;
-    }
-
-    .tabla-scroll {
-      overflow-x: auto;
-      max-width: 100%;
-    }
-
-    .tabla-scroll table {
-      min-width: 600px;
-    }
-
-    #error {
-      color: #cc0000;
-      font-weight: 700;
-      margin-top: 1.5em;
     }
 
     footer {
@@ -147,51 +55,12 @@
       font-size: 0.9em;
       width: 100%;
     }
-
-    /* Loader de puntos */
-    #loader {
-      display: none;
-      text-align: center;
-      margin-top: 20px;
-      font-size: 2em;
-      font-weight: bold;
-      color: black;
-      font-family: monospace;
-      letter-spacing: 0.2em;
-    }
-
-    @keyframes puntos {
-      0% { opacity: 0; }
-      50% { opacity: 1; }
-      100% { opacity: 0; }
-    }
-
-    #loader span {
-      opacity: 0;
-      animation-name: puntos;
-      animation-duration: 1.5s;
-      animation-iteration-count: infinite;
-    }
-
-    #loader span:nth-child(1) { animation-delay: 0s; }
-    #loader span:nth-child(2) { animation-delay: 0.3s; }
-    #loader span:nth-child(3) { animation-delay: 0.6s; }
-
-    /* Marca de agua compacta en celdas */
-    #resultado table tbody td {
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>');
-      background-repeat: repeat;
-      background-position: 0 0;
-      background-size: 60px 12px;
-    }
   </style>
-
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 </head>
 <body>
   <header>
     <img src="logop.png" alt="Logo Cátedra" id="logo"/>
-    <h1 class="titulo-centro">PLATAFORMA DE CALIFICACIONES</h1>
+    <h1 class="titulo-centro">Plataforma de Calificaciones</h1>
   </header>
 
   <main id="contenido">
@@ -202,6 +71,7 @@
     © 2025 Cátedra de Toxicología, Facultad de Ciencias Médicas - UNLP.
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
   <script>
     const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?gid=919817434&single=true&output=csv';
 
