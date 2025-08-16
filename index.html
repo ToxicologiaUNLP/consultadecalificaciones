@@ -246,6 +246,7 @@
       text-align: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
       border: 5px solid #38828f; 
+      position: relative;
     }
 
     .modal input, .modal textarea {
@@ -276,6 +277,16 @@
   <!-- Modal Reclamo -->
   <div class="overlay" id="modalReclamo">
     <div class="modal">
+      <!-- Cruz para cerrar -->
+      <span id="cerrarModal" style="
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 1.5em;
+        font-weight: bold;
+        cursor: pointer;
+      ">&times;</span>
+
       <h2>Formulario de Consulta / Reclamo</h2>
       <p id="codigoReclamo" style="font-weight:bold;"></p>
       <label>Apellido y Nombre</label>
@@ -450,6 +461,11 @@
           window.location.href = mailtoLink;
         });
 
+        // Cerrar modal con la cruz
+        document.getElementById('cerrarModal').addEventListener('click', () => {
+          document.getElementById('modalReclamo').style.display = 'none';
+        });
+
       } catch (e) {
         loader.style.display = "none";
         console.error("Error al cargar datos:", e);
@@ -461,6 +477,7 @@
   </script>
 </body>
 </html>
+
 
 
 
