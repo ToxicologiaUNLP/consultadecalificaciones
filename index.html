@@ -131,6 +131,16 @@ async function verificarEstado() {
   } catch(e){ console.error(e); document.getElementById('contenido').innerHTML=`<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.</p>`;}
 }
 
+// Convierte links de Drive a link directo
+function convertirDriveDirecto(url){
+  if(!url) return '';
+  try{
+    const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if(idMatch && idMatch[1]) return `https://drive.google.com/uc?export=download&id=${idMatch[1]}`;
+    return url; // si no coincide, se deja igual
+  }catch(e){return url;}
+}
+
 async function buscarNota(){
   const legajoInput = document.getElementById('legajo').value.trim().toLowerCase();
   const emailInput = document.getElementById('email').value.trim().toLowerCase();
@@ -192,7 +202,7 @@ async function buscarNota(){
         container.innerHTML=''; // limpiar previo
         const marca=document.getElementById('marcaAgua');
         marca.innerHTML=`<div>${nombre} - ${fila['Legajo']}</div><div style="margin-top:1em;">Distribuir este archivo conlleva a sanciones Universitarias y/o Judiciales</div>`;
-        const urlPDF = fila['examenPdf'].replace("/view?usp=sharing","/uc?export=download&id="+fila['examenPdf'].split("/d/")[1].split("/")[0]);
+        const urlPDF = convertirDriveDirecto(fila['examenPdf']);
         const loadingTask = pdfjsLib.getDocument(urlPDF);
         loadingTask.promise.then(async pdf=>{
           for(let i=1;i<=pdf.numPages;i++){
