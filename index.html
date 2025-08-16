@@ -4,54 +4,38 @@
   <meta charset="UTF-8" />
   <title>Notas Toxicología UNLP</title>
 
-  <!-- Meta viewport para móviles -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <!-- Favicon -->
   <link rel="icon" href="logo1.png" type="image/png" />
-
-  <!-- Fuentes -->
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
 
   <style>
     html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
     body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: #f9f9f9; display: flex; flex-direction: column; min-height: 100vh; }
-
     header { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
     header img { width: 100%; max-width: 660px; height: auto; }
     .titulo-centro { font-family: 'Open Sans', sans-serif; font-weight: 700; font-size: 2.2em; color: #38828f; text-align: center; margin: 20px 0 0 0; line-height: 1.2em; user-select: none; }
-
     main { max-width: 600px; background: white; margin: 0 auto 2em auto; padding: 2em; border-radius: 10px; box-shadow: 0 2px 8px rgb(0 0 0 / 0.15); flex-grow: 1; position: relative; min-height: calc(100vh - 140px); }
-
     label { display: block; font-weight: 600; margin-top: 1em; margin-bottom: 0.3em; }
     input[type="text"], input[type="email"], textarea { width: 100%; padding: 0.6em; font-size: 1.1em; border: 2px solid #ccc; border-radius: 5px; transition: border-color 0.3s ease; box-sizing: border-box; }
     input[type="text"]:focus, input[type="email"]:focus, textarea:focus { border-color: #007acc; outline: none; }
-
     button { border-radius: 5px; cursor: pointer; font-weight: 700; display: block; margin: 1em auto 0 auto; }
     #btnConsultar { padding: 0.5em 1em; font-size: 1em; background: #2d8390; color: white; border: none; }
-    #btnReclamo, #btnVerExamen { padding: 0.425em 0.85em; font-size: 0.85em; background: #2d8390; color: white; border: none; }
-    #btnConsultar:hover, #btnReclamo:hover, #btnVerExamen:hover, #enviarReclamo:hover { opacity: 0.9; }
-
+    #btnReclamo { padding: 0.425em 0.85em; font-size: 0.85em; background: #2d8390; color: white; border: none; }
+    #btnExamen { padding: 0.5em 1em; font-size: 1em; background: #e07a6f; color: white; border: none; }
+    #btnConsultar:hover, #btnReclamo:hover, #enviarReclamo:hover, #btnExamen:hover { opacity: 0.9; }
     #resultado { margin-top: 0.8em; font-size: 1.15em; line-height: 1.5; color: #000; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; width: 100%; box-sizing: border-box; }
-
     @media screen and (max-width: 600px) { main { margin: 1em; padding: 1.2em; } #resultado { font-size: 1em; } }
-
     #resultado strong { color: #000; }
-
     table { margin-top: 0.3em; border-collapse: collapse; width: 100%; }
     table, th, td { border: 1px solid #ddd; }
     th, td { padding: 0.6em 0.9em; text-align: center; }
     th { background-color: #f5f5f5; font-weight: 700; }
-
     #error { color: #cc0000; font-weight: 700; margin-top: 1.5em; }
-
     .tabla-scroll { overflow-x: auto; max-width: 100%; }
     .tabla-scroll table { min-width: 600px; }
-
     footer { background: #38828f; color: white; text-align: center; padding: 1em; font-size: 0.9em; }
-
-    /* Loader de puntos */
     #loader { display: none; text-align: center; margin-top: 20px; font-size: 2em; font-weight: bold; color: black; font-family: monospace; letter-spacing: 0.2em; }
     @keyframes puntos { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
     #loader span { opacity: 0; animation-name: puntos; animation-duration: 1.5s; animation-iteration-count: infinite; }
@@ -67,207 +51,239 @@
     .modal { background: white; padding: 20px; border-radius: 10px; max-width: 600px; width: 100%; max-height: 90%; overflow-y: auto; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 5px solid #38828f; position: relative; }
     .modal input, .modal textarea { margin-top: 5px; }
     .modal textarea { height: 80px; }
-    .modal iframe { width: 100%; height: 500px; border: none; }
+
+    /* Modal PDF */
+    .overlay-pdf { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center; z-index:100000; }
+    .modal-pdf { position:relative; width:90%; height:90%; background:white; border-radius:10px; overflow:hidden; }
+    .modal-pdf iframe { width:100%; height:100%; border:none; }
+    .watermark { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; display:flex; flex-wrap:wrap; align-content:flex-start; opacity:0.2; font-size:14px; font-weight:bold; color:red; transform:rotate(-30deg); justify-content:center; gap:30px; text-align:center; }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 </head>
 <body>
-  <header>
-    <img src="logop.png" alt="Logo Cátedra" />
-    <div class="titulo-centro">PLATAFORMA DE CALIFICACIONES</div>
-  </header>
+<header>
+  <img src="logop.png" alt="Logo Cátedra" />
+  <div class="titulo-centro">PLATAFORMA DE CALIFICACIONES</div>
+</header>
 
-  <main id="contenido">
-    <!-- Contenido dinámico -->
-  </main>
+<main id="contenido">
+  <!-- Contenido dinámico -->
+</main>
 
-  <footer>
-    © 2025 Cátedra de Toxicología, Facultad de Ciencias Médicas - UNLP.
-  </footer>
+<footer>
+  © 2025 Cátedra de Toxicología, Facultad de Ciencias Médicas - UNLP.
+</footer>
 
-  <!-- Modal Reclamo -->
-  <div class="overlay" id="modalReclamo">
-    <div class="modal">
-      <span id="cerrarModal" style="position:absolute; top:10px; right:15px; font-size:1.5em; font-weight:bold; cursor:pointer;">&times;</span>
-      <h2>Formulario de Consulta / Reclamo</h2>
-      <p id="codigoReclamo" style="font-weight:bold;"></p>
-      <label>Alumno</label>
-      <input type="text" id="modalNombre" />
-      <label>Legajo</label>
-      <input type="text" id="modalLegajo" />
-      <label>Motivo de la consulta/reclamo</label>
-      <textarea id="modalMotivo"></textarea>
-      <button id="enviarReclamo">Enviar</button>
-      <p style="font-size:0.8em; color:#555; margin-top:5px;">
-        Al presionar "Enviar" debe finalizar el proceso enviando el reclamo desde su correo electrónico.
-      </p>
-    </div>
+<!-- Modal Reclamo -->
+<div class="overlay" id="modalReclamo">
+  <div class="modal">
+    <span id="cerrarModal" style="position:absolute; top:10px; right:15px; font-size:1.5em; font-weight:bold; cursor:pointer;">&times;</span>
+    <h2>Formulario de Consulta / Reclamo</h2>
+    <p id="codigoReclamo" style="font-weight:bold;"></p>
+    <label>Alumno</label>
+    <input type="text" id="modalNombre" />
+    <label>Legajo</label>
+    <input type="text" id="modalLegajo" />
+    <label>Motivo de la consulta/reclamo</label>
+    <textarea id="modalMotivo"></textarea>
+    <button id="enviarReclamo">Enviar</button>
+    <p style="font-size:0.8em; color:#555; margin-top:5px;">
+      Al presionar "Enviar" debe finalizar el proceso enviando el reclamo desde su correo electrónico.
+    </p>
   </div>
+</div>
 
-  <!-- Modal Examen PDF -->
-  <div class="overlay" id="modalExamen">
-    <div class="modal">
-      <span id="cerrarExamen" style="position:absolute; top:10px; right:15px; font-size:1.5em; font-weight:bold; cursor:pointer;">&times;</span>
-      <h2>Exámen</h2>
-      <iframe id="iframeExamen"></iframe>
-    </div>
+<!-- Modal PDF -->
+<div class="overlay-pdf" id="modalPdf">
+  <div class="modal-pdf">
+    <div class="watermark" id="pdfWatermark"></div>
+    <iframe id="iframePdf" sandbox="allow-scripts"></iframe>
   </div>
+</div>
 
-  <script>
-    const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?gid=919817434&single=true&output=csv';
+<script>
+const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?gid=919817434&single=true&output=csv';
+let examenVisto = {}; // control de un solo acceso
 
-    async function cargarDatos(url) {
-      const response = await fetch(url);
-      const text = await response.text();
-      return Papa.parse(text, { header: true, skipEmptyLines: true, delimiter: "," });
+async function cargarDatos(url) {
+  const response = await fetch(url);
+  const text = await response.text();
+  return Papa.parse(text, { header: true, skipEmptyLines: true, delimiter: "," });
+}
+
+async function verificarEstado() {
+  try {
+    const datos = await cargarDatos(urlBase + '&_ts=' + Date.now());
+    const estado = datos.data[0]?.Estado?.trim().toLowerCase();
+    const contenido = document.getElementById('contenido');
+
+    if (estado === 'habilitado') {
+      contenido.innerHTML = `
+        <p style="color: black; margin:0.5em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
+        <label for="legajo">Legajo</label>
+        <input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
+        <label for="email">Correo electrónico asociado al SIU Guaraní*</label>
+        <input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
+        <small style="color:#555; font-size:0.9em;">
+          *Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.
+        </small>
+        <button id="btnConsultar">Ver Calificaciones</button>
+        <div id="loader"><span>.</span><span>.</span><span>.</span></div>
+        <div id="resultado"></div>
+        <div id="error"></div>
+      `;
+
+      const legajoInput = document.getElementById('legajo');
+      const emailInput = document.getElementById('email');
+      const btnConsultar = document.getElementById('btnConsultar');
+
+      [legajoInput, emailInput].forEach(input => {
+        input.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') { event.preventDefault(); buscarNota(); }
+        });
+      });
+
+      btnConsultar.addEventListener('click', buscarNota);
+
+    } else {
+      contenido.innerHTML = `<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
+      La plataforma no se encuentra habilitada en este momento. Se habilitará nuevamente una vez finalizada la actividad en curso.
+      </p>`;
+    }
+  } catch (error) {
+    console.error("Error al verificar estado:", error);
+    document.getElementById('contenido').innerHTML = `<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
+      No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.
+    </p>`;
+  }
+}
+
+async function buscarNota() {
+  const legajoInput = document.getElementById('legajo').value.trim().toLowerCase();
+  const emailInput = document.getElementById('email').value.trim().toLowerCase();
+  const resultado = document.getElementById('resultado');
+  const errorDiv = document.getElementById('error');
+  const loader = document.getElementById('loader');
+
+  resultado.innerHTML = "";
+  errorDiv.textContent = "";
+
+  if (!legajoInput || !emailInput) { errorDiv.textContent = "Por favor, ingrese los datos requeridos."; return; }
+
+  loader.style.display = "block";
+
+  try {
+    const urlConTimestamp = urlBase + '&_ts=' + Date.now();
+    const parsed = await cargarDatos(urlConTimestamp);
+
+    const columnas = parsed.meta.fields;
+    const fila = parsed.data.find(row =>
+      row['Legajo'] && row['Email'] &&
+      row['Legajo'].trim().toLowerCase() === legajoInput &&
+      row['Email'].trim().toLowerCase() === emailInput
+    );
+
+    loader.style.display = "none";
+
+    if (!fila) { errorDiv.textContent = "Datos incorrectos. Verifique e intente nuevamente."; return; }
+
+    const primeraColumna = columnas[0];
+    const nombre = fila[primeraColumna] || "Alumno";
+
+    const columnasExcluir = ['legajo', 'nombre', 'apellido', 'nombre y apellido', 'alumno', 'email', 'estado', primeraColumna.toLowerCase()];
+
+    const columnasVisibles = columnas.filter(col =>
+      !columnasExcluir.includes(col.toLowerCase()) &&
+      fila[col] && fila[col].trim() !== ''
+    );
+
+    let tablaHTML = `<p><strong>${nombre}, tus calificaciones son:</strong></p><div class="tabla-scroll"><table><thead><tr>`;
+    columnasVisibles.forEach(col => { tablaHTML += `<th>${col}</th>`; });
+    tablaHTML += `</tr></thead><tbody><tr>`;
+    columnasVisibles.forEach(col => { tablaHTML += `<td>${fila[col]}</td>`; });
+    tablaHTML += `</tr></tbody></table></div>`;
+
+    tablaHTML += `<button id="btnReclamo">Consulta / Reclamo</button>`;
+    if (!examenVisto[legajoInput]) {
+      tablaHTML += `<button id="btnExamen">Ver Examen (Una sola vez)</button>`;
+    } else {
+      tablaHTML += `<p style="color:red; font-weight:bold;">Ya has visto tu examen.</p>`;
     }
 
-    async function verificarEstado() {
-      try {
-        const datos = await cargarDatos(urlBase + '&_ts=' + Date.now());
-        const estado = datos.data[0]?.Estado?.trim().toLowerCase();
-        const contenido = document.getElementById('contenido');
+    resultado.innerHTML = tablaHTML;
 
-        if (estado === 'habilitado') {
-          contenido.innerHTML = `
-            <p style="color: black; margin:0.5em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
-            <label for="legajo">Legajo</label>
-            <input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
-            <label for="email">Correo electrónico asociado al SIU Guaraní*</label>
-            <input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
-            <small style="color:#555; font-size:0.9em;">*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
-            <button id="btnConsultar">Ver Calificaciones</button>
-            <div id="loader"><span>.</span><span>.</span><span>.</span></div>
-            <div id="resultado"></div>
-            <div id="error"></div>
-          `;
+    const btnReclamo = document.getElementById('btnReclamo');
+    btnReclamo.addEventListener('click', () => {
+      const modal = document.getElementById('modalReclamo');
+      modal.style.display = 'flex';
+      const codigo = 'RC-' + Math.floor(Math.random() * 1000000);
+      document.getElementById('codigoReclamo').textContent = `Código de reclamo: ${codigo}`;
+      document.getElementById('modalNombre').value = nombre;
+      document.getElementById('modalLegajo').value = fila['Legajo'];
+    });
 
-          const legajoInput = document.getElementById('legajo');
-          const emailInput = document.getElementById('email');
-          const btnConsultar = document.getElementById('btnConsultar');
+    const enviarBtn = document.getElementById('enviarReclamo');
+    enviarBtn.addEventListener('click', () => {
+      const nombreModal = document.getElementById('modalNombre').value;
+      const legajoModal = document.getElementById('modalLegajo').value;
+      const motivoModal = document.getElementById('modalMotivo').value;
+      const codigo = document.getElementById('codigoReclamo').textContent.split(': ')[1];
 
-          [legajoInput, emailInput].forEach(input => {
-            input.addEventListener('keydown', (event) => {
-              if (event.key === 'Enter') { event.preventDefault(); buscarNota(); }
-            });
-          });
+      const body = `Código de reclamo: ${codigo}%0AAlumno: ${encodeURIComponent(nombreModal)}%0ALegajo: ${encodeURIComponent(legajoModal)}%0AMotivo de la consulta/reclamo: ${encodeURIComponent(motivoModal)}`;
+      const mailtoLink = `mailto:toxicoalumnos@gmail.com?subject=Consulta/Reclamo%20-%20Plataforma%20de%20Calificaciones&body=${body}`;
+      window.location.href = mailtoLink;
+    });
 
-          btnConsultar.addEventListener('click', buscarNota);
+    document.getElementById('cerrarModal').addEventListener('click', () => {
+      document.getElementById('modalReclamo').style.display = 'none';
+    });
 
-        } else {
-          contenido.innerHTML = `<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">La plataforma no se encuentra habilitada en este momento. Se habilitará nuevamente una vez finalizada la actividad en curso.</p>`;
+    // Botón Ver Examen
+    const btnExamen = document.getElementById('btnExamen');
+    if (btnExamen) {
+      btnExamen.addEventListener('click', () => {
+        const pdfUrl = fila['Examen']?.trim();
+        if (!pdfUrl) { alert("No hay examen asignado."); return; }
+
+        // Marcar como visto
+        examenVisto[legajoInput] = true;
+        btnExamen.disabled = true;
+        btnExamen.textContent = "Examen ya visto";
+
+        const iframe = document.getElementById('iframePdf');
+        iframe.src = pdfUrl + "&embedded=true"; // para Drive embebido
+
+        // Agregar marca de agua
+        const watermarkDiv = document.getElementById('pdfWatermark');
+        watermarkDiv.innerHTML = '';
+        for (let i=0; i<50; i++){
+          const span = document.createElement('span');
+          span.textContent = `${nombre} - ${fila['Legajo']} - Distribuir este archivo es ilegal y conlleva a sanciones universitarias`;
+          watermarkDiv.appendChild(span);
         }
-      } catch (error) {
-        console.error("Error al verificar estado:", error);
-        document.getElementById('contenido').innerHTML = `<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.</p>`;
-      }
+
+        document.getElementById('modalPdf').style.display = 'flex';
+      });
     }
 
-    async function buscarNota() {
-      const legajoInput = document.getElementById('legajo').value.trim().toLowerCase();
-      const emailInput = document.getElementById('email').value.trim().toLowerCase();
-      const resultado = document.getElementById('resultado');
-      const errorDiv = document.getElementById('error');
-      const loader = document.getElementById('loader');
+    // Cerrar PDF
+    document.getElementById('modalPdf').addEventListener('click', (e)=>{
+      if(e.target.id === 'modalPdf') document.getElementById('modalPdf').style.display='none';
+    });
 
-      resultado.innerHTML = "";
-      errorDiv.textContent = "";
+  } catch (e) {
+    loader.style.display = "none";
+    console.error("Error al cargar datos:", e);
+    errorDiv.textContent = "Error al cargar los datos. Intente nuevamente.";
+  }
+}
 
-      if (!legajoInput || !emailInput) {
-        errorDiv.textContent = "Por favor, ingrese los datos requeridos.";
-        return;
-      }
-
-      loader.style.display = "block";
-
-      try {
-        const parsed = await cargarDatos(urlBase + '&_ts=' + Date.now());
-        const columnas = parsed.meta.fields;
-        const fila = parsed.data.find(row =>
-          row['Legajo'] && row['Email'] &&
-          row['Legajo'].trim().toLowerCase() === legajoInput &&
-          row['Email'].trim().toLowerCase() === emailInput
-        );
-
-        loader.style.display = "none";
-
-        if (!fila) { errorDiv.textContent = "Datos incorrectos. Verifique e intente nuevamente."; return; }
-
-        const primeraColumna = columnas[0];
-        const nombre = fila[primeraColumna] || "Alumno";
-        const examenLink = fila['examenPdf'] || "";
-
-        const columnasExcluir = ['legajo','nombre','apellido','nombre y apellido','alumno','email','estado', primeraColumna.toLowerCase(), 'examenpdf'];
-
-        const columnasVisibles = columnas.filter(col =>
-          !columnasExcluir.includes(col.toLowerCase()) &&
-          fila[col] && fila[col].trim() !== ''
-        );
-
-        let tablaHTML = `<p><strong>${nombre}, tus calificaciones son:</strong></p>
-        <div class="tabla-scroll"><table><thead><tr>`;
-        columnasVisibles.forEach(col => { tablaHTML += `<th>${col}</th>`; });
-        tablaHTML += `</tr></thead><tbody><tr>`;
-        columnasVisibles.forEach(col => { tablaHTML += `<td>${fila[col]}</td>`; });
-        tablaHTML += `</tr></tbody></table></div>`;
-
-        if(examenLink){ tablaHTML += `<button id="btnVerExamen">Ver Exámen</button>`; }
-        tablaHTML += `<button id="btnReclamo">Consulta / Reclamo</button>`;
-        resultado.innerHTML = tablaHTML;
-
-        // Modal Examen
-        if(examenLink){
-          const btnVerExamen = document.getElementById('btnVerExamen');
-          btnVerExamen.addEventListener('click', () => {
-            const modalExamen = document.getElementById('modalExamen');
-            const iframe = document.getElementById('iframeExamen');
-            iframe.src = examenLink.replace("/view?usp=sharing", "/preview");
-            modalExamen.style.display = 'flex';
-          });
-          document.getElementById('cerrarExamen').addEventListener('click', () => {
-            document.getElementById('modalExamen').style.display = 'none';
-            document.getElementById('iframeExamen').src = '';
-          });
-        }
-
-        // Modal Reclamo
-        const btnReclamo = document.getElementById('btnReclamo');
-        btnReclamo.addEventListener('click', () => {
-          const modal = document.getElementById('modalReclamo');
-          modal.style.display = 'flex';
-          const codigo = 'RC-' + Math.floor(Math.random() * 1000000);
-          document.getElementById('codigoReclamo').textContent = `Código de reclamo: ${codigo}`;
-          document.getElementById('modalNombre').value = nombre;
-          document.getElementById('modalLegajo').value = fila['Legajo'];
-        });
-
-        const enviarBtn = document.getElementById('enviarReclamo');
-        enviarBtn.addEventListener('click', () => {
-          const nombreModal = document.getElementById('modalNombre').value;
-          const legajoModal = document.getElementById('modalLegajo').value;
-          const motivoModal = document.getElementById('modalMotivo').value;
-          const codigo = document.getElementById('codigoReclamo').textContent.split(': ')[1];
-          const body = `Código de reclamo: ${codigo}%0AAlumno: ${encodeURIComponent(nombreModal)}%0ALegajo: ${encodeURIComponent(legajoModal)}%0AMotivo de la consulta/reclamo: ${encodeURIComponent(motivoModal)}`;
-          const mailtoLink = `mailto:toxicoalumnos@gmail.com?subject=Consulta/Reclamo%20-%20Plataforma%20de%20Calificaciones&body=${body}`;
-          window.location.href = mailtoLink;
-        });
-
-        document.getElementById('cerrarModal').addEventListener('click', () => {
-          document.getElementById('modalReclamo').style.display = 'none';
-        });
-
-      } catch (e) {
-        loader.style.display = "none";
-        console.error("Error al cargar datos:", e);
-        errorDiv.textContent = "Error al cargar los datos. Intente nuevamente.";
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', verificarEstado);
-  </script>
+document.addEventListener('DOMContentLoaded', verificarEstado);
+</script>
 </body>
 </html>
+
 
 
 
