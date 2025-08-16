@@ -3,23 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <title>Notas Toxicología UNLP</title>
-  
+
+  <!-- Meta viewport para móviles -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <!-- Favicon -->
   <link rel="icon" href="logo1.png" type="image/png" />
 
-  <!-- Fuentes desde Google Fonts -->
+  <!-- Fuentes -->
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
 
   <style>
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       background: #f9f9f9;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
+      min-height: 100vh;
     }
 
     header {
@@ -56,6 +64,7 @@
       box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
       flex-grow: 1;
       position: relative;
+      min-height: calc(100vh - 140px); /* ocupa pantalla completa en móviles */
     }
 
     label {
@@ -137,44 +146,17 @@
       }
     }
 
-    #resultado strong {
-      color: #000;
-    }
+    #resultado strong { color: #000; }
 
-    table {
-      margin-top: 0.3em;
-      border-collapse: collapse;
-      width: 100%;
-    }
+    table { margin-top: 0.3em; border-collapse: collapse; width: 100%; }
+    table, th, td { border: 1px solid #ddd; }
+    th, td { padding: 0.6em 0.9em; text-align: center; }
+    th { background-color: #f5f5f5; font-weight: 700; }
 
-    table, th, td {
-      border: 1px solid #ddd;
-    }
+    #error { color: #cc0000; font-weight: 700; margin-top: 1.5em; }
 
-    th, td {
-      padding: 0.6em 0.9em;
-      text-align: center;
-    }
-
-    th {
-      background-color: #f5f5f5;
-      font-weight: 700;
-    }
-
-    #error {
-      color: #cc0000;
-      font-weight: 700;
-      margin-top: 1.5em;
-    }
-
-    .tabla-scroll {
-      overflow-x: auto;
-      max-width: 100%;
-    }
-
-    .tabla-scroll table {
-      min-width: 600px;
-    }
+    .tabla-scroll { overflow-x: auto; max-width: 100%; }
+    .tabla-scroll table { min-width: 600px; }
 
     footer {
       background: #38828f;
@@ -197,18 +179,10 @@
     }
 
     @keyframes puntos {
-      0% { opacity: 0; }
-      50% { opacity: 1; }
-      100% { opacity: 0; }
+      0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; }
     }
 
-    #loader span {
-      opacity: 0;
-      animation-name: puntos;
-      animation-duration: 1.5s;
-      animation-iteration-count: infinite;
-    }
-
+    #loader span { opacity: 0; animation-name: puntos; animation-duration: 1.5s; animation-iteration-count: infinite; }
     #loader span:nth-child(1) { animation-delay: 0s; }
     #loader span:nth-child(2) { animation-delay: 0.3s; }
     #loader span:nth-child(3) { animation-delay: 0.6s; }
@@ -245,17 +219,12 @@
       overflow-y: auto;
       text-align: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      border: 5px solid #38828f; 
+      border: 5px solid #38828f;
       position: relative;
     }
 
-    .modal input, .modal textarea {
-      margin-top: 5px;
-    }
-
-    .modal textarea {
-      height: 80px;
-    }
+    .modal input, .modal textarea { margin-top: 5px; }
+    .modal textarea { height: 80px; }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
@@ -278,14 +247,7 @@
   <div class="overlay" id="modalReclamo">
     <div class="modal">
       <!-- Cruz para cerrar -->
-      <span id="cerrarModal" style="
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        font-size: 1.5em;
-        font-weight: bold;
-        cursor: pointer;
-      ">&times;</span>
+      <span id="cerrarModal" style="position:absolute; top:10px; right:15px; font-size:1.5em; font-weight:bold; cursor:pointer;">&times;</span>
 
       <h2>Formulario de Consulta / Reclamo</h2>
       <p id="codigoReclamo" style="font-weight:bold;"></p>
@@ -423,26 +385,19 @@
 
         let tablaHTML = `<p><strong>${nombre}, tus calificaciones son:</strong></p>
         <div class="tabla-scroll"><table><thead><tr>`;
-        columnasVisibles.forEach(col => {
-          tablaHTML += `<th>${col}</th>`;
-        });
+        columnasVisibles.forEach(col => { tablaHTML += `<th>${col}</th>`; });
         tablaHTML += `</tr></thead><tbody><tr>`;
-        columnasVisibles.forEach(col => {
-          tablaHTML += `<td>${fila[col]}</td>`;
-        });
+        columnasVisibles.forEach(col => { tablaHTML += `<td>${fila[col]}</td>`; });
         tablaHTML += `</tr></tbody></table></div>`;
 
-        // Botón de Consulta/Reclamo
         tablaHTML += `<button id="btnReclamo">Consulta / Reclamo</button>`;
 
         resultado.innerHTML = tablaHTML;
 
-        // Acción del botón
         const btnReclamo = document.getElementById('btnReclamo');
         btnReclamo.addEventListener('click', () => {
           const modal = document.getElementById('modalReclamo');
           modal.style.display = 'flex';
-          // Generar código aleatorio para reclamo
           const codigo = 'RC-' + Math.floor(Math.random() * 1000000);
           document.getElementById('codigoReclamo').textContent = `Código de reclamo: ${codigo}`;
           document.getElementById('modalNombre').value = nombre;
@@ -461,7 +416,6 @@
           window.location.href = mailtoLink;
         });
 
-        // Cerrar modal con la cruz
         document.getElementById('cerrarModal').addEventListener('click', () => {
           document.getElementById('modalReclamo').style.display = 'none';
         });
