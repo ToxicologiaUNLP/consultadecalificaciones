@@ -254,7 +254,7 @@
             <label for="legajo">Legajo</label>
             <input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
 
-            <label for="email">Email asociado al SIU Guaraní*</label>
+            <label for="email">Correo electrónico asociado al SIU Guaraní*</label>
             <input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
             <small style="color:#555; font-size:0.9em;">
               *Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.
@@ -313,7 +313,7 @@
       errorDiv.textContent = "";
 
       if (!legajoInput || !emailInput) {
-        errorDiv.textContent = "Por favor, ingrese legajo y email.";
+        errorDiv.textContent = "Por favor, ingrese los datos requeridos.";
         return;
       }
 
@@ -333,7 +333,7 @@
         loader.style.display = "none";
 
         if (!fila) {
-          errorDiv.textContent = "Datos incorrectos. Verifique legajo/email.";
+          errorDiv.textContent = "Datos incorrectos. Verifique e intente nuevamente.";
           return;
         }
 
