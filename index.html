@@ -55,6 +55,7 @@
       border-radius: 10px;
       box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
       flex-grow: 1;
+      position: relative;
     }
 
     label {
@@ -108,7 +109,8 @@
     }
 
     #btnConsultar:hover,
-    #btnReclamo:hover {
+    #btnReclamo:hover,
+    #enviarReclamo:hover {
       opacity: 0.9;
     }
 
@@ -182,50 +184,75 @@
       font-size: 0.9em;
     }
 
+    /* Loader de puntos */
+    #loader {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 2em;
+      font-weight: bold;
+      color: black;
+      font-family: monospace;
+      letter-spacing: 0.2em;
+    }
+
+    @keyframes puntos {
+      0% { opacity: 0; }
+      50% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    #loader span {
+      opacity: 0;
+      animation-name: puntos;
+      animation-duration: 1.5s;
+      animation-iteration-count: infinite;
+    }
+
+    #loader span:nth-child(1) { animation-delay: 0s; }
+    #loader span:nth-child(2) { animation-delay: 0.3s; }
+    #loader span:nth-child(3) { animation-delay: 0.6s; }
+
+    /* Marca de agua compacta en celdas */
+    #resultado table tbody td {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>');
+      background-repeat: repeat;
+      background-position: 0 0;
+      background-size: 60px 12px;
+    }
+
     /* Modal */
     .overlay {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: rgba(0,0,0,0.6);
       display: none;
       justify-content: center;
       align-items: center;
-      z-index: 9999;
+      z-index: 99999;
     }
 
     .modal {
       background: white;
       padding: 20px;
       border-radius: 10px;
-      max-width: 400px;
-      text-align: left;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90%;
+      overflow-y: auto;
+      text-align: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
-    .modal h2 {
-      margin-top: 0;
-      text-align: center;
+    .modal input, .modal textarea {
+      margin-top: 5px;
     }
 
-    .modal button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      border: none;
-      background: #38828f;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      display: inline-block;
-    }
-
-    .modal button:hover {
-      background: #2a6a73;
-    }
-
-    .modal label {
-      margin-top: 10px;
-      display: block;
+    .modal textarea {
+      height: 80px;
     }
   </style>
 
@@ -241,26 +268,27 @@
     <!-- Contenido dinámico -->
   </main>
 
-  <!-- Modal emergente de reclamo -->
-  <div class="overlay" id="modalReclamo">
-    <div class="modal">
-      <h2>Consulta / Reclamo</h2>
-      <label>Apellido y Nombre:</label>
-      <input type="text" id="reclamoNombre" placeholder="Apellido y Nombre" />
-      <label>Legajo:</label>
-      <input type="text" id="reclamoLegajo" placeholder="12345/6" />
-      <label>Motivo:</label>
-      <textarea id="reclamoMotivo" placeholder="Describa el motivo del reclamo" rows="4"></textarea>
-      <div style="text-align:center; margin-top:15px;">
-        <button onclick="enviarReclamo()">Enviar</button>
-        <button onclick="cerrarModalReclamo()" style="background:#aaa;">Cancelar</button>
-      </div>
-    </div>
-  </div>
-
   <footer>
     © 2025 Cátedra de Toxicología, Facultad de Ciencias Médicas - UNLP.
   </footer>
+
+  <!-- Modal Reclamo -->
+  <div class="overlay" id="modalReclamo">
+    <div class="modal">
+      <h2>Formulario de Consulta / Reclamo</h2>
+      <p id="codigoReclamo" style="font-weight:bold;"></p>
+      <label>Apellido y Nombre</label>
+      <input type="text" id="modalNombre" />
+      <label>Legajo</label>
+      <input type="text" id="modalLegajo" />
+      <label>Motivo de la consulta/reclamo</label>
+      <textarea id="modalMotivo"></textarea>
+      <button id="enviarReclamo">Enviar</button>
+      <p style="font-size:0.8em; color:#555; margin-top:5px;">
+        Al presionar "Enviar" debe finalizar el proceso enviándolo desde su correo electrónico.
+      </p>
+    </div>
+  </div>
 
   <script>
     const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?gid=919817434&single=true&output=csv';
@@ -280,13 +308,22 @@
         if (estado === 'habilitado') {
           contenido.innerHTML = `
             <p style="color: black; margin:0.5em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
+
             <label for="legajo">Legajo</label>
             <input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
+
             <label for="email">Correo electrónico asociado al SIU Guaraní*</label>
             <input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
-            <small style="color:#555; font-size:0.9em;">*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
+            <small style="color:#555; font-size:0.9em;">
+              *Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.
+            </small>
+
             <button id="btnConsultar">Ver Calificaciones</button>
-            <div id="loader"><span>.</span><span>.</span><span>.</span></div>
+
+            <div id="loader">
+              <span>.</span><span>.</span><span>.</span>
+            </div>
+
             <div id="resultado"></div>
             <div id="error"></div>
           `;
@@ -307,11 +344,19 @@
           btnConsultar.addEventListener('click', buscarNota);
 
         } else {
-          contenido.innerHTML = `<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">La plataforma no se encuentra habilitada en este momento. Se habilitará nuevamente una vez finalizada la actividad en curso.</p>`;
+          contenido.innerHTML = `
+            <p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
+              La plataforma no se encuentra habilitada en este momento. Se habilitará nuevamente una vez finalizada la actividad en curso.
+            </p>
+          `;
         }
       } catch (error) {
         console.error("Error al verificar estado:", error);
-        document.getElementById('contenido').innerHTML = `<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.</p>`;
+        document.getElementById('contenido').innerHTML = `
+          <p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
+            No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.
+          </p>
+        `;
       }
     }
 
@@ -377,11 +422,31 @@
 
         // Botón de Consulta/Reclamo
         tablaHTML += `<button id="btnReclamo">Consulta / Reclamo</button>`;
+
         resultado.innerHTML = tablaHTML;
 
         // Acción del botón
-        document.getElementById('btnReclamo').addEventListener('click', () => {
-          document.getElementById('modalReclamo').style.display = 'flex';
+        const btnReclamo = document.getElementById('btnReclamo');
+        btnReclamo.addEventListener('click', () => {
+          const modal = document.getElementById('modalReclamo');
+          modal.style.display = 'flex';
+          // Generar código aleatorio para reclamo
+          const codigo = 'RC-' + Math.floor(Math.random() * 1000000);
+          document.getElementById('codigoReclamo').textContent = `Código de reclamo: ${codigo}`;
+          document.getElementById('modalNombre').value = nombre;
+          document.getElementById('modalLegajo').value = fila['Legajo'];
+        });
+
+        const enviarBtn = document.getElementById('enviarReclamo');
+        enviarBtn.addEventListener('click', () => {
+          const nombreModal = document.getElementById('modalNombre').value;
+          const legajoModal = document.getElementById('modalLegajo').value;
+          const motivoModal = document.getElementById('modalMotivo').value;
+          const codigo = document.getElementById('codigoReclamo').textContent.split(': ')[1];
+
+          const body = `Código de reclamo: ${codigo}%0AApellido y Nombre: ${encodeURIComponent(nombreModal)}%0ALegajo: ${encodeURIComponent(legajoModal)}%0AMotivo de la consulta/reclamo: ${encodeURIComponent(motivoModal)}`;
+          const mailtoLink = `mailto:toxicoalumnos@gmail.com?subject=Consulta/Reclamo%20-%20Plataforma%20de%20Calificaciones&body=${body}`;
+          window.location.href = mailtoLink;
         });
 
       } catch (e) {
@@ -391,38 +456,11 @@
       }
     }
 
-    function cerrarModalReclamo() {
-      document.getElementById('modalReclamo').style.display = 'none';
-    }
-
-    function generarCodigoPersonal(nombre, legajo) {
-      const iniciales = nombre.split(' ').map(p => p[0] || '').join('').toUpperCase();
-      const timestamp = new Date().toISOString().replace(/[-:.TZ]/g,'').slice(0,14);
-      return `${iniciales}-${legajo}-${timestamp}`;
-    }
-
-    function enviarReclamo() {
-      const nombre = document.getElementById('reclamoNombre').value.trim();
-      const legajo = document.getElementById('reclamoLegajo').value.trim();
-      const motivo = document.getElementById('reclamoMotivo').value.trim();
-
-      if (!nombre || !legajo || !motivo) {
-        alert("Por favor, complete todos los campos antes de enviar.");
-        return;
-      }
-
-      const codigo = generarCodigoPersonal(nombre, legajo);
-      const body = `Me comunico desde la opción de consulta/reclamos de la plataforma de calificaciones.%0A%0AApellido y Nombre: ${nombre}%0ALegajo: ${legajo}%0AMotivo: ${motivo}%0ACódigo de reclamo: ${codigo}`;
-      const mailtoLink = `mailto:toxicoalumnos@gmail.com?subject=Consulta/Reclamo - Plataforma de Calificaciones&body=${body}`;
-      window.location.href = mailtoLink;
-
-      cerrarModalReclamo();
-    }
-
     document.addEventListener('DOMContentLoaded', verificarEstado);
   </script>
 </body>
 </html>
+
 
 
 
