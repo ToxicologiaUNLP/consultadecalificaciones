@@ -245,7 +245,7 @@
       overflow-y: auto;
       text-align: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      border: 3px solid #38828f; 
+      border: 5px solid #38828f; 
     }
 
     .modal input, .modal textarea {
@@ -445,7 +445,7 @@
           const motivoModal = document.getElementById('modalMotivo').value;
           const codigo = document.getElementById('codigoReclamo').textContent.split(': ')[1];
 
-          const body = `Código de reclamo: ${codigo}%0AApellido y Nombre: ${encodeURIComponent(nombreModal)}%0ALegajo: ${encodeURIComponent(legajoModal)}%0AMotivo de la consulta/reclamo: ${encodeURIComponent(motivoModal)}`;
+          const body = `Código de reclamo: ${codigo}%0AAlumno: ${encodeURIComponent(nombreModal)}%0ALegajo: ${encodeURIComponent(legajoModal)}%0AMotivo de la consulta/reclamo: ${encodeURIComponent(motivoModal)}`;
           const mailtoLink = `mailto:toxicoalumnos@gmail.com?subject=Consulta/Reclamo%20-%20Plataforma%20de%20Calificaciones&body=${body}`;
           window.location.href = mailtoLink;
         });
