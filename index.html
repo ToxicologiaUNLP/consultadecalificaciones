@@ -64,7 +64,7 @@
       box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
       flex-grow: 1;
       position: relative;
-      min-height: calc(100vh - 140px);
+      min-height: calc(100vh - 140px); /* ocupa pantalla completa en móviles */
     }
 
     label {
@@ -109,21 +109,12 @@
       border: none;
     }
 
-    #btnReclamo {
+    #btnReclamo, #btnVerExamen {
       padding: 0.425em 0.85em;
       font-size: 0.85em;
       background: #2d8390;
       color: white;
       border: none;
-    }
-
-    #btnVerExamen {
-      padding: 0.425em 0.85em;
-      font-size: 0.85em;
-      background: #b33a3a;
-      color: white;
-      border: none;
-      margin-top: 0.5em;
     }
 
     #btnConsultar:hover,
@@ -235,14 +226,6 @@
 
     .modal input, .modal textarea { margin-top: 5px; }
     .modal textarea { height: 80px; }
-
-    /* Visor de PDF */
-    #visorExamen {
-      width: 100%;
-      height: 500px;
-      border: none;
-      position: relative;
-    }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
@@ -277,18 +260,6 @@
       <button id="enviarReclamo">Enviar</button>
       <p style="font-size:0.8em; color:#555; margin-top:5px;">
         Al presionar "Enviar" debe finalizar el proceso enviando el reclamo desde su correo electrónico.
-      </p>
-    </div>
-  </div>
-
-  <!-- Modal PDF -->
-  <div class="overlay" id="modalPDF">
-    <div class="modal">
-      <span id="cerrarPDF" style="position:absolute; top:10px; right:15px; font-size:1.5em; font-weight:bold; cursor:pointer;">&times;</span>
-      <h3>Examen</h3>
-      <iframe id="visorExamen"></iframe>
-      <p style="font-size:0.8em; color:#555; margin-top:5px;">
-        El examen solo puede ser visualizado una vez.
       </p>
     </div>
   </div>
@@ -403,7 +374,7 @@
 
         const columnasExcluir = [
           'legajo', 'nombre', 'apellido', 'nombre y apellido',
-          'alumno', 'email', 'estado', primeraColumna.toLowerCase(), 'examenpdf'
+          'alumno', 'email', 'estado', primeraColumna.toLowerCase()
         ];
 
         const columnasVisibles = columnas.filter(col =>
@@ -412,6 +383,12 @@
           fila[col].trim() !== ''
         );
 
+        // Transformar enlace de Drive a /preview
+        let examenLink = fila['examenPdf'] || '';
+        if (examenLink.includes('/view')) {
+          examenLink = examenLink.replace('/view', '/preview');
+        }
+
         let tablaHTML = `<p><strong>${nombre}, tus calificaciones son:</strong></p>
         <div class="tabla-scroll"><table><thead><tr>`;
         columnasVisibles.forEach(col => { tablaHTML += `<th>${col}</th>`; });
@@ -419,15 +396,11 @@
         columnasVisibles.forEach(col => { tablaHTML += `<td>${fila[col]}</td>`; });
         tablaHTML += `</tr></tbody></table></div>`;
 
-        // Botón de examen si existe link
-        if(fila['examenPdf'] && fila['examenPdf'].trim() !== '') {
-          const key = legajoInput + '_examen_visto';
-          if(!localStorage.getItem(key)) {
-            tablaHTML += `<button id="btnVerExamen">Ver Examen</button>`;
-          }
-        }
-
         tablaHTML += `<button id="btnReclamo">Consulta / Reclamo</button>`;
+
+        if (examenLink) {
+          tablaHTML += `<button id="btnVerExamen">Ver Exámen</button>`;
+        }
 
         resultado.innerHTML = tablaHTML;
 
@@ -457,23 +430,23 @@
           document.getElementById('modalReclamo').style.display = 'none';
         });
 
-        const btnVerExamen = document.getElementById('btnVerExamen');
-        if(btnVerExamen) {
-          btnVerExamen.addEventListener('click', () => {
-            const key = legajoInput + '_examen_visto';
-            localStorage.setItem(key, 'true');
-            const modalPDF = document.getElementById('modalPDF');
+        if (examenLink) {
+          document.getElementById('btnVerExamen').addEventListener('click', () => {
+            const modalPDF = document.createElement('div');
+            modalPDF.classList.add('overlay');
             modalPDF.style.display = 'flex';
-            document.getElementById('visorExamen').src = fila['examenPdf'];
-            btnVerExamen.style.display = 'none';
+            modalPDF.innerHTML = `
+              <div class="modal" style="max-width:90%; max-height:90%;">
+                <span id="cerrarModalPDF" style="position:absolute; top:10px; right:15px; font-size:1.5em; font-weight:bold; cursor:pointer;">&times;</span>
+                <iframe src="${examenLink}" style="width:100%; height:80vh;" frameborder="0"></iframe>
+              </div>`;
+            document.body.appendChild(modalPDF);
+
+            document.getElementById('cerrarModalPDF').addEventListener('click', () => {
+              document.body.removeChild(modalPDF);
+            });
           });
         }
-
-        document.getElementById('cerrarPDF').addEventListener('click', () => {
-          const modalPDF = document.getElementById('modalPDF');
-          modalPDF.style.display = 'none';
-          document.getElementById('visorExamen').src = '';
-        });
 
       } catch (e) {
         loader.style.display = "none";
