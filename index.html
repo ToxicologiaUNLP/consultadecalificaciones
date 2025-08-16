@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <title>Notas Toxicología UNLP</title>
@@ -12,25 +14,24 @@
   <style>
     body {
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: #f9f9f9; /* mismo color que el HTML de inscripciones */
+      background: #f9f9f9;
       margin: 0;
       padding: 0;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-
     }
 
     header {
       display: flex;
       flex-direction: column;
-      justify-content: center; /* centra verticalmente */
-      align-items: center;     /* centra horizontalmente */
+      justify-content: center;
+      align-items: center;
       padding: 20px;
     }
 
     header img {
-      width: 100%; /* igual que el main */
+      width: 100%;
       max-width: 660px;
       height: auto;
     }
@@ -41,7 +42,7 @@
       font-size: 2.2em;
       color: #38828f;
       text-align: center;
-      margin: 20px 0 0 0; /* separa un poco del logo */
+      margin: 20px 0 0 0;
       line-height: 1.2em;
       user-select: none;
     }
@@ -64,17 +65,20 @@
     }
 
     input[type="text"],
-    input[type="email"] {
+    input[type="email"],
+    textarea {
       width: 100%;
       padding: 0.6em;
       font-size: 1.1em;
       border: 2px solid #ccc;
       border-radius: 5px;
       transition: border-color 0.3s ease;
+      box-sizing: border-box;
     }
 
     input[type="text"]:focus,
-    input[type="email"]:focus {
+    input[type="email"]:focus,
+    textarea:focus {
       border-color: #007acc;
       outline: none;
     }
@@ -96,8 +100,8 @@
     }
 
     #btnReclamo {
-      padding: 0.425em 0.85em; /* 15% más pequeño */
-      font-size: 0.85em;       /* 15% más pequeño */
+      padding: 0.425em 0.85em;
+      font-size: 0.85em;
       background: #2d8390;
       color: white;
       border: none;
@@ -171,48 +175,57 @@
     }
 
     footer {
-      background: #38828f; /* turquesa */
+      background: #38828f;
       color: white;
       text-align: center;
       padding: 1em;
       font-size: 0.9em;
     }
 
-    /* Loader de puntos */
-    #loader {
+    /* Modal */
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
       display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .modal {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      text-align: left;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .modal h2 {
+      margin-top: 0;
       text-align: center;
-      margin-top: 20px;
-      font-size: 2em;
-      font-weight: bold;
-      color: black;
-      font-family: monospace;
-      letter-spacing: 0.2em;
     }
 
-    @keyframes puntos {
-      0% { opacity: 0; }
-      50% { opacity: 1; }
-      100% { opacity: 0; }
+    .modal button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      background: #38828f;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-block;
     }
 
-    #loader span {
-      opacity: 0;
-      animation-name: puntos;
-      animation-duration: 1.5s;
-      animation-iteration-count: infinite;
+    .modal button:hover {
+      background: #2a6a73;
     }
 
-    #loader span:nth-child(1) { animation-delay: 0s; }
-    #loader span:nth-child(2) { animation-delay: 0.3s; }
-    #loader span:nth-child(3) { animation-delay: 0.6s; }
-
-    /* Marca de agua compacta en celdas */
-    #resultado table tbody td {
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>');
-      background-repeat: repeat;
-      background-position: 0 0;
-      background-size: 60px 12px;
+    .modal label {
+      margin-top: 10px;
+      display: block;
     }
   </style>
 
@@ -227,6 +240,23 @@
   <main id="contenido">
     <!-- Contenido dinámico -->
   </main>
+
+  <!-- Modal emergente de reclamo -->
+  <div class="overlay" id="modalReclamo">
+    <div class="modal">
+      <h2>Consulta / Reclamo</h2>
+      <label>Apellido y Nombre:</label>
+      <input type="text" id="reclamoNombre" placeholder="Apellido y Nombre" />
+      <label>Legajo:</label>
+      <input type="text" id="reclamoLegajo" placeholder="12345/6" />
+      <label>Motivo:</label>
+      <textarea id="reclamoMotivo" placeholder="Describa el motivo del reclamo" rows="4"></textarea>
+      <div style="text-align:center; margin-top:15px;">
+        <button onclick="enviarReclamo()">Enviar</button>
+        <button onclick="cerrarModalReclamo()" style="background:#aaa;">Cancelar</button>
+      </div>
+    </div>
+  </div>
 
   <footer>
     © 2025 Cátedra de Toxicología, Facultad de Ciencias Médicas - UNLP.
@@ -250,22 +280,13 @@
         if (estado === 'habilitado') {
           contenido.innerHTML = `
             <p style="color: black; margin:0.5em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
-
             <label for="legajo">Legajo</label>
             <input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
-
             <label for="email">Correo electrónico asociado al SIU Guaraní*</label>
             <input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
-            <small style="color:#555; font-size:0.9em;">
-              *Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.
-            </small>
-
+            <small style="color:#555; font-size:0.9em;">*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
             <button id="btnConsultar">Ver Calificaciones</button>
-
-            <div id="loader">
-              <span>.</span><span>.</span><span>.</span>
-            </div>
-
+            <div id="loader"><span>.</span><span>.</span><span>.</span></div>
             <div id="resultado"></div>
             <div id="error"></div>
           `;
@@ -286,19 +307,11 @@
           btnConsultar.addEventListener('click', buscarNota);
 
         } else {
-          contenido.innerHTML = `
-            <p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
-              La plataforma no se encuentra habilitada en este momento. Se habilitará nuevamente una vez finalizada la actividad en curso.
-            </p>
-          `;
+          contenido.innerHTML = `<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">La plataforma no se encuentra habilitada en este momento. Se habilitará nuevamente una vez finalizada la actividad en curso.</p>`;
         }
       } catch (error) {
         console.error("Error al verificar estado:", error);
-        document.getElementById('contenido').innerHTML = `
-          <p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">
-            No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.
-          </p>
-        `;
+        document.getElementById('contenido').innerHTML = `<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.</p>`;
       }
     }
 
@@ -364,15 +377,11 @@
 
         // Botón de Consulta/Reclamo
         tablaHTML += `<button id="btnReclamo">Consulta / Reclamo</button>`;
-
         resultado.innerHTML = tablaHTML;
 
         // Acción del botón
-        const btnReclamo = document.getElementById('btnReclamo');
-        btnReclamo.addEventListener('click', () => {
-          const body = `Me comunico desde la opción de consulta/reclamos de la plataforma de calificaciones.%0A%0AApellido y Nombre:%0ALegajo:%0AMotivo de la consulta/reclamo:`;
-          const mailtoLink = `mailto:toxicoalumnos@gmail.com?subject=Consulta/Reclamo%20-%20Plataforma%20de%20Calificaciones&body=${body}`;
-          window.location.href = mailtoLink;
+        document.getElementById('btnReclamo').addEventListener('click', () => {
+          document.getElementById('modalReclamo').style.display = 'flex';
         });
 
       } catch (e) {
@@ -382,10 +391,39 @@
       }
     }
 
+    function cerrarModalReclamo() {
+      document.getElementById('modalReclamo').style.display = 'none';
+    }
+
+    function generarCodigoPersonal(nombre, legajo) {
+      const iniciales = nombre.split(' ').map(p => p[0] || '').join('').toUpperCase();
+      const timestamp = new Date().toISOString().replace(/[-:.TZ]/g,'').slice(0,14);
+      return `${iniciales}-${legajo}-${timestamp}`;
+    }
+
+    function enviarReclamo() {
+      const nombre = document.getElementById('reclamoNombre').value.trim();
+      const legajo = document.getElementById('reclamoLegajo').value.trim();
+      const motivo = document.getElementById('reclamoMotivo').value.trim();
+
+      if (!nombre || !legajo || !motivo) {
+        alert("Por favor, complete todos los campos antes de enviar.");
+        return;
+      }
+
+      const codigo = generarCodigoPersonal(nombre, legajo);
+      const body = `Me comunico desde la opción de consulta/reclamos de la plataforma de calificaciones.%0A%0AApellido y Nombre: ${nombre}%0ALegajo: ${legajo}%0AMotivo: ${motivo}%0ACódigo de reclamo: ${codigo}`;
+      const mailtoLink = `mailto:toxicoalumnos@gmail.com?subject=Consulta/Reclamo - Plataforma de Calificaciones&body=${body}`;
+      window.location.href = mailtoLink;
+
+      cerrarModalReclamo();
+    }
+
     document.addEventListener('DOMContentLoaded', verificarEstado);
   </script>
 </body>
 </html>
+
 
 
 
