@@ -56,7 +56,8 @@ footer { background: #38828f; color: white; text-align: center; padding: 1em; fo
 .modal textarea { height: 80px; }
 
 #marcaAgua { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; font-size:18px; color: rgba(255,0,0,0.35); pointer-events: none; user-select: none; line-height:1.5em; z-index:10000; }
-#pdfContainer { width: 100%; height: 80vh; overflow: auto; background: #eee; }
+#pdfContainer { width: 100%; height: 80vh; overflow: auto; background: #eee; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+canvas { margin:10px 0; border:1px solid #ccc; }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
@@ -91,7 +92,7 @@ footer { background: #38828f; color: white; text-align: center; padding: 1em; fo
 <div class="modal" style="position:relative; padding:0;">
 <span id="cerrarExamen" style="position:absolute; top:5px; right:10px; font-size:1.5em; font-weight:bold; cursor:pointer; z-index:10;">&times;</span>
 <div id="marcaAgua"></div>
-<div id="pdfContainer"></div>
+<div id="pdfContainer">Cargando examen...</div>
 </div>
 </div>
 
@@ -129,16 +130,6 @@ async function verificarEstado() {
       contenido.innerHTML = `<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">La plataforma no se encuentra habilitada en este momento. Se habilitará nuevamente una vez finalizada la actividad en curso.</p>`;
     }
   } catch(e){ console.error(e); document.getElementById('contenido').innerHTML=`<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.</p>`;}
-}
-
-// Convierte links de Drive a link directo
-function convertirDriveDirecto(url){
-  if(!url) return '';
-  try{
-    const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if(idMatch && idMatch[1]) return `https://drive.google.com/uc?export=download&id=${idMatch[1]}`;
-    return url; // si no coincide, se deja igual
-  }catch(e){return url;}
 }
 
 async function buscarNota(){
@@ -193,34 +184,35 @@ async function buscarNota(){
     let examenAbierto = localStorage.getItem(`examenAbierto-${fila['Legajo']}`) === 'true';
     const btnVerExamen = document.getElementById('btnVerExamen');
     if(btnVerExamen){
-      btnVerExamen.addEventListener('click',()=>{
+      btnVerExamen.addEventListener('click',async ()=>{
         if(examenAbierto){alert("El examen solo puede abrirse una vez."); return;}
         examenAbierto=true;
         localStorage.setItem(`examenAbierto-${fila['Legajo']}`,'true');
         const modalExamen=document.getElementById('modalExamen');
         const container=document.getElementById('pdfContainer');
-        container.innerHTML=''; // limpiar previo
+        container.innerHTML='Cargando examen...';
         const marca=document.getElementById('marcaAgua');
         marca.innerHTML=`<div>${nombre} - ${fila['Legajo']}</div><div style="margin-top:1em;">Distribuir este archivo conlleva a sanciones Universitarias y/o Judiciales</div>`;
-        const urlPDF = convertirDriveDirecto(fila['examenPdf']);
+        const urlPDF = `https://drive.google.com/uc?export=download&id=${fila['examenPdf'].split("/d/")[1].split("/")[0]}`;
         const loadingTask = pdfjsLib.getDocument(urlPDF);
         loadingTask.promise.then(async pdf=>{
+          container.innerHTML=''; // limpiar previo
           for(let i=1;i<=pdf.numPages;i++){
             const page = await pdf.getPage(i);
-            const viewport = page.getViewport({scale:1.5});
+            const viewport = page.getViewport({scale:2}); // scale ajustable
             const canvas = document.createElement('canvas');
             canvas.height = viewport.height;
             canvas.width = viewport.width;
             container.appendChild(canvas);
             await page.render({canvasContext: canvas.getContext('2d'), viewport: viewport}).promise;
           }
-        });
+        }).catch(e=>{container.innerHTML='No se pudo cargar el PDF.'; console.error(e);});
         modalExamen.style.display='flex';
       });
     }
     document.getElementById('cerrarExamen').addEventListener('click',()=>{
       document.getElementById('modalExamen').style.display='none';
-      document.getElementById('pdfContainer').innerHTML='';
+      document.getElementById('pdfContainer').innerHTML='Cargando examen...';
     });
 
   } catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
