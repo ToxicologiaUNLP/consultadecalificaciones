@@ -159,6 +159,7 @@ async function buscarNota(){
     tablaHTML+=`<button id="btnReclamo">Consulta / Reclamo</button>`;
     resultado.innerHTML=tablaHTML;
 
+    // Modal Reclamo
     const btnReclamo = document.getElementById('btnReclamo');
     btnReclamo.addEventListener('click',()=>{
       const modal=document.getElementById('modalReclamo');
@@ -179,40 +180,36 @@ async function buscarNota(){
     });
     document.getElementById('cerrarModal').addEventListener('click',()=>{document.getElementById('modalReclamo').style.display='none';});
 
-    // Modal Examen reemplazado por imagen
+    // Modal Examen
     let examenAbierto = localStorage.getItem(`examenAbierto-${fila['Legajo']}`) === 'true';
     const btnVerExamen = document.getElementById('btnVerExamen');
-if(btnVerExamen){
-  btnVerExamen.addEventListener('click',()=>{
-    if(examenAbierto){alert("El examen solo puede abrirse una vez."); return;}
-    examenAbierto=true;
-    localStorage.setItem(`examenAbierto-${fila['Legajo']}`,'true');
 
-    const modalExamen=document.getElementById('modalExamen');
-    const container=document.getElementById('pdfContainer');
-    container.innerHTML=''; // limpiar previo
-    const marca=document.getElementById('marcaAgua');
-    marca.innerHTML=`<div>${nombre} - ${fila['Legajo']}</div><div style="margin-top:1em;">Distribuir este archivo conlleva a sanciones Universitarias y/o Legales</div>`;
+    if(btnVerExamen){
+      btnVerExamen.addEventListener('click',()=>{
+        if(examenAbierto){alert("El examen solo puede abrirse una vez."); return;}
+        examenAbierto=true;
+        localStorage.setItem(`examenAbierto-${fila['Legajo']}`,'true');
 
-    // Transformar el link de Drive a link directo de imagen
-    const driveId = fila['Examen'].split("/d/")[1].split("/")[0];
-    const imgUrl = `https://drive.google.com/uc?export=view&id=${driveId}`;
-    const img = document.createElement('img');
-    img.src = imgUrl;
-    img.style.maxWidth = '95%';
-    img.style.height = 'auto';
-    img.style.marginTop = '1em';
-    container.appendChild(img);
+        const modalExamen=document.getElementById('modalExamen');
+        const container=document.getElementById('pdfContainer');
+        container.innerHTML=''; 
 
-    modalExamen.style.display='flex';
-  });
-}
+        const marca=document.getElementById('marcaAgua');
+        marca.innerHTML=`<div>${nombre} - ${fila['Legajo']}</div><div style="margin-top:1em;">Distribuir este archivo conlleva a sanciones Universitarias y/o Legales</div>`;
 
-
+        const driveId = fila['Examen'].split("/d/")[1].split("/")[0];
+        const imgUrl = `https://drive.google.com/uc?export=view&id=${driveId}`;
+        const img = document.createElement('img');
+        img.src = imgUrl;
+        img.style.maxWidth = '95%';
+        img.style.height = 'auto';
+        img.style.marginTop = '1em';
+        container.appendChild(img);
 
         modalExamen.style.display='flex';
       });
     }
+
     document.getElementById('cerrarExamen').addEventListener('click',()=>{
       document.getElementById('modalExamen').style.display='none';
       document.getElementById('pdfContainer').innerHTML='Cargando examen...';
@@ -225,6 +222,7 @@ document.addEventListener('DOMContentLoaded', verificarEstado);
 </script>
 </body>
 </html>
+
 
 
 
