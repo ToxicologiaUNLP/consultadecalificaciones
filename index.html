@@ -61,7 +61,6 @@ canvas { margin:10px 0; border:1px solid #ccc; }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.min.js"></script>
 
 </head>
 <body>
@@ -149,14 +148,14 @@ async function buscarNota(){
     if(!fila){errorDiv.textContent="Datos incorrectos. Verifique e intente nuevamente."; return;}
     const primeraColumna = columnas[0];
     const nombre = fila[primeraColumna] || "Alumno";
-    const columnasExcluir = ['legajo','nombre','apellido','nombre y apellido','alumno','email','estado', primeraColumna.toLowerCase(), 'examenpdf'];
+    const columnasExcluir = ['legajo','nombre','apellido','nombre y apellido','alumno','email','estado', primeraColumna.toLowerCase(), 'examen'];
     const columnasVisibles = columnas.filter(col=>!columnasExcluir.includes(col.toLowerCase()) && fila[col] && fila[col].trim()!=='');
     let tablaHTML = `<p><strong>${nombre}, tus calificaciones son:</strong></p><div class="tabla-scroll"><table><thead><tr>`;
     columnasVisibles.forEach(col=>tablaHTML+=`<th>${col}</th>`);
     tablaHTML+=`</tr></thead><tbody><tr>`;
     columnasVisibles.forEach(col=>tablaHTML+=`<td>${fila[col]}</td>`);
     tablaHTML+=`</tr></tbody></table></div>`;
-    if(fila['examenPdf'] && fila['examenPdf'].trim()!==''){tablaHTML+=`<button id="btnVerExamen">Ver Examen</button>`;}
+    if(fila['Examen'] && fila['Examen'].trim()!==''){tablaHTML+=`<button id="btnVerExamen">Ver Examen</button>`;}
     tablaHTML+=`<button id="btnReclamo">Consulta / Reclamo</button>`;
     resultado.innerHTML=tablaHTML;
 
@@ -180,33 +179,30 @@ async function buscarNota(){
     });
     document.getElementById('cerrarModal').addEventListener('click',()=>{document.getElementById('modalReclamo').style.display='none';});
 
-    // Modal Examen con PDF.js
+    // Modal Examen reemplazado por imagen
     let examenAbierto = localStorage.getItem(`examenAbierto-${fila['Legajo']}`) === 'true';
     const btnVerExamen = document.getElementById('btnVerExamen');
     if(btnVerExamen){
-      btnVerExamen.addEventListener('click',async ()=>{
+      btnVerExamen.addEventListener('click',()=>{
         if(examenAbierto){alert("El examen solo puede abrirse una vez."); return;}
         examenAbierto=true;
         localStorage.setItem(`examenAbierto-${fila['Legajo']}`,'true');
         const modalExamen=document.getElementById('modalExamen');
         const container=document.getElementById('pdfContainer');
-        container.innerHTML='Cargando examen...';
+        container.innerHTML=''; // limpiar previo
         const marca=document.getElementById('marcaAgua');
-        marca.innerHTML=`<div>${nombre} - ${fila['Legajo']}</div><div style="margin-top:1em;">Distribuir este archivo conlleva a sanciones Universitarias y/o Judiciales</div>`;
-        const urlPDF = `https://drive.google.com/uc?export=download&id=${fila['examenPdf'].split("/d/")[1].split("/")[0]}`;
-        const loadingTask = pdfjsLib.getDocument(urlPDF);
-        loadingTask.promise.then(async pdf=>{
-          container.innerHTML=''; // limpiar previo
-          for(let i=1;i<=pdf.numPages;i++){
-            const page = await pdf.getPage(i);
-            const viewport = page.getViewport({scale:2}); // scale ajustable
-            const canvas = document.createElement('canvas');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-            container.appendChild(canvas);
-            await page.render({canvasContext: canvas.getContext('2d'), viewport: viewport}).promise;
-          }
-        }).catch(e=>{container.innerHTML='No se pudo cargar el PDF.'; console.error(e);});
+        marca.innerHTML=`<div>${nombre} - ${fila['Legajo']}</div><div style="margin-top:1em;">Distribuir este archivo conlleva a sanciones Universitarias y/o Legales</div>`;
+
+        // Transformar el link de Drive a link directo de imagen
+        const driveId = fila['Examen'].split("/d/")[1].split("/")[0];
+        const imgUrl = `https://drive.google.com/uc?export=view&id=${driveId}`;
+        const img = document.createElement('img');
+        img.src = imgUrl;
+        img.style.maxWidth = '95%';
+        img.style.height = 'auto';
+        img.style.marginTop = '1em';
+        container.appendChild(img);
+
         modalExamen.style.display='flex';
       });
     }
