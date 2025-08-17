@@ -194,14 +194,21 @@ async function buscarNota(){
         marca.innerHTML=`<div>${nombre} - ${fila['Legajo']}</div><div style="margin-top:1em;">Distribuir este archivo conlleva a sanciones Universitarias y/o Legales</div>`;
 
         // Transformar el link de Drive a link directo de imagen
-        const driveId = fila['Examen'].split("/d/")[1].split("/")[0];
-        const imgUrl = `https://drive.google.com/uc?export=view&id=${driveId}`;
-        const img = document.createElement('img');
-        img.src = imgUrl;
-        img.style.maxWidth = '95%';
-        img.style.height = 'auto';
-        img.style.marginTop = '1em';
-        container.appendChild(img);
+       const driveLink = fila['Examen'];
+const driveIdMatch = driveLink.match(/\/d\/([a-zA-Z0-9_-]+)/);
+const driveId = driveIdMatch ? driveIdMatch[1] : null;
+if(driveId){
+    const imgUrl = `https://drive.google.com/uc?export=view&id=${driveId}`;
+    const img = document.createElement('img');
+    img.src = imgUrl;
+    img.style.maxWidth = '95%';
+    img.style.height = 'auto';
+    img.style.marginTop = '1em';
+    container.appendChild(img);
+} else {
+    container.innerHTML = 'No se pudo cargar la imagen del examen.';
+}
+
 
         modalExamen.style.display='flex';
       });
