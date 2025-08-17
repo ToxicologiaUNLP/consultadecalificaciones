@@ -26,8 +26,7 @@ input[type="text"]:focus, input[type="email"]:focus, textarea:focus { border-col
 button { border-radius: 5px; cursor: pointer; font-weight: 700; display: block; margin: 1em auto 0 auto; }
 #btnConsultar { padding: 0.5em 1em; font-size: 1em; background: #2d8390; color: white; border: none; }
 #btnReclamo { padding: 0.425em 0.85em; font-size: 0.85em; background: #2d8390; color: white; border: none; }
-#btnVerExamen { padding: 0.5em 1em; font-size: 1em; background: #d46b6b; color: white; border: none; }
-#btnConsultar:hover, #btnReclamo:hover, #btnVerExamen:hover, #enviarReclamo:hover { opacity: 0.9; }
+#btnConsultar:hover, #btnReclamo:hover, #enviarReclamo:hover { opacity: 0.9; }
 
 #resultado { margin-top: 0.8em; font-size: 1.15em; line-height: 1.5; color: #000; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; width: 100%; box-sizing: border-box; }
 @media screen and (max-width: 600px) { main { margin: 1em; padding: 1.2em; } #resultado { font-size: 1em; } }
@@ -54,14 +53,9 @@ footer { background: #38828f; color: white; text-align: center; padding: 1em; fo
 .modal { background: white; padding: 20px; border-radius: 10px; max-width: 600px; width: 100%; max-height: 90%; overflow-y: auto; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 5px solid #38828f; position: relative; }
 .modal input, .modal textarea { margin-top: 5px; }
 .modal textarea { height: 80px; }
-
-#marcaAgua { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; font-size:18px; color: rgba(255,0,0,0.35); pointer-events: none; user-select: none; line-height:1.5em; z-index:10000; }
-#pdfContainer { width: 100%; height: 80vh; overflow: auto; background: #eee; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-canvas { margin:10px 0; border:1px solid #ccc; }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
-
 </head>
 <body>
 <header>
@@ -83,15 +77,6 @@ canvas { margin:10px 0; border:1px solid #ccc; }
 <label>Motivo de la consulta/reclamo</label><textarea id="modalMotivo"></textarea>
 <button id="enviarReclamo">Enviar</button>
 <p style="font-size:0.8em; color:#555; margin-top:5px;">Al presionar "Enviar" debe finalizar el proceso enviando el reclamo desde su correo electrónico.</p>
-</div>
-</div>
-
-<!-- Modal Examen -->
-<div class="overlay" id="modalExamen">
-<div class="modal" style="position:relative; padding:0;">
-<span id="cerrarExamen" style="position:absolute; top:5px; right:10px; font-size:1.5em; font-weight:bold; cursor:pointer; z-index:10;">&times;</span>
-<div id="marcaAgua"></div>
-<div id="pdfContainer">Cargando examen...</div>
 </div>
 </div>
 
@@ -148,14 +133,13 @@ async function buscarNota(){
     if(!fila){errorDiv.textContent="Datos incorrectos. Verifique e intente nuevamente."; return;}
     const primeraColumna = columnas[0];
     const nombre = fila[primeraColumna] || "Alumno";
-    const columnasExcluir = ['legajo','nombre','apellido','nombre y apellido','alumno','email','estado', primeraColumna.toLowerCase(), 'examen'];
+    const columnasExcluir = ['legajo','nombre','apellido','nombre y apellido','alumno','email','estado', primeraColumna.toLowerCase()];
     const columnasVisibles = columnas.filter(col=>!columnasExcluir.includes(col.toLowerCase()) && fila[col] && fila[col].trim()!=='');
     let tablaHTML = `<p><strong>${nombre}, tus calificaciones son:</strong></p><div class="tabla-scroll"><table><thead><tr>`;
     columnasVisibles.forEach(col=>tablaHTML+=`<th>${col}</th>`);
     tablaHTML+=`</tr></thead><tbody><tr>`;
     columnasVisibles.forEach(col=>tablaHTML+=`<td>${fila[col]}</td>`);
     tablaHTML+=`</tr></tbody></table></div>`;
-    if(fila['Examen'] && fila['Examen'].trim()!==''){tablaHTML+=`<button id="btnVerExamen">Ver Examen</button>`;}
     tablaHTML+=`<button id="btnReclamo">Consulta / Reclamo</button>`;
     resultado.innerHTML=tablaHTML;
 
@@ -179,41 +163,6 @@ async function buscarNota(){
       window.location.href=mailtoLink;
     });
     document.getElementById('cerrarModal').addEventListener('click',()=>{document.getElementById('modalReclamo').style.display='none';});
-
-    // Modal Examen
-    let examenAbierto = localStorage.getItem(`examenAbierto-${fila['Legajo']}`) === 'true';
-    const btnVerExamen = document.getElementById('btnVerExamen');
-
-    if(btnVerExamen){
-      btnVerExamen.addEventListener('click',()=>{
-        if(examenAbierto){alert("El examen solo puede abrirse una vez."); return;}
-        examenAbierto=true;
-        localStorage.setItem(`examenAbierto-${fila['Legajo']}`,'true');
-
-        const modalExamen=document.getElementById('modalExamen');
-        const container=document.getElementById('pdfContainer');
-        container.innerHTML=''; 
-
-        const marca=document.getElementById('marcaAgua');
-        marca.innerHTML=`<div>${nombre} - ${fila['Legajo']}</div><div style="margin-top:1em;">Distribuir este archivo conlleva a sanciones Universitarias y/o Legales</div>`;
-
-        // ---- Imgur o link directo ----
-        const imgLink = fila['Examen'].trim();
-        const img = document.createElement('img');
-        img.src = imgLink;
-        img.alt = 'Examen';
-        img.style.maxWidth = '100%';
-        img.style.height = 'auto';
-        container.appendChild(img);
-
-        modalExamen.style.display = 'flex';
-
-        document.getElementById('cerrarExamen').addEventListener('click',()=>{
-          modalExamen.style.display='none';
-          container.innerHTML='Cargando examen...';
-        });
-      });
-    }
 
   } catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
 }
