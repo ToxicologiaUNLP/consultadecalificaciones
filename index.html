@@ -194,7 +194,8 @@ async function buscarNota(){
         marca.innerHTML=`<div>${nombre} - ${fila['Legajo']}</div><div style="margin-top:1em;">Distribuir este archivo conlleva a sanciones Universitarias y/o Legales</div>`;
 
         // Transformar el link de Drive a link directo de imagen
-   const imgUrl = fila['Examen'].replace('/view?usp=sharing','').replace('file/d/','uc?export=view&id=');
+const driveId = fila['Examen'].split("/d/")[1].split("/")[0];
+const imgUrl = `https://drive.google.com/uc?export=view&id=${driveId}`;
 const img = document.createElement('img');
 img.src = imgUrl;
 img.style.maxWidth = '95%';
