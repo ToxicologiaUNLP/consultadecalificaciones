@@ -197,22 +197,35 @@ async function buscarNota(){
         const marca=document.getElementById('marcaAgua');
         marca.innerHTML=`<div>${nombre} - ${fila['Legajo']}</div><div style="margin-top:1em;">Distribuir este archivo conlleva a sanciones Universitarias y/o Legales</div>`;
 
-      const driveUrl = fila['Examen'].trim();
-let imgUrl;
-if(driveUrl.includes('/d/')){
-  const driveId = driveUrl.split("/d/")[1].split("/")[0];
-  imgUrl = `https://drive.google.com/uc?export=view&id=${driveId}`;
-} else if(driveUrl.includes('id=')){
-  const driveId = new URL(driveUrl).searchParams.get('id');
-  imgUrl = `https://drive.google.com/uc?export=view&id=${driveId}`;
-} else {
-  imgUrl = driveUrl; // intenta usar la URL tal cual
-    }
+        // Convertir link de Drive a link directo de imagen
+        const driveUrl = fila['Examen'].trim();
+        let imgUrl;
+        if(driveUrl.includes('/d/')){
+          const driveId = driveUrl.split("/d/")[1].split("/")[0];
+          imgUrl = `https://drive.google.com/uc?export=view&id=${driveId}`;
+        } else if(driveUrl.includes('id=')){
+          const driveId = new URL(driveUrl).searchParams.get('id');
+          imgUrl = `https://drive.google.com/uc?export=view&id=${driveId}`;
+        } else {
+          imgUrl = driveUrl; // intenta usar la URL tal cual
+        }
 
-    document.getElementById('cerrarExamen').addEventListener('click',()=>{
-      document.getElementById('modalExamen').style.display='none';
-      document.getElementById('pdfContainer').innerHTML='Cargando examen...';
-    });
+        // Crear <img> y agregarlo al contenedor
+        const img = document.createElement('img');
+        img.src = imgUrl;
+        img.alt = 'Examen';
+        img.style.maxWidth = '100%';
+        img.style.height = 'auto';
+        container.appendChild(img);
+
+        modalExamen.style.display = 'flex';
+
+        document.getElementById('cerrarExamen').addEventListener('click',()=>{
+          modalExamen.style.display='none';
+          container.innerHTML='Cargando examen...';
+        });
+      });
+    }
 
   } catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
 }
@@ -221,6 +234,7 @@ document.addEventListener('DOMContentLoaded', verificarEstado);
 </script>
 </body>
 </html>
+
 
 
 
