@@ -197,17 +197,16 @@ async function buscarNota(){
         const marca=document.getElementById('marcaAgua');
         marca.innerHTML=`<div>${nombre} - ${fila['Legajo']}</div><div style="margin-top:1em;">Distribuir este archivo conlleva a sanciones Universitarias y/o Legales</div>`;
 
-        const driveId = fila['Examen'].split("/d/")[1].split("/")[0];
-        const imgUrl = `https://drive.google.com/uc?export=view&id=${driveId}`;
-        const img = document.createElement('img');
-        img.src = imgUrl;
-        img.style.maxWidth = '95%';
-        img.style.height = 'auto';
-        img.style.marginTop = '1em';
-        container.appendChild(img);
-
-        modalExamen.style.display='flex';
-      });
+      const driveUrl = fila['Examen'].trim();
+let imgUrl;
+if(driveUrl.includes('/d/')){
+  const driveId = driveUrl.split("/d/")[1].split("/")[0];
+  imgUrl = `https://drive.google.com/uc?export=view&id=${driveId}`;
+} else if(driveUrl.includes('id=')){
+  const driveId = new URL(driveUrl).searchParams.get('id');
+  imgUrl = `https://drive.google.com/uc?export=view&id=${driveId}`;
+} else {
+  imgUrl = driveUrl; // intenta usar la URL tal cual
     }
 
     document.getElementById('cerrarExamen').addEventListener('click',()=>{
