@@ -111,7 +111,12 @@ async function verificarEstado() {
       [legajoInput,emailInput].forEach(inp=>inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); buscarNota();}}));
       btnConsultar.addEventListener('click',buscarNota);
     } else {
-      contenido.innerHTML = `<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">La plataforma no se encuentra habilitada en este momento. Se habilitará nuevamente una vez finalizada la actividad en curso.</p>`;
+      contenido.innerHTML = `
+        <div style="border: 2px solid #38828f; background: #f9f8f5; padding: 1.2em; border-radius: 10px; max-width: 500px; margin: 2em auto; text-align: center; font-family: 'Open Sans', sans-serif; color: #000; font-size: 1.1em; line-height: 1.5;">
+          En este momento no es posible acceder a la plataforma.<br>
+          Aguarde y a la brevedad estará disponible nuevamente.
+        </div>
+      `;
     }
   } catch(e){ console.error(e); document.getElementById('contenido').innerHTML=`<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.</p>`;}
 }
@@ -171,6 +176,7 @@ document.addEventListener('DOMContentLoaded', verificarEstado);
 </script>
 </body>
 </html>
+
 
 
 
