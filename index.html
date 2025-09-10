@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8" />
 <title>Notas Toxicología UNLP</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <link rel="icon" href="logo1.png" type="image/png" />
 
@@ -13,13 +12,10 @@
 <style>
 html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
 body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: #f9f9f9; display: flex; flex-direction: column; min-height: 100vh; }
-
 header { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
 header img { width: 100%; max-width: 660px; height: auto; }
 .titulo-centro { font-family: 'Open Sans', sans-serif; font-weight: 700; font-size: 2.2em; color: #38828f; text-align: center; margin: 20px 0 0 0; line-height: 1.2em; user-select: none; }
-
 main { max-width: 600px; background: #f9f8f5; margin: 0 auto 2em auto; padding: 2em; border-radius: 10px; box-shadow: 0 2px 8px rgb(0 0 0 / 0.15); flex-grow: 1; position: relative; min-height: calc(100vh - 140px); }
-
 label { display: block; font-weight: 600; margin-top: 1em; margin-bottom: 0.3em; }
 input[type="text"], input[type="email"], textarea { width: 100%; padding: 0.6em; font-size: 1.1em; border: 2px solid #ccc; border-radius: 5px; transition: border-color 0.3s ease; box-sizing: border-box; }
 input[type="text"]:focus, input[type="email"]:focus, textarea:focus { border-color: #007acc; outline: none; }
@@ -27,10 +23,8 @@ button { border-radius: 5px; cursor: pointer; font-weight: 700; display: block; 
 #btnConsultar { padding: 0.5em 1em; font-size: 1em; background: #2d8390; color: white; border: none; }
 #btnReclamo { padding: 0.425em 0.85em; font-size: 0.85em; background: #2d8390; color: white; border: none; }
 #btnConsultar:hover, #btnReclamo:hover, #enviarReclamo:hover { opacity: 0.9; }
-
 #resultado { margin-top: 0.8em; font-size: 1.15em; line-height: 1.5; color: #000; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; width: 100%; box-sizing: border-box; }
 @media screen and (max-width: 600px) { main { margin: 1em; padding: 1.2em; } #resultado { font-size: 1em; } }
-
 #resultado strong { color: #000; }
 table { margin-top: 0.3em; border-collapse: collapse; width: 100%; }
 table, th, td { border: 1px solid #ddd; }
@@ -46,9 +40,7 @@ footer { background: #38828f; color: white; text-align: center; padding: 1em; fo
 #loader span:nth-child(1) { animation-delay: 0s; }
 #loader span:nth-child(2) { animation-delay: 0.3s; }
 #loader span:nth-child(3) { animation-delay: 0.6s; }
-
 #resultado table tbody td { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>'); background-repeat: repeat; background-position: 0 0; background-size: 60px 12px; }
-
 .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 99999; }
 .modal { background: white; padding: 20px; border-radius: 10px; max-width: 600px; width: 100%; max-height: 90%; overflow-y: auto; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 5px solid #38828f; position: relative; }
 .modal input, .modal textarea { margin-top: 5px; }
@@ -64,6 +56,7 @@ footer { background: #38828f; color: white; text-align: center; padding: 1em; fo
 </header>
 
 <main id="contenido"></main>
+
 <footer>© 2025 Cátedra de Toxicología, Facultad de Ciencias Médicas - UNLP.</footer>
 
 <!-- Modal Reclamo -->
@@ -81,7 +74,7 @@ footer { background: #38828f; color: white; text-align: center; padding: 1em; fo
 </div>
 
 <script>
-const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?gid=919817434&single=true&output=csv';
+const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?output=csv';
 
 async function cargarDatos(url) {
   const res = await fetch(url);
@@ -102,21 +95,24 @@ async function verificarEstado() {
       <small style="color:#555; font-size:0.9em;">*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
       <button id="btnConsultar">Ver Calificaciones</button>
 
-      <div style="margin-top: 2cm; text-align: center;">
-        <p style="font-size: 12px; color: #555; margin: 0;">
-          Última actualización: <?= lastUpdated ?>
-        </p>
-      </div>
-
       <div id="loader"><span>.</span><span>.</span><span>.</span></div>
       <div id="resultado"></div>
       <div id="error"></div>
+
+      <div style="margin-top:2cm; text-align:center;">
+        <p id="ultima-actualizacion" style="font-size:12px; color:#555; margin:0;">
+          Cargando última actualización...
+        </p>
+      </div>
       `;
+
       const legajoInput = document.getElementById('legajo');
       const emailInput = document.getElementById('email');
       const btnConsultar = document.getElementById('btnConsultar');
       [legajoInput,emailInput].forEach(inp=>inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); buscarNota();}}));
       btnConsultar.addEventListener('click',buscarNota);
+
+      mostrarUltimaActualizacion();
     } else {
       contenido.innerHTML = `
         <div style="border: 2px solid #38828f; background: #f9f8f5; padding: 1.2em; border-radius: 10px; max-width: 500px; margin: 2em auto; text-align: center; font-family: 'Open Sans', sans-serif; color: #000; font-size: 1.1em; line-height: 1.5;">
@@ -177,6 +173,24 @@ async function buscarNota(){
     document.getElementById('cerrarModal').addEventListener('click',()=>{document.getElementById('modalReclamo').style.display='none';});
 
   } catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
+}
+
+// Función para mostrar última actualización
+async function mostrarUltimaActualizacion() {
+  try {
+    const res = await fetch(urlBase + '&_ts=' + Date.now());
+    const text = await res.text();
+    const parsed = Papa.parse(text, {header:true, skipEmptyLines:true});
+    const filas = parsed.data;
+    const ultimaFila = filas[filas.length - 1];
+    const fecha = ultimaFila['ÚltimaActualizacion'];
+    document.getElementById('ultima-actualizacion').textContent =
+      "Última actualización: " + fecha;
+  } catch(e){
+    console.error(e);
+    document.getElementById('ultima-actualizacion').textContent =
+      "Última actualización: error al cargar";
+  }
 }
 
 document.addEventListener('DOMContentLoaded', verificarEstado);
