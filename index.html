@@ -74,7 +74,7 @@ footer { background: #38828f; color: white; text-align: center; padding: 1em; fo
 </div>
 
 <script>
-const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Ut1Q/pub?output=csv';
+const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?output=csv';
 
 async function cargarDatos(url) {
   const res = await fetch(url);
@@ -85,7 +85,9 @@ async function cargarDatos(url) {
 async function verificarEstado() {
   try {
     const datos = await cargarDatos(urlBase + '&_ts=' + Date.now());
-    const estado = datos.data[0]?.Estado?.trim().toLowerCase();
+    // Tomar la primera fila válida que tenga Estado
+    const filaEstado = datos.data.find(row => row.Estado && row.Estado.trim() !== '');
+    const estado = filaEstado ? filaEstado.Estado.trim().toLowerCase() : '';
     const contenido = document.getElementById('contenido');
     if(estado === 'habilitado'){
       contenido.innerHTML = `
@@ -174,13 +176,14 @@ async function buscarNota(){
   } catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
 }
 
-// Función para mostrar última actualización directamente desde A500
+// Función para mostrar última actualización desde A500
 async function mostrarUltimaActualizacion() {
   try {
     const res = await fetch(urlBase + '&_ts=' + Date.now());
     const text = await res.text();
-    const filas = Papa.parse(text, {header:false, skipEmptyLines:true}).data;
-    const fecha = filas[499] ? filas[499][0] : null; // A500 corresponde a índice 499
+    const parsed = Papa.parse(text, {header:false, skipEmptyLines:true});
+    // Tomar directamente la celda A500 (fila 500, columna 0)
+    const fecha = parsed.data[499] ? parsed.data[499][0] : null;
     document.getElementById('ultima-actualizacion').textContent =
       fecha ? "Última actualización de datos: " + fecha : "Última actualización no disponible";
   } catch(e){
@@ -194,6 +197,7 @@ document.addEventListener('DOMContentLoaded', verificarEstado);
 </script>
 </body>
 </html>
+
 
 
 
