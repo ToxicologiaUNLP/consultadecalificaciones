@@ -74,7 +74,7 @@ footer { background: #38828f; color: white; text-align: center; padding: 1em; fo
 </div>
 
 <script>
-const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?output=csv';
+const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Ut1Q/pub?output=csv';
 
 async function cargarDatos(url) {
   const res = await fetch(url);
@@ -174,15 +174,13 @@ async function buscarNota(){
   } catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
 }
 
-// Función para mostrar última actualización desde Z3
+// Función para mostrar última actualización directamente desde A500
 async function mostrarUltimaActualizacion() {
   try {
     const res = await fetch(urlBase + '&_ts=' + Date.now());
     const text = await res.text();
-    const parsed = Papa.parse(text, {header:true, skipEmptyLines:true});
-    const filas = parsed.data;
-    const filaActualizacion = filas.find(row => row['UltimaActualizacion']);
-    const fecha = filaActualizacion ? filaActualizacion['UltimaActualizacion'] : null;
+    const filas = Papa.parse(text, {header:false, skipEmptyLines:true}).data;
+    const fecha = filas[499] ? filas[499][0] : null; // A500 corresponde a índice 499
     document.getElementById('ultima-actualizacion').textContent =
       fecha ? "Última actualización de datos: " + fecha : "Última actualización no disponible";
   } catch(e){
@@ -196,11 +194,6 @@ document.addEventListener('DOMContentLoaded', verificarEstado);
 </script>
 </body>
 </html>
-
-
-
-
-
 
 
 
