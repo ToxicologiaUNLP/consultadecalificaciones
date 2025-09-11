@@ -21,7 +21,7 @@ input[type="text"], input[type="email"], textarea { width: 100%; padding: 0.6em;
 input[type="text"]:focus, input[type="email"]:focus, textarea:focus { border-color: #007acc; outline: none; }
 button { border-radius: 5px; cursor: pointer; font-weight: 700; display: block; margin: 0.8em auto 0 auto; }
 #btnConsultar { padding: 0.5em 1em; font-size: 1em; background: #2d8390; color: white; border: none; }
-#btnReclamo, #btnVolver { padding: 0.35em 0.8em; font-size: 0.85em; background: #2d8390; color: white; border: none; }
+#btnReclamo, #btnVolver { padding: 0.425em 0.85em; font-size: 0.85em; background: #2d8390; color: white; border: none; }
 #btnConsultar:hover, #btnReclamo:hover, #btnVolver:hover, #enviarReclamo:hover { opacity: 0.9; }
 #resultado { margin-top: 0.8em; font-size: 1.15em; line-height: 1.5; color: #000; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; width: 100%; box-sizing: border-box; }
 @media screen and (max-width: 600px) { main { margin: 1em; padding: 1.2em; } #resultado { font-size: 1em; } }
@@ -45,7 +45,7 @@ footer { background: #38828f; color: white; text-align: center; padding: 1em; fo
 .modal { background: white; padding: 20px; border-radius: 10px; max-width: 600px; width: 100%; max-height: 90%; overflow-y: auto; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 5px solid #38828f; position: relative; }
 .modal input, .modal textarea { margin-top: 5px; }
 .modal textarea { height: 80px; }
-#ultima-actualizacion { font-size:12px; color:#555; text-align:center; margin-top:2cm; }
+#ultima-actualizacion { font-size:12px; color:#555; text-align:center; } 
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
@@ -77,63 +77,72 @@ footer { background: #38828f; color: white; text-align: center; padding: 1em; fo
 <script>
 const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?output=csv';
 
-async function cargarDatos(url){const res=await fetch(url);const text=await res.text();return Papa.parse(text,{header:true,skipEmptyLines:true,delimiter:","});}
+async function cargarDatos(url) {
+  const res = await fetch(url);
+  const text = await res.text();
+  return Papa.parse(text, {header:true, skipEmptyLines:true, delimiter:","});
+}
 
-async function verificarEstado(){
-  try{
+async function verificarEstado() {
+  try {
     const datos = await cargarDatos(urlBase + '&_ts=' + Date.now());
     const estado = datos.data[0]?.Estado?.trim().toLowerCase();
     const contenido = document.getElementById('contenido');
-    if(estado==='habilitado'){
-      contenido.innerHTML=`
+    if(estado === 'habilitado'){
+      contenido.innerHTML = `
       <div id="formBuscador">
         <p style="color:black; margin:0.5em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
         <label for="legajo">Legajo</label><input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
         <label for="email">E-mail asociado al SIU Guaraní*</label><input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
         <small style="color:#555; font-size:0.9em;">*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
         <button id="btnConsultar">Ver Calificaciones</button>
-        <p id="ultima-actualizacion">Cargando última actualización...</p>
+        <p id="ultima-actualizacion" style="margin-top:2cm;">Cargando última actualización...</p>
       </div>
       <div id="loader"><span>.</span><span>.</span><span>.</span></div>
       <div id="resultado"></div>
       <div id="error"></div>
       `;
-      const legajoInput=document.getElementById('legajo');
-      const emailInput=document.getElementById('email');
-      const btnConsultar=document.getElementById('btnConsultar');
+      const legajoInput = document.getElementById('legajo');
+      const emailInput = document.getElementById('email');
+      const btnConsultar = document.getElementById('btnConsultar');
       [legajoInput,emailInput].forEach(inp=>inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); buscarNota();}}));
       btnConsultar.addEventListener('click',buscarNota);
       mostrarUltimaActualizacion();
-    } else{
-      contenido.innerHTML=`<div style="border:2px solid #38828f;background:#f9f8f5;padding:1.2em;border-radius:10px;max-width:500px;margin:2em auto;text-align:center;font-family:'Open Sans',sans-serif;color:#000;font-size:1.1em;line-height:1.5;">En este momento no es posible acceder a la plataforma.<br>Aguarde a la carga de calificaciones o actualización de las mismas.</div>`;
+    } else {
+      contenido.innerHTML = `
+        <div style="border: 2px solid #38828f; background: #f9f8f5; padding: 1.2em; border-radius: 10px; max-width: 500px; margin: 2em auto; text-align: center; font-family: 'Open Sans', sans-serif; color: #000; font-size: 1.1em; line-height: 1.5;">
+          En este momento no es posible acceder a la plataforma.<br>
+         Aguarde a la carga de calificaciones o actualización de las mismas.
+        </div>
+      `;
     }
-  }catch(e){ console.error(e); document.getElementById('contenido').innerHTML=`<p style="color:red;font-weight:bold;font-size:1.2em;text-align:center;">No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.</p>`;}
+  } catch(e){ console.error(e); document.getElementById('contenido').innerHTML=`<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.</p>`;}
 }
 
 async function buscarNota(){
-  const legajoInput=document.getElementById('legajo').value.trim().toLowerCase();
-  const emailInput=document.getElementById('email').value.trim().toLowerCase();
-  const resultado=document.getElementById('resultado');
-  const errorDiv=document.getElementById('error');
-  const loader=document.getElementById('loader');
-  resultado.innerHTML=""; errorDiv.textContent="";
-  if(!legajoInput||!emailInput){errorDiv.textContent="Por favor, ingrese los datos requeridos."; return;}
+  const legajoInput = document.getElementById('legajo').value.trim().toLowerCase();
+  const emailInput = document.getElementById('email').value.trim().toLowerCase();
+  const resultado = document.getElementById('resultado');
+  const errorDiv = document.getElementById('error');
+  const loader = document.getElementById('loader');
+  resultado.innerHTML = ""; errorDiv.textContent="";
+  if(!legajoInput || !emailInput){errorDiv.textContent="Por favor, ingrese los datos requeridos."; return;}
   loader.style.display="block";
   try{
-    const parsed=await cargarDatos(urlBase + '&_ts=' + Date.now());
-    const columnas=parsed.meta.fields;
-    const fila=parsed.data.find(row=>row['Legajo'] && row['Email'] && row['Legajo'].trim().toLowerCase()===legajoInput && row['Email'].trim().toLowerCase()===emailInput);
+    const parsed = await cargarDatos(urlBase + '&_ts=' + Date.now());
+    const columnas = parsed.meta.fields;
+    const fila = parsed.data.find(row=>row['Legajo'] && row['Email'] && row['Legajo'].trim().toLowerCase()===legajoInput && row['Email'].trim().toLowerCase()===emailInput);
     loader.style.display="none";
     if(!fila){errorDiv.textContent="Datos incorrectos. Verifique e intente nuevamente."; return;}
-    const primeraColumna=columnas[0];
-    const nombre=fila[primeraColumna]||"Alumno";
-    const columnasExcluir=['legajo','nombre','apellido','nombre y apellido','alumno','email','estado',primeraColumna.toLowerCase(),'ultimaactualizacion'];
-    const columnasVisibles=columnas.filter(col=>!columnasExcluir.includes(col.toLowerCase()) && fila[col] && fila[col].trim()!=='');
+    const primeraColumna = columnas[0];
+    const nombre = fila[primeraColumna] || "Alumno";
+    const columnasExcluir = ['legajo','nombre','apellido','nombre y apellido','alumno','email','estado', primeraColumna.toLowerCase(), 'ultimaactualizacion'];
+    const columnasVisibles = columnas.filter(col=>!columnasExcluir.includes(col.toLowerCase()) && fila[col] && fila[col].trim()!=='');
     
-    document.getElementById('formBuscador').style.display='none';
+    document.getElementById('formBuscador').style.display = 'none';
 
-    let tablaHTML=`<p><strong>${nombre}, tus calificaciones son:</strong></p>`;
-    tablaHTML+=`<div class="tabla-scroll"><table><thead><tr>`;
+    let tablaHTML = `<p><strong>${nombre}, tus calificaciones son:</strong></p>`;
+    tablaHTML += `<div class="tabla-scroll"><table><thead><tr>`;
     columnasVisibles.forEach(col=>tablaHTML+=`<th>${col}</th>`);
     tablaHTML+=`</tr></thead><tbody><tr>`;
     columnasVisibles.forEach(col=>tablaHTML+=`<td>${fila[col]}</td>`);
@@ -141,12 +150,13 @@ async function buscarNota(){
     
     tablaHTML+=`<button id="btnReclamo">Consulta / Reclamo</button>`;
     tablaHTML+=`<button id="btnVolver">Volver</button>`;
-    tablaHTML+=`<p id="ultima-actualizacion"></p>`;
-    resultado.innerHTML=tablaHTML;
+    tablaHTML+=`<p id="ultima-actualizacion" style="margin-top:2cm;">Cargando última actualización...</p>`;
+    resultado.innerHTML = tablaHTML;
 
     mostrarUltimaActualizacion();
 
-    document.getElementById('btnReclamo').addEventListener('click',()=>{
+    const btnReclamo = document.getElementById('btnReclamo');
+    btnReclamo.addEventListener('click',()=>{
       const modal=document.getElementById('modalReclamo');
       modal.style.display='flex';
       const codigo='RC-'+Math.floor(Math.random()*1000000);
@@ -167,27 +177,36 @@ async function buscarNota(){
 
     document.getElementById('cerrarModal').addEventListener('click',()=>{document.getElementById('modalReclamo').style.display='none';});
 
-    document.getElementById('btnVolver').addEventListener('click',()=>{
+    const btnVolver = document.getElementById('btnVolver');
+    btnVolver.addEventListener('click',()=>{
       document.getElementById('formBuscador').style.display='block';
       resultado.innerHTML='';
     });
 
-  }catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
+  } catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
 }
 
-async function mostrarUltimaActualizacion(){
-  try{
-    const res=await fetch(urlBase + '&_ts=' + Date.now());
-    const text=await res.text();
-    const parsed=Papa.parse(text,{header:true,skipEmptyLines:false});
-    const sheetLines=text.split('\n');
-    const a500=sheetLines[499]||""; // fila 500
+async function mostrarUltimaActualizacion() {
+  try {
+    const res = await fetch(urlBase + '&_ts=' + Date.now());
+    const text = await res.text();
+    const filas = text.split('\n');
+
+    // A500 es la fila 500 del CSV → índice 499 (empezando desde 0)
+    const fila500 = filas[499] || "";
+    
+    // Tomamos solo la primera celda de esa fila (columna A)
+    const celdaA500 = fila500.split(',')[0] || "";
+
     document.querySelectorAll('#ultima-actualizacion').forEach(el=>{
-      el.textContent = a500.trim() ? "Última actualización de datos: " + a500.trim() : "Última actualización no disponible";
+      el.textContent = celdaA500.trim() ? "Última actualización de datos: " + celdaA500.trim() : "Última actualización no disponible";
     });
-  }catch(e){
+
+  } catch(e){
     console.error(e);
-    document.querySelectorAll('#ultima-actualizacion').forEach(el=>{el.textContent="Última actualización: error al cargar";});
+    document.querySelectorAll('#ultima-actualizacion').forEach(el=>{
+      el.textContent = "Última actualización: error al cargar";
+    });
   }
 }
 
@@ -195,7 +214,6 @@ document.addEventListener('DOMContentLoaded', verificarEstado);
 </script>
 </body>
 </html>
-
 
 
 
