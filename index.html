@@ -19,10 +19,10 @@ main { max-width: 600px; background: #f9f8f5; margin: 0 auto 2em auto; padding: 
 label { display: block; font-weight: 600; margin-top: 1em; margin-bottom: 0.3em; }
 input[type="text"], input[type="email"], textarea { width: 100%; padding: 0.6em; font-size: 1.1em; border: 2px solid #ccc; border-radius: 5px; transition: border-color 0.3s ease; box-sizing: border-box; }
 input[type="text"]:focus, input[type="email"]:focus, textarea:focus { border-color: #007acc; outline: none; }
-button { border-radius: 5px; cursor: pointer; font-weight: 700; display: block; margin: 1em auto 0 auto; }
-#btnConsultar, .btn-accion { padding: 0.5em 1em; font-size: 1em; background: #2d8390; color: white; border: none; }
-#btnReclamo, .btn-accion:hover { opacity: 0.9; }
-#resultado { margin-top: 0.8em; font-size: 1.15em; line-height: 1.5; color: #000; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; width: 100%; box-sizing: border-box; text-align:center; }
+button { border-radius: 5px; cursor: pointer; font-weight: 700; display: block; margin: 1em auto 0 auto; text-align: center; }
+#btnConsultar, #btnReclamo, #btnVolver { font-size: 1em; padding: 0.5em 1em; background: #2d8390; color: white; border: none; }
+#btnConsultar:hover, #btnReclamo:hover, #btnVolver:hover, #enviarReclamo:hover { opacity: 0.9; }
+#resultado { margin-top: 0.8em; font-size: 1.15em; line-height: 1.5; color: #000; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; width: 100%; box-sizing: border-box; }
 @media screen and (max-width: 600px) { main { margin: 1em; padding: 1.2em; } #resultado { font-size: 1em; } }
 #resultado strong { color: #000; }
 table { margin-top: 0.3em; border-collapse: collapse; width: 100%; }
@@ -87,35 +87,33 @@ async function verificarEstado() {
     const estado = datos.data[0]?.Estado?.trim().toLowerCase();
     const contenido = document.getElementById('contenido');
     if(estado === 'habilitado'){
-      mostrarFormularioBusqueda();
-    } else {
       contenido.innerHTML = `
-        <div style="border: 2px solid #38828f; background: #f9f8f5; padding: 1.2em; border-radius: 10px; max-width: 500px; margin: 2em auto; text-align: center; font-family: 'Open Sans', sans-serif; color: #000; font-size: 1.1em; line-height: 1.5;">
-          En este momento no es posible acceder a la plataforma.<br>
-          Aún no hay calificaciones o se están cargando nuevas.
-        </div>
-      `;
-    }
-  } catch(e){ console.error(e); document.getElementById('contenido').innerHTML=`<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.</p>`;}
-}
-
-function mostrarFormularioBusqueda(){
-  const contenido = document.getElementById('contenido');
-  contenido.innerHTML = `
       <p style="color:black; margin:0.5em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
       <label for="legajo">Legajo</label><input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
       <label for="email">E-mail asociado al SIU Guaraní*</label><input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
       <small style="color:#555; font-size:0.9em;">*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
       <button id="btnConsultar">Ver Calificaciones</button>
+
       <div id="loader"><span>.</span><span>.</span><span>.</span></div>
       <div id="resultado"></div>
       <div id="error"></div>
-  `;
-  const legajoInput = document.getElementById('legajo');
-  const emailInput = document.getElementById('email');
-  const btnConsultar = document.getElementById('btnConsultar');
-  [legajoInput,emailInput].forEach(inp=>inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); buscarNota();}}));
-  btnConsultar.addEventListener('click',buscarNota);
+      `;
+
+      const legajoInput = document.getElementById('legajo');
+      const emailInput = document.getElementById('email');
+      const btnConsultar = document.getElementById('btnConsultar');
+      [legajoInput,emailInput].forEach(inp=>inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); buscarNota();}}));
+      btnConsultar.addEventListener('click',buscarNota);
+
+    } else {
+      contenido.innerHTML = `
+        <div style="border: 2px solid #38828f; background: #f9f8f5; padding: 1.2em; border-radius: 10px; max-width: 500px; margin: 2em auto; text-align: center; font-family: 'Open Sans', sans-serif; color: #000; font-size: 1.1em; line-height: 1.5;">
+          En este momento no es posible acceder a la plataforma.<br>
+          NO HAY CALIFICACIONES/SE ESTÁN CARGANDO.
+        </div>
+      `;
+    }
+  } catch(e){ console.error(e); document.getElementById('contenido').innerHTML=`<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.</p>`;}
 }
 
 async function buscarNota(){
@@ -133,32 +131,37 @@ async function buscarNota(){
     const fila = parsed.data.find(row=>row['Legajo'] && row['Email'] && row['Legajo'].trim().toLowerCase()===legajoInput && row['Email'].trim().toLowerCase()===emailInput);
     loader.style.display="none";
     if(!fila){errorDiv.textContent="Datos incorrectos. Verifique e intente nuevamente."; return;}
+
     const primeraColumna = columnas[0];
     const nombre = fila[primeraColumna] || "Alumno";
     const columnasExcluir = ['legajo','nombre','apellido','nombre y apellido','alumno','email','estado', primeraColumna.toLowerCase(), 'ultimaactualizacion'];
     const columnasVisibles = columnas.filter(col=>!columnasExcluir.includes(col.toLowerCase()) && fila[col] && fila[col].trim()!=='');
     
-    // Crear HTML de calificaciones
+    // Ocultar el formulario inicial
+    document.getElementById('legajo').parentElement.style.display = 'none';
+    document.getElementById('btnConsultar').style.display = 'none';
+    document.getElementById('email').style.display = 'none';
+
     let tablaHTML = `<p><strong>${nombre}, tus calificaciones son:</strong></p><div class="tabla-scroll"><table><thead><tr>`;
     columnasVisibles.forEach(col=>tablaHTML+=`<th>${col}</th>`);
     tablaHTML+=`</tr></thead><tbody><tr>`;
     columnasVisibles.forEach(col=>tablaHTML+=`<td>${fila[col]}</td>`);
     tablaHTML+=`</tr></tbody></table></div>`;
-    
-    // Botón volver
-    tablaHTML += `<button id="btnVolver" class="btn-accion">Volver</button>`;
-    // Botón reclamo
-    tablaHTML += `<button id="btnReclamo" class="btn-accion">Consulta / Reclamo</button>`;
-    
-    // Última actualización en tiempo real
-    const ultimaFilaValida = parsed.data.slice().reverse().find(r => r['UltimaActualizacion'] && r['UltimaActualizacion'].trim()!=='');
-    const ultima = ultimaFilaValida ? ultimaFilaValida['UltimaActualizacion'] : "No disponible";
-    tablaHTML += `<p style="margin-top:0.5em; font-size:12px; color:#555;">Última actualización de datos: ${ultima}</p>`;
+
+    tablaHTML+=`<button id="btnReclamo">Consulta / Reclamo</button>`;
+    tablaHTML+=`<button id="btnVolver">Volver</button>`;
+
+    // Última actualización desde A500
+    const filaActualizacion = parsed.data[parsed.data.length-1];
+    const fecha = filaActualizacion ? filaActualizacion[columnas[0]] : null;
+    tablaHTML+=`<p id="ultima-actualizacion" style="text-align:center; font-size:12px; color:#555; margin-top:0.8em;">
+      ${fecha ? "Última actualización de datos: " + fecha : "Última actualización no disponible"}
+    </p>`;
 
     resultado.innerHTML = tablaHTML;
 
-    document.getElementById('btnVolver').addEventListener('click',()=>{mostrarFormularioBusqueda();});
-    
+    document.getElementById('btnVolver').addEventListener('click',()=>location.reload());
+
     const btnReclamo = document.getElementById('btnReclamo');
     btnReclamo.addEventListener('click',()=>{
       const modal=document.getElementById('modalReclamo');
@@ -168,6 +171,7 @@ async function buscarNota(){
       document.getElementById('modalNombre').value=nombre;
       document.getElementById('modalLegajo').value=fila['Legajo'];
     });
+
     document.getElementById('enviarReclamo').addEventListener('click',()=>{
       const nombreModal=document.getElementById('modalNombre').value;
       const legajoModal=document.getElementById('modalLegajo').value;
@@ -177,6 +181,7 @@ async function buscarNota(){
       const mailtoLink=`mailto:toxicoalumnos@gmail.com?subject=Consulta/Reclamo%20-%20Plataforma%20de%20Calificaciones&body=${body}`;
       window.location.href=mailtoLink;
     });
+
     document.getElementById('cerrarModal').addEventListener('click',()=>{document.getElementById('modalReclamo').style.display='none';});
 
   } catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
@@ -186,6 +191,7 @@ document.addEventListener('DOMContentLoaded', verificarEstado);
 </script>
 </body>
 </html>
+
 
 
 
