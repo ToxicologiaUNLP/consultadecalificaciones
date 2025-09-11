@@ -45,7 +45,6 @@ footer { background: #38828f; color: white; text-align: center; padding: 1em; fo
 .modal { background: white; padding: 20px; border-radius: 10px; max-width: 600px; width: 100%; max-height: 90%; overflow-y: auto; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 5px solid #38828f; position: relative; }
 .modal input, .modal textarea { margin-top: 5px; }
 .modal textarea { height: 80px; }
-#ultima-actualizacion { font-size:12px; color:#555; text-align:center; } 
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
@@ -96,7 +95,6 @@ async function verificarEstado() {
         <label for="email">E-mail asociado al SIU Guaraní*</label><input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
         <small style="color:#555; font-size:0.9em;">*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
         <button id="btnConsultar">Ver Calificaciones</button>
-        <p id="ultima-actualizacion" style="margin-top:2cm;">Cargando última actualización...</p>
       </div>
       <div id="loader"><span>.</span><span>.</span><span>.</span></div>
       <div id="resultado"></div>
@@ -107,7 +105,6 @@ async function verificarEstado() {
       const btnConsultar = document.getElementById('btnConsultar');
       [legajoInput,emailInput].forEach(inp=>inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); buscarNota();}}));
       btnConsultar.addEventListener('click',buscarNota);
-      mostrarUltimaActualizacion();
     } else {
       contenido.innerHTML = `
         <div style="border: 2px solid #38828f; background: #f9f8f5; padding: 1.2em; border-radius: 10px; max-width: 500px; margin: 2em auto; text-align: center; font-family: 'Open Sans', sans-serif; color: #000; font-size: 1.1em; line-height: 1.5;">
@@ -136,7 +133,7 @@ async function buscarNota(){
     if(!fila){errorDiv.textContent="Datos incorrectos. Verifique e intente nuevamente."; return;}
     const primeraColumna = columnas[0];
     const nombre = fila[primeraColumna] || "Alumno";
-    const columnasExcluir = ['legajo','nombre','apellido','nombre y apellido','alumno','email','estado', primeraColumna.toLowerCase(), 'ultimaactualizacion'];
+    const columnasExcluir = ['legajo','nombre','apellido','nombre y apellido','alumno','email','estado', primeraColumna.toLowerCase()];
     const columnasVisibles = columnas.filter(col=>!columnasExcluir.includes(col.toLowerCase()) && fila[col] && fila[col].trim()!=='');
     
     document.getElementById('formBuscador').style.display = 'none';
@@ -150,10 +147,7 @@ async function buscarNota(){
     
     tablaHTML+=`<button id="btnReclamo">Consulta / Reclamo</button>`;
     tablaHTML+=`<button id="btnVolver">Volver</button>`;
-    tablaHTML+=`<p id="ultima-actualizacion" style="margin-top:2cm;">Cargando última actualización...</p>`;
     resultado.innerHTML = tablaHTML;
-
-    mostrarUltimaActualizacion();
 
     const btnReclamo = document.getElementById('btnReclamo');
     btnReclamo.addEventListener('click',()=>{
@@ -184,11 +178,6 @@ async function buscarNota(){
     });
 
   } catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
-}
-
-
-    });
-  }
 }
 
 document.addEventListener('DOMContentLoaded', verificarEstado);
