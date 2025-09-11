@@ -45,6 +45,7 @@ footer { background: #38828f; color: white; text-align: center; padding: 1em; fo
 .modal { background: white; padding: 20px; border-radius: 10px; max-width: 600px; width: 100%; max-height: 90%; overflow-y: auto; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 5px solid #38828f; position: relative; }
 .modal input, .modal textarea { margin-top: 5px; }
 .modal textarea { height: 80px; }
+#ultima-actualizacion { font-size:12px; color:#555; margin-top:2cm; text-align:center; } /* margen 2cm en ambas ubicaciones */
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
@@ -95,6 +96,7 @@ async function verificarEstado() {
         <label for="email">E-mail asociado al SIU Guaraní*</label><input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
         <small style="color:#555; font-size:0.9em;">*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
         <button id="btnConsultar">Ver Calificaciones</button>
+        <p id="ultima-actualizacion" style="margin-top:2cm;">Cargando última actualización...</p>
       </div>
       <div id="loader"><span>.</span><span>.</span><span>.</span></div>
       <div id="resultado"></div>
@@ -105,11 +107,12 @@ async function verificarEstado() {
       const btnConsultar = document.getElementById('btnConsultar');
       [legajoInput,emailInput].forEach(inp=>inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); buscarNota();}}));
       btnConsultar.addEventListener('click',buscarNota);
+      mostrarUltimaActualizacion();
     } else {
       contenido.innerHTML = `
         <div style="border: 2px solid #38828f; background: #f9f8f5; padding: 1.2em; border-radius: 10px; max-width: 500px; margin: 2em auto; text-align: center; font-family: 'Open Sans', sans-serif; color: #000; font-size: 1.1em; line-height: 1.5;">
           En este momento no es posible acceder a la plataforma.<br>
-          Aguarde a la carga de calificaciones o actualización de las mismas.
+         Aguarde a la carga de calificaciones o actualización de las mismas.
         </div>
       `;
     }
@@ -136,12 +139,9 @@ async function buscarNota(){
     const columnasExcluir = ['legajo','nombre','apellido','nombre y apellido','alumno','email','estado', primeraColumna.toLowerCase(), 'ultimaactualizacion'];
     const columnasVisibles = columnas.filter(col=>!columnasExcluir.includes(col.toLowerCase()) && fila[col] && fila[col].trim()!=='');
     
-    // Ocultar buscador
     document.getElementById('formBuscador').style.display = 'none';
 
-    // Generar tabla y botones
     let tablaHTML = `<p><strong>${nombre}, tus calificaciones son:</strong></p>`;
-    tablaHTML += `<button id="btnVolver">Volver</button>`; // Botón volver arriba
     tablaHTML += `<div class="tabla-scroll"><table><thead><tr>`;
     columnasVisibles.forEach(col=>tablaHTML+=`<th>${col}</th>`);
     tablaHTML+=`</tr></thead><tbody><tr>`;
@@ -149,7 +149,8 @@ async function buscarNota(){
     tablaHTML+=`</tr></tbody></table></div>`;
     
     tablaHTML+=`<button id="btnReclamo">Consulta / Reclamo</button>`;
-    tablaHTML+=`<p id="ultima-actualizacion" style="font-size:12px; color:#555; margin:0; text-align:center;">Cargando última actualización...</p>`;
+    tablaHTML+=`<button id="btnVolver">Volver</button>`;
+    tablaHTML+=`<p id="ultima-actualizacion" style="margin-top:2cm;">Cargando última actualización...</p>`;
     resultado.innerHTML = tablaHTML;
 
     mostrarUltimaActualizacion();
@@ -176,7 +177,6 @@ async function buscarNota(){
 
     document.getElementById('cerrarModal').addEventListener('click',()=>{document.getElementById('modalReclamo').style.display='none';});
 
-    // Botón Volver
     const btnVolver = document.getElementById('btnVolver');
     btnVolver.addEventListener('click',()=>{
       document.getElementById('formBuscador').style.display='block';
@@ -186,7 +186,6 @@ async function buscarNota(){
   } catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
 }
 
-// Mostrar última actualización desde A500
 async function mostrarUltimaActualizacion() {
   try {
     const res = await fetch(urlBase + '&_ts=' + Date.now());
@@ -195,12 +194,14 @@ async function mostrarUltimaActualizacion() {
     const filas = parsed.data;
     const ultimaFila = filas[filas.length-1];
     const fecha = ultimaFila ? ultimaFila[Object.keys(ultimaFila)[0]] : null;
-    document.getElementById('ultima-actualizacion').textContent =
-      fecha ? "Última actualización de datos: " + fecha : "Última actualización no disponible";
+    document.querySelectorAll('#ultima-actualizacion').forEach(el=>{
+      el.textContent = fecha ? "Última actualización de datos: " + fecha : "Última actualización no disponible";
+    });
   } catch(e){
     console.error(e);
-    document.getElementById('ultima-actualizacion').textContent =
-      "Última actualización: error al cargar";
+    document.querySelectorAll('#ultima-actualizacion').forEach(el=>{
+      el.textContent = "Última actualización: error al cargar";
+    });
   }
 }
 
