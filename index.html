@@ -141,7 +141,7 @@ async function buscarNota(){
     if(!fila){errorDiv.textContent="Datos incorrectos. Verifique e intente nuevamente."; return;}
     const primeraColumna = columnas[0];
     const nombre = fila[primeraColumna] || "Alumno";
-    const columnasExcluir = ['legajo','nombre','apellido','nombre y apellido','alumno','email','estado', primeraColumna.toLowerCase()];
+    const columnasExcluir = ['legajo','nombre','apellido','nombre y apellido','alumno','email','estado', primeraColumna.toLowerCase(), 'ultimaactualizacion'];
     const columnasVisibles = columnas.filter(col=>!columnasExcluir.includes(col.toLowerCase()) && fila[col] && fila[col].trim()!=='');
     let tablaHTML = `<p><strong>${nombre}, tus calificaciones son:</strong></p><div class="tabla-scroll"><table><thead><tr>`;
     columnasVisibles.forEach(col=>tablaHTML+=`<th>${col}</th>`);
@@ -151,7 +151,6 @@ async function buscarNota(){
     tablaHTML+=`<button id="btnReclamo">Consulta / Reclamo</button>`;
     resultado.innerHTML=tablaHTML;
 
-    // Modal Reclamo
     const btnReclamo = document.getElementById('btnReclamo');
     btnReclamo.addEventListener('click',()=>{
       const modal=document.getElementById('modalReclamo');
@@ -175,17 +174,17 @@ async function buscarNota(){
   } catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
 }
 
-// Función para mostrar última actualización
+// Función para mostrar última actualización desde Z3
 async function mostrarUltimaActualizacion() {
   try {
     const res = await fetch(urlBase + '&_ts=' + Date.now());
     const text = await res.text();
     const parsed = Papa.parse(text, {header:true, skipEmptyLines:true});
     const filas = parsed.data;
-    const ultimaFila = filas[filas.length - 1];
-    const fecha = ultimaFila['ÚltimaActualizacion'];
+    const filaActualizacion = filas.find(row => row['UltimaActualizacion']);
+    const fecha = filaActualizacion ? filaActualizacion['UltimaActualizacion'] : null;
     document.getElementById('ultima-actualizacion').textContent =
-      "Última actualización de datos: " + fecha;
+      fecha ? "Última actualización de datos: " + fecha : "Última actualización no disponible";
   } catch(e){
     console.error(e);
     document.getElementById('ultima-actualizacion').textContent =
