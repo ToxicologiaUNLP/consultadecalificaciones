@@ -85,9 +85,7 @@ async function cargarDatos(url) {
 async function verificarEstado() {
   try {
     const datos = await cargarDatos(urlBase + '&_ts=' + Date.now());
-    // Tomar la primera fila válida que tenga Estado
-    const filaEstado = datos.data.find(row => row.Estado && row.Estado.trim() !== '');
-    const estado = filaEstado ? filaEstado.Estado.trim().toLowerCase() : '';
+    const estado = datos.data[0]?.Estado?.trim().toLowerCase();
     const contenido = document.getElementById('contenido');
     if(estado === 'habilitado'){
       contenido.innerHTML = `
@@ -145,13 +143,22 @@ async function buscarNota(){
     const nombre = fila[primeraColumna] || "Alumno";
     const columnasExcluir = ['legajo','nombre','apellido','nombre y apellido','alumno','email','estado', primeraColumna.toLowerCase(), 'ultimaactualizacion'];
     const columnasVisibles = columnas.filter(col=>!columnasExcluir.includes(col.toLowerCase()) && fila[col] && fila[col].trim()!=='');
+    
+    // REEMPLAZAMOS TODO EL CONTENIDO DE #contenido
+    const contenido = document.getElementById('contenido');
     let tablaHTML = `<p><strong>${nombre}, tus calificaciones son:</strong></p><div class="tabla-scroll"><table><thead><tr>`;
     columnasVisibles.forEach(col=>tablaHTML+=`<th>${col}</th>`);
     tablaHTML+=`</tr></thead><tbody><tr>`;
     columnasVisibles.forEach(col=>tablaHTML+=`<td>${fila[col]}</td>`);
     tablaHTML+=`</tr></tbody></table></div>`;
     tablaHTML+=`<button id="btnReclamo">Consulta / Reclamo</button>`;
-    resultado.innerHTML=tablaHTML;
+
+    // Agregamos la última actualización al final
+    const filaActualizacion = parsed.data.find(r=>r['UltimaActualizacion']);
+    const fecha = filaActualizacion ? filaActualizacion['UltimaActualizacion'] : null;
+    tablaHTML+=`<p style="font-size:12px; color:#555; margin-top:1em;">Última actualización de datos: ${fecha ? fecha : 'no disponible'}</p>`;
+
+    contenido.innerHTML = tablaHTML;
 
     const btnReclamo = document.getElementById('btnReclamo');
     btnReclamo.addEventListener('click',()=>{
@@ -181,15 +188,16 @@ async function mostrarUltimaActualizacion() {
   try {
     const res = await fetch(urlBase + '&_ts=' + Date.now());
     const text = await res.text();
-    const parsed = Papa.parse(text, {header:false, skipEmptyLines:true});
-    // Tomar directamente la celda A500 (fila 500, columna 0)
-    const fecha = parsed.data[499] ? parsed.data[499][0] : null;
-    document.getElementById('ultima-actualizacion').textContent =
-      fecha ? "Última actualización de datos: " + fecha : "Última actualización no disponible";
+    const parsed = Papa.parse(text, {header:true, skipEmptyLines:true});
+    const filas = parsed.data;
+    const filaActualizacion = filas.find(row => row['UltimaActualizacion']);
+    const fecha = filaActualizacion ? filaActualizacion['UltimaActualizacion'] : null;
+    const ultElem = document.getElementById('ultima-actualizacion');
+    if(ultElem) ultElem.textContent = fecha ? "Última actualización de datos: " + fecha : "Última actualización no disponible";
   } catch(e){
     console.error(e);
-    document.getElementById('ultima-actualizacion').textContent =
-      "Última actualización: error al cargar";
+    const ultElem = document.getElementById('ultima-actualizacion');
+    if(ultElem) ultElem.textContent = "Última actualización: error al cargar";
   }
 }
 
