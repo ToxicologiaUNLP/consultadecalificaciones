@@ -45,6 +45,8 @@ footer { background: #38828f; color: white; text-align: center; padding: 1em; fo
 .modal { background: white; padding: 20px; border-radius: 10px; max-width: 600px; width: 100%; max-height: 90%; overflow-y: auto; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 5px solid #38828f; position: relative; }
 .modal input, .modal textarea { margin-top: 5px; }
 .modal textarea { height: 80px; }
+#mensajeCondiciones { margin-top:1cm; color:#555; font-size:0.85em; text-align:left; text-indent:0; }
+#mensajeCondiciones a { color:#555; text-decoration: underline; cursor: pointer; }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
@@ -75,15 +77,14 @@ footer { background: #38828f; color: white; text-align: center; padding: 1em; fo
 
 <!-- Modal Condiciones -->
 <div class="overlay" id="modalCondiciones">
-  <div class="modal">
-    <span id="cerrarCondiciones" style="position:absolute; top:10px; right:15px; font-size:1.5em; font-weight:bold; cursor:pointer;">&times;</span>
-    <h3>Condiciones de Aprobación</h3>
-    <p style="text-align:left; color:#555; font-size:0.85em; line-height:1.4;">
-    Para aprobar la cursada cada alumno deberá:<br><br>
-    <strong>Cursada regular CON examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra, por lo tanto, el estudiante puede faltar a 1(una) clase de Trabajos prácticos de casos clínicos y 1 (una) Evaluación Formativa asincrónica. También debe aprobar con 4 o más de 4 la EVALUACION PARCIAL al finalizar la cursada que se realizará de forma presencial pudiendo ser rendido hasta un máximo de 3 oportunidades de las 4 fechas que publicará la Cátedra. Luego se presentará a rendir final en la mesa que desee.<br><br>
-    <strong>Promoción de cursada regular SIN examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra, por lo tanto, el estudiante puede faltar a 1 (una) Clase de integración teórica; 1 (una) clase de Trabajos prácticos de casos clínicos y 1 (una) Evaluación formativa asincrónica, en todo el bimestre. La asistencia al Taller de simulación clínica es OBLIGATORIA. También debe aprobar con 7 o más de 7 una evaluación conceptual de contenidos minimos para promocionar (formato escrito) que se tomará el día martes de la 6ta semana de cursada. Al llegar a la instancia de parcial en esas condiciones deberá aprobar con 7 o más de 7 el parcial oral el día jueves de la 6ta semana, pudiendo ser rendido en una única opción en la primera fecha de parcial que publicará la Cátedra. Si aprobara con nota superior a 4 pero menor a 7 en el parcial oral automáticamente pasa al sistema de promoción CON examen final. LAS NOTAS NO SE PROMEDIAN. Si el estudiante aprueba la evaluación conceptual escrita pero en la instancia ORAL saca una calificación menor a 4, pasará a recuperatorio de parcial la siguiente semana.
-    </p>
-  </div>
+<div class="modal">
+<span id="cerrarCondiciones" style="position:absolute; top:10px; right:15px; font-size:1.5em; font-weight:bold; cursor:pointer;">&times;</span>
+<p style="text-align:left; font-size:0.85em; color:#555; line-height:1.4;">
+Para aprobar la cursada cada alumno deberá:<br><br>
+Cursada regular CON examen final: El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra, por lo tanto, el estudiante puede faltar a 1(una) clase de Trabajos prácticos  de casos clínicos y 1 (una) Evaluación Formativa  asincrónica. También debe  aprobar con 4 o más de 4 la EVALUACION PARCIAL al finalizar la cursada  que se realizará de forma presencial pudiendo ser rendido hasta un máximo de 3 oportunidades de las 4 fechas que publicará la Cátedra. Luego se presentará a rendir final en la mesa que desee.<br><br>
+Promoción de cursada regular SIN examen final: El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra, por lo tanto, el estudiante puede faltar a 1 (una) Clase de integración teórica; 1 (una) clase de Trabajos prácticos  de casos clínicos y 1 (una) Evaluación formativa  asincrónica,  en todo el bimestre.  La asistencia al  Taller de simulación clínica es OBLIGATORIA. También debe  aprobar con 7 o más de 7  una evaluación conceptual de contenidos minimos para promocionar (formato escrito) que se tomará  el día martes de la  6ta semana de cursada. Al llegar a la instancia de parcial en esas condiciones  deberá aprobar con 7 o más de 7 el parcial oral el día jueves de la 6ta semana,  pudiendo ser rendido en una única opción en la primera fecha de parcial que publicará la Cátedra.  Si aprobara con nota superior a 4 pero menor a 7 en el parcial oral automáticamente pasa al sistema de promoción CON examen final.  LAS NOTAS NO SE PROMEDIAN . Si el estudiante aprueba la evaluación conceptual escrita pero en la instancia ORAL saca una calificación menor a 4, pasará a recuperatorio de parcial la siguiente semana.
+</p>
+</div>
 </div>
 
 <script>
@@ -160,12 +161,7 @@ async function buscarNota(){
     
     tablaHTML+=`<button id="btnReclamo">Consulta / Reclamo</button>`;
     tablaHTML+=`<button id="btnVolver">Volver</button>`;
-    
-    // Agregamos el texto de condiciones
-    <p style="margin-top:1cm; color:#555; font-size:0.85em; text-align:left; text-indent:0;">
-    La información visualizada en esta plataforma corresponde a <a href="#" id="condicionesLink" style="color:#555; text-decoration:underline;">las condiciones establecidas por la cátedra</a>.
-    </p>`;
-    
+    tablaHTML+=`<p id="mensajeCondiciones">La información visualizada en esta plataforma corresponde a <a id="linkCondiciones">las condiciones establecidas por la cátedra</a>.</p>`;
     resultado.innerHTML = tablaHTML;
 
     const btnReclamo = document.getElementById('btnReclamo');
@@ -196,13 +192,12 @@ async function buscarNota(){
       resultado.innerHTML='';
     });
 
-    // Link de condiciones
-    document.getElementById('condicionesLink').addEventListener('click', e => {
-      e.preventDefault();
-      document.getElementById('modalCondiciones').style.display = 'flex';
+    const linkCondiciones = document.getElementById('linkCondiciones');
+    linkCondiciones.addEventListener('click', ()=>{
+      document.getElementById('modalCondiciones').style.display='flex';
     });
-    document.getElementById('cerrarCondiciones').addEventListener('click', () => {
-      document.getElementById('modalCondiciones').style.display = 'none';
+    document.getElementById('cerrarCondiciones').addEventListener('click', ()=>{
+      document.getElementById('modalCondiciones').style.display='none';
     });
 
   } catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
@@ -212,6 +207,7 @@ document.addEventListener('DOMContentLoaded', verificarEstado);
 </script>
 </body>
 </html>
+
 
 
 
