@@ -24,7 +24,6 @@ button { border-radius: 5px; cursor: pointer; font-weight: 700; display: block; 
 #btnReclamo, #btnVolver { padding: 0.425em 0.85em; font-size: 0.85em; background: #2d8390; color: white; border: none; }
 #btnConsultar:hover, #btnReclamo:hover, #btnVolver:hover, #enviarReclamo:hover { opacity: 0.9; }
 #resultado { margin-top: 0.8em; font-size: 1.15em; line-height: 1.5; color: #000; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; width: 100%; box-sizing: border-box; }
-#ultimaActualizacion { font-size:0.85em; color:#555; text-align:center; margin-top:5px; }
 @media screen and (max-width: 600px) { main { margin: 1em; padding: 1.2em; } #resultado { font-size: 1em; } }
 #resultado strong { color: #000; }
 table { margin-top: 0.3em; border-collapse: collapse; width: 100%; }
@@ -102,7 +101,6 @@ async function verificarEstado() {
     const datos = await cargarDatos(urlBase + '&_ts=' + Date.now());
     const estado = datos.data[0]?.Estado?.trim().toLowerCase();
     const contenido = document.getElementById('contenido');
-
     if(estado === 'habilitado'){
       contenido.innerHTML = `
       <div id="formBuscador">
@@ -111,23 +109,11 @@ async function verificarEstado() {
         <label for="email">E-mail asociado al SIU Guaraní*</label><input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
         <small style="color:#555; font-size:0.9em;">*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
         <button id="btnConsultar">Ver Calificaciones</button>
-        <div id="ultimaActualizacion"></div>
       </div>
       <div id="loader"><span>.</span><span>.</span><span>.</span></div>
       <div id="resultado"></div>
       <div id="error"></div>
       `;
-
-      // Mostrar fecha/hora de última actualización sin segundos
-      const ultima = datos.data[0]['ÚltimaActualización'] || '–';
-      if(ultima !== '–') {
-        const dt = new Date(ultima);
-        const fechaMinutos = dt.getDate().toString().padStart(2,'0') + '/' + (dt.getMonth()+1).toString().padStart(2,'0') + '/' + dt.getFullYear() + ' - ' + dt.getHours().toString().padStart(2,'0') + ':' + dt.getMinutes().toString().padStart(2,'0');
-        document.getElementById('ultimaActualizacion').textContent = `Última actualización de la cátedra: ${fechaMinutos}`;
-      } else {
-        document.getElementById('ultimaActualizacion').textContent = `Última actualización de la cátedra: –`;
-      }
-
       const legajoInput = document.getElementById('legajo');
       const emailInput = document.getElementById('email');
       const btnConsultar = document.getElementById('btnConsultar');
@@ -221,6 +207,20 @@ document.addEventListener('DOMContentLoaded', verificarEstado);
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
