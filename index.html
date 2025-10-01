@@ -41,6 +41,12 @@ footer { background: #38828f; color: white; text-align: center; padding: 1em; fo
 #loader span:nth-child(2) { animation-delay: 0.3s; }
 #loader span:nth-child(3) { animation-delay: 0.6s; }
 #resultado table tbody td { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>'); background-repeat: repeat; background-position: 0 0; background-size: 60px 12px; }
+
+/* overlay/modal: por defecto oculto */
+.overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 99999; }
+.modal { background: white; padding: 20px; border-radius: 10px; max-width: 600px; width: 100%; max-height: 90%; overflow-y: auto; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 5px solid #38828f; position: relative; }
+.modal input, .modal textarea { margin-top: 5px; }
+.modal textarea { height: 80px; }
 #mensajeCondiciones { margin-top:1cm; color:#555; font-size:0.85em; text-align:left; text-indent:0; }
 #mensajeCondiciones a { color:#555; text-decoration: underline; cursor: pointer; }
 </style>
@@ -58,15 +64,16 @@ footer { background: #38828f; color: white; text-align: center; padding: 1em; fo
 <footer>© 2025 Cátedra de Toxicología, Facultad de Ciencias Médicas - UNLP.</footer>
 
 <!-- Modal Condiciones -->
-<div class="overlay" id="modalCondiciones">
-<div class="modal">
-<span id="cerrarCondiciones" style="position:absolute; top:10px; right:15px; font-size:1.5em; font-weight:bold; cursor:pointer;">&times;</span>
-<p style="text-align:left; font-size:0.85em; color:#555; line-height:1.4;">
-Para aprobar la cursada cada alumno deberá:<br><br>
-<strong>Cursada regular CON examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra, por lo tanto, el estudiante puede faltar a 1(una) clase de Trabajos prácticos  de casos clínicos y 1 (una) Evaluación Formativa  asincrónica. También debe  aprobar con 4 o más de 4 la EVALUACION PARCIAL al finalizar la cursada  que se realizará de forma presencial pudiendo ser rendido hasta un máximo de 3 oportunidades de las 4 fechas que publicará la Cátedra. Luego se presentará a rendir final en la mesa que desee.<br><br>
-<strong>Promoción de cursada regular SIN examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra, por lo tanto, el estudiante puede faltar a 1 (una) Clase de integración teórica; 1 (una) clase de Trabajos prácticos  de casos clínicos y 1 (una) Evaluación formativa  asincrónica,  en todo el bimestre.  La asistencia al  Taller de simulación clínica es OBLIGATORIA. También debe  aprobar con 7 o más de 7  una evaluación conceptual de contenidos minimos para promocionar (formato escrito) que se tomará  el día martes de la  6ta semana de cursada. Al llegar a la instancia de parcial en esas condiciones  deberá aprobar con 7 o más de 7 el parcial oral el día jueves de la 6ta semana,  pudiendo ser rendido en una única opción en la primera fecha de parcial que publicará la Cátedra.  Si aprobara con nota superior a 4 pero menor a 7 en el parcial oral automáticamente pasa al sistema de promoción CON examen final.  LAS NOTAS NO SE PROMEDIAN . Si el estudiante aprueba la evaluación conceptual escrita pero en la instancia ORAL saca una calificación menor a 4, pasará a recuperatorio de parcial la siguiente semana.
-</p>
-</div>
+<div class="overlay" id="modalCondiciones" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloCondiciones">
+    <span id="cerrarCondiciones" style="position:absolute; top:10px; right:15px; font-size:1.5em; font-weight:bold; cursor:pointer; display:inline-block;">&times;</span>
+    <h3 id="tituloCondiciones" style="margin-top:0;">Condiciones de la Cátedra</h3>
+    <p style="text-align:left; font-size:0.85em; color:#555; line-height:1.4;">
+      Para aprobar la cursada cada alumno deberá:<br><br>
+      <strong>Cursada regular CON examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra, por lo tanto, el estudiante puede faltar a 1(una) clase de Trabajos prácticos de casos clínicos y 1 (una) Evaluación Formativa asincrónica. También debe aprobar con 4 o más de 4 la EVALUACION PARCIAL al finalizar la cursada que se realizará de forma presencial pudiendo ser rendido hasta un máximo de 3 oportunidades de las 4 fechas que publicará la Cátedra. Luego se presentará a rendir final en la mesa que desee.<br><br>
+      <strong>Promoción de cursada regular SIN examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra, por lo tanto, el estudiante puede faltar a 1 (una) Clase de integración teórica; 1 (una) clase de Trabajos prácticos de casos clínicos y 1 (una) Evaluación formativa asincrónica, en todo el bimestre. La asistencia al Taller de simulación clínica es OBLIGATORIA. También debe aprobar con 7 o más de 7 una evaluación conceptual de contenidos minimos para promocionar (formato escrito) que se tomará el día martes de la 6ta semana de cursada. Al llegar a la instancia de parcial en esas condiciones deberá aprobar con 7 o más de 7 el parcial oral el día jueves de la 6ta semana, pudiendo ser rendido en una única opción en la primera fecha de parcial que publicará la Cátedra. Si aprobara con nota superior a 4 pero menor a 7 en el parcial oral automáticamente pasa al sistema de promoción CON examen final. LAS NOTAS NO SE PROMEDIAN. Si el estudiante aprueba la evaluación conceptual escrita pero en la instancia ORAL saca una calificación menor a 4, pasará a recuperatorio de parcial la siguiente semana.
+    </p>
+  </div>
 </div>
 
 <script>
@@ -96,6 +103,10 @@ async function verificarEstado() {
       <div id="resultado"></div>
       <div id="error"></div>
       `;
+      // asegurar modal cerrado por si acaso
+      const modal = document.getElementById('modalCondiciones');
+      if(modal) modal.style.display = 'none';
+
       const legajoInput = document.getElementById('legajo');
       const emailInput = document.getElementById('email');
       const btnConsultar = document.getElementById('btnConsultar');
@@ -151,17 +162,39 @@ async function buscarNota(){
       resultado.innerHTML='';
     });
 
-    const linkCondiciones = document.getElementById('linkCondiciones');
-    linkCondiciones.addEventListener('click', ()=>{
-      document.getElementById('modalCondiciones').style.display='flex';
-    });
-    document.getElementById('cerrarCondiciones').addEventListener('click', ()=>{
-      document.getElementById('modalCondiciones').style.display='none';
-    });
-
+    // NOTA: el control del modal se maneja por delegación a nivel documento (ver abajo).
   } catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
 }
 
+/* Control robusto del modal de condiciones:
+   - Nos aseguramos de que el modal esté oculto al inicio.
+   - Usamos delegación de eventos para que el enlace (creado dinámicamente) abra el modal.
+   - La X y hacer click fuera del modal lo cierran.
+*/
+document.addEventListener('DOMContentLoaded', ()=> {
+  const modal = document.getElementById('modalCondiciones');
+  if(modal) modal.style.display = 'none';
+
+  document.addEventListener('click', (e)=>{
+    const target = e.target;
+    // abrir modal cuando se hace click en el enlace (puede crearse dinámicamente)
+    if(target && target.id === 'linkCondiciones'){
+      e.preventDefault();
+      if(modal) modal.style.display = 'flex';
+    }
+    // cerrar con la X
+    if(target && target.id === 'cerrarCondiciones'){
+      if(modal) modal.style.display = 'none';
+    }
+    // cerrar si clickean en el fondo (overlay)
+    if(target && target.id === 'modalCondiciones'){
+      if(modal) modal.style.display = 'none';
+    }
+  });
+
+});
+
+// Mantener verificación al cargar la página
 document.addEventListener('DOMContentLoaded', verificarEstado);
 </script>
 </body>
