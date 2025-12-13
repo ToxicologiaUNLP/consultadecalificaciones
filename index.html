@@ -338,9 +338,19 @@ async function buscarNota() {
       return;
     }
 
-    const nombre = fila[columnas[0]] || "Alumno";
-    const excluir = ['legajo','email','estado'];
-    const visibles = columnas.filter(c => !excluir.includes(c.toLowerCase()) && fila[c]);
+   const excluir = [
+  'legajo',
+  'email',
+  'estado',
+  'apellido y nombre',
+  'nombre y apellido',
+  'nombre',
+  'alumno'
+];
+
+const visibles = columnas.filter(c =>
+  !excluir.includes(c.trim().toLowerCase())
+);
 
     let html = `<p><strong>${nombre}:</strong></p>`;
     html += `<div class="tabla-scroll"><table><tr>`;
