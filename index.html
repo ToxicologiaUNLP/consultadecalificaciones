@@ -338,18 +338,10 @@ async function buscarNota() {
       return;
     }
 
-   const excluir = [
-  'legajo',
-  'email',
-  'estado',
-  'apellido y nombre',
-  'nombre y apellido',
-  'nombre',
-  'alumno'
-];
+ const nombre = fila[columnas[0]] || "Alumno";
+const excluir = ['legajo','email','estado'];
+const visibles = columnas.filter(c => !excluir.includes(c.toLowerCase()) && fila[c]);
 
-const visibles = columnas.filter(c =>
-  !excluir.includes(c.trim().toLowerCase())
 );
 
     let html = `<p><strong>${nombre}:</strong></p>`;
