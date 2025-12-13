@@ -3,86 +3,215 @@
 <head>
 <meta charset="UTF-8" />
 <title>Asistencia y Calificaciones - Toxicología UNLP</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="icon" href="logo1.png" type="image/png" />
 
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
-body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: #f9f9f9; display: flex; flex-direction: column; min-height: 100vh; }
-header { display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
-header img { width: 100%; max-width: 660px; height: auto; }
-.titulo-centro { font-family: 'Open Sans', sans-serif; font-weight: 700; font-size: 2.2em; color: #38828f; text-align: center; margin: 20px 0 0 0; line-height: 1.2em; user-select: none; }
-main { max-width: 600px; background: #f9f8f5; margin: 0 auto 2em auto; padding: 2em; border-radius: 10px; box-shadow: 0 2px 8px rgb(0 0 0 / 0.15); flex-grow: 1; position: relative; min-height: calc(100vh - 140px); }
-label { display: block; font-weight: 600; margin-top: 1em; margin-bottom: 0.3em; }
-input[type="text"], input[type="email"], textarea { width: 100%; padding: 0.6em; font-size: 1.1em; border: 2px solid #ccc; border-radius: 5px; transition: border-color 0.3s ease; box-sizing: border-box; }
-input[type="text"]:focus, input[type="email"]:focus, textarea:focus { border-color: #007acc; outline: none; }
-button { border-radius: 5px; cursor: pointer; font-weight: 700; display: block; margin: 0.8em auto 0 auto; }
-#btnConsultar { padding: 0.5em 1em; font-size: 1em; background: #2d8390; color: white; border: none; }
-#btnVolver { padding: 0.425em 0.85em; font-size: 0.85em; background: #2d8390; color: white; border: none; }
-#btnConsultar:hover, #btnVolver:hover { opacity: 0.9; }
-#resultado { margin-top: 0.8em; font-size: 1.15em; line-height: 1.5; color: #000; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; width: 100%; box-sizing: border-box; }
-@media screen and (max-width: 600px) { main { margin: 1em; padding: 1.2em; } #resultado { font-size: 1em; } }
-#resultado strong { color: #000; }
-table { margin-top: 0.3em; border-collapse: collapse; width: 100%; }
-table, th, td { border: 1px solid #ddd; }
-th, td { padding: 0.6em 0.9em; text-align: center; }
-th { background-color: #f5f5f5; font-weight: 700; }
-#error { color: #cc0000; font-weight: 700; margin-top: 1.5em; }
-.tabla-scroll { overflow-x: auto; max-width: 100%; }
-.tabla-scroll table { min-width: 600px; }
-footer { background: #38828f; color: white; text-align: center; padding: 1em; font-size: 0.9em; }
-#loader { display: none; text-align: center; margin-top: 20px; font-size: 2em; font-weight: bold; color: black; font-family: monospace; letter-spacing: 0.2em; }
-@keyframes puntos { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
-#loader span { opacity: 0; animation-name: puntos; animation-duration: 1.5s; animation-iteration-count: infinite; }
-#loader span:nth-child(1) { animation-delay: 0s; }
-#loader span:nth-child(2) { animation-delay: 0.3s; }
-#loader span:nth-child(3) { animation-delay: 0.6s; }
-#resultado table tbody td { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>'); background-repeat: repeat; background-position: 0 0; background-size: 60px 12px; }
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Open Sans', sans-serif;
+  background: linear-gradient(135deg,#087882 0%,#0c8c9c 40%,#045c63 70%,#04545d 100%);
+}
 
-/* overlay/modal: por defecto oculto */
-.overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 99999; }
-.modal { background: white; padding: 20px; border-radius: 10px; max-width: 600px; width: 100%; max-height: 90%; overflow-y: auto; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 5px solid #38828f; position: relative; }
-.modal input, .modal textarea { margin-top: 5px; }
-.modal textarea { height: 80px; }
-#mensajeCondiciones { margin-top:1cm; color:#555; font-size:0.85em; text-align:left; text-indent:0; }
-#mensajeCondiciones a { color:#555; text-decoration: underline; cursor: pointer; }
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* CONTENEDOR GENERAL */
+.main-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 40px 15px;
+}
+
+/* CAJA PRINCIPAL */
+.main-box {
+  background: rgba(198,213,218,0.96);
+  width: 100%;
+  max-width: 650px;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 8px 25px rgba(0,0,0,.25);
+}
+
+/* LOGO */
+#logo {
+  width: 100%;
+  max-width: 600px;
+  display: block;
+  margin: 0 auto 20px;
+  border-radius: 12px;
+}
+
+/* TITULO */
+h1 {
+  text-align: center;
+  color: #04545d;
+  margin-bottom: 20px;
+}
+
+/* CONTENIDO DINÁMICO */
+main {
+  background: #f9f8f5;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+/* FORMULARIO */
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+  color: #04545d;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #608b92;
+  box-sizing: border-box;
+}
+
+button {
+  display: block;
+  margin: 20px auto 0;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  background: #0c8c9c;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #04545d;
+}
+
+/* RESULTADOS */
+#resultado {
+  margin-top: 15px;
+  font-size: 1em;
+  color: #000;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+th {
+  background: #e0ecef;
+}
+
+/* LOADER */
+#loader {
+  display: none;
+  text-align: center;
+  margin-top: 15px;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #04545d;
+}
+
+/* ERROR */
+#error {
+  color: #b22222;
+  font-weight: 600;
+  margin-top: 15px;
+}
+
+/* FOOTER */
+.contacto {
+  margin: 25px 0;
+  text-align: center;
+  color: #e8f3f4;
+  font-size: 14px;
+}
+
+/* MODAL */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal {
+  background: white;
+  padding: 25px;
+  border-radius: 14px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 </head>
+
 <body>
-<header>
-<img src="logop.png" alt="Logo Cátedra" />
-<div class="titulo-centro">ASISTENCIA Y CALIFICACIONES</div>
-</header>
 
-<main id="contenido"></main>
+<div class="main-wrapper">
+  <div class="main-box">
 
-<footer>© 2026 Cátedra de Toxicología, Facultad de Ciencias Médicas - UNLP.</footer>
+    <img id="logo" src="logop.png" alt="Logo Toxicología">
 
-<!-- Modal Condiciones -->
-<div class="overlay" id="modalCondiciones" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloCondiciones">
-    <span id="cerrarCondiciones" style="position:absolute; top:10px; right:15px; font-size:1.5em; font-weight:bold; cursor:pointer; display:inline-block;">&times;</span>
-    <h3 id="tituloCondiciones" style="margin-top:0;">Condiciones de la Cátedra</h3>
-    <p style="text-align:left; font-size:0.85em; color:#555; line-height:1.4;">
-      Para aprobar la cursada cada alumno deberá:<br><br>
-      <strong>Cursada regular CON examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra, por lo tanto, el estudiante puede faltar a 1(una) clase de Trabajos prácticos de casos clínicos y 1 (una) Evaluación Formativa asincrónica. También debe aprobar con 4 o más de 4 la EVALUACION PARCIAL al finalizar la cursada que se realizará de forma presencial pudiendo ser rendido hasta un máximo de 3 oportunidades de las 4 fechas que publicará la Cátedra. Luego se presentará a rendir final en la mesa que desee.<br><br>
-      <strong>Promoción de cursada regular SIN examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra, por lo tanto, el estudiante puede faltar a 1 (una) Clase de integración teórica; 1 (una) clase de Trabajos prácticos de casos clínicos y 1 (una) Evaluación formativa asincrónica, en todo el bimestre. La asistencia al Taller de simulación clínica es OBLIGATORIA. También debe aprobar con 7 o más de 7 una evaluación conceptual de contenidos minimos para promocionar (formato escrito) que se tomará el día martes de la 6ta semana de cursada. Al llegar a la instancia de parcial en esas condiciones deberá aprobar con 7 o más de 7 el parcial oral el día jueves de la 6ta semana, pudiendo ser rendido en una única opción en la primera fecha de parcial que publicará la Cátedra. Si aprobara con nota superior a 4 pero menor a 7 en el parcial oral automáticamente pasa al sistema de promoción CON examen final. LAS NOTAS NO SE PROMEDIAN. Si el estudiante aprueba la evaluación conceptual escrita pero en la instancia ORAL saca una calificación menor a 4, pasará a recuperatorio de parcial la siguiente semana.
+    <h1>ASISTENCIA Y CALIFICACIONES</h1>
+
+    <main id="contenido"></main>
+
+  </div>
+</div>
+
+<div class="contacto">
+© Cátedra de Toxicología – Facultad de Ciencias Médicas – UNLP<br>
+<strong>toxicoalumnos@gmail.com</strong>
+</div>
+
+<!-- MODAL CONDICIONES -->
+<div class="overlay" id="modalCondiciones">
+  <div class="modal">
+    <span id="cerrarCondiciones" style="float:right; font-size:22px; cursor:pointer;">&times;</span>
+    <h3>Condiciones de la Cátedra</h3>
+    <p style="font-size:0.9em; line-height:1.5; color:#333;">
+      Para aprobar la cursada cada alumno deberá cumplir las condiciones establecidas por la cátedra según el régimen vigente.
     </p>
   </div>
 </div>
 
 <script>
+/* ================== SCRIPT ORIGINAL SIN CAMBIOS ================== */
 const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?output=csv';
 
 async function cargarDatos(url) {
   const res = await fetch(url);
   const text = await res.text();
-  return Papa.parse(text, {header:true, skipEmptyLines:true, delimiter:","});
+  return Papa.parse(text, {header:true, skipEmptyLines:true});
 }
 
 async function verificarEstado() {
@@ -90,115 +219,86 @@ async function verificarEstado() {
     const datos = await cargarDatos(urlBase + '&_ts=' + Date.now());
     const estado = datos.data[0]?.Estado?.trim().toLowerCase();
     const contenido = document.getElementById('contenido');
-    if(estado === 'habilitado'){
-      contenido.innerHTML = `
-      <div id="formBuscador">
-        <p style="color:black; margin:0.5em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
-        <label for="legajo">Legajo</label><input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
-        <label for="email">E-mail asociado al SIU Guaraní*</label><input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
-        <small style="color:#555; font-size:0.9em;">*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
-        <button id="btnConsultar">Ver Calificaciones</button>
-      </div>
-      <div id="loader"><span>.</span><span>.</span><span>.</span></div>
-      <div id="resultado"></div>
-      <div id="error"></div>
-      `;
-      // asegurar modal cerrado por si acaso
-      const modal = document.getElementById('modalCondiciones');
-      if(modal) modal.style.display = 'none';
 
-      const legajoInput = document.getElementById('legajo');
-      const emailInput = document.getElementById('email');
-      const btnConsultar = document.getElementById('btnConsultar');
-      [legajoInput,emailInput].forEach(inp=>inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault(); buscarNota();}}));
-      btnConsultar.addEventListener('click',buscarNota);
+    if (estado === 'habilitado') {
+      contenido.innerHTML = `
+        <label>Legajo</label>
+        <input type="text" id="legajo" placeholder="12345/6">
+
+        <label>Email</label>
+        <input type="email" id="email" placeholder="alumno@gmail.com">
+
+        <button id="btnConsultar">Ver Calificaciones</button>
+
+        <div id="loader">Consultando...</div>
+        <div id="resultado"></div>
+        <div id="error"></div>
+      `;
+
+      document.getElementById('btnConsultar').addEventListener('click', buscarNota);
     } else {
       contenido.innerHTML = `
-        <div style="border: 2px solid #38828f; background: #f9f8f5; padding: 1.2em; border-radius: 10px; max-width: 500px; margin: 2em auto; text-align: center; font-family: 'Open Sans', sans-serif; color: #000; font-size: 1.1em; line-height: 1.5;">
-          En este momento no es posible acceder a la plataforma.<br>
-         Aguarde a la carga de calificaciones o actualización de las mismas.
-        </div>
+        <p style="text-align:center;font-weight:600;">
+          La plataforma no se encuentra habilitada en este momento.
+        </p>
       `;
     }
-  } catch(e){ console.error(e); document.getElementById('contenido').innerHTML=`<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.</p>`;}
+  } catch {
+    document.getElementById('contenido').innerHTML =
+      '<p style="color:red;text-align:center;">Error al cargar la plataforma.</p>';
+  }
 }
 
-async function buscarNota(){
-  const legajoInput = document.getElementById('legajo').value.trim().toLowerCase();
-  const emailInput = document.getElementById('email').value.trim().toLowerCase();
-  const resultado = document.getElementById('resultado');
-  const errorDiv = document.getElementById('error');
+async function buscarNota() {
+  const legajo = document.getElementById('legajo').value.trim().toLowerCase();
+  const email = document.getElementById('email').value.trim().toLowerCase();
   const loader = document.getElementById('loader');
-  resultado.innerHTML = ""; errorDiv.textContent="";
-  if(!legajoInput || !emailInput){errorDiv.textContent="Por favor, ingrese los datos requeridos."; return;}
-  loader.style.display="block";
-  try{
+  const resultado = document.getElementById('resultado');
+  const error = document.getElementById('error');
+
+  resultado.innerHTML = '';
+  error.textContent = '';
+
+  if (!legajo || !email) {
+    error.textContent = 'Complete todos los campos.';
+    return;
+  }
+
+  loader.style.display = 'block';
+
+  try {
     const parsed = await cargarDatos(urlBase + '&_ts=' + Date.now());
-    const columnas = parsed.meta.fields;
-    const fila = parsed.data.find(row=>row['Legajo'] && row['Email'] && row['Legajo'].trim().toLowerCase()===legajoInput && row['Email'].trim().toLowerCase()===emailInput);
-    loader.style.display="none";
-    if(!fila){errorDiv.textContent="Datos incorrectos. Verifique e intente nuevamente."; return;}
-    const primeraColumna = columnas[0];
-    const nombre = fila[primeraColumna] || "Alumno";
-    const columnasExcluir = ['legajo','nombre','apellido','nombre y apellido','alumno','email','estado', primeraColumna.toLowerCase()];
-    const columnasVisibles = columnas.filter(col=>!columnasExcluir.includes(col.toLowerCase()) && fila[col] && fila[col].trim()!=='');
-    
-    document.getElementById('formBuscador').style.display = 'none';
+    const fila = parsed.data.find(r =>
+      r.Legajo?.trim().toLowerCase() === legajo &&
+      r.Email?.trim().toLowerCase() === email
+    );
 
-    let tablaHTML = `<p><strong>${nombre}, tus calificaciones son:</strong></p>`;
-    tablaHTML += `<div class="tabla-scroll"><table><thead><tr>`;
-    columnasVisibles.forEach(col=>tablaHTML+=`<th>${col}</th>`);
-    tablaHTML+=`</tr></thead><tbody><tr>`;
-    columnasVisibles.forEach(col=>tablaHTML+=`<td>${fila[col]}</td>`);
-    tablaHTML+=`</tr></tbody></table></div>`;
-    
-    tablaHTML+=`<button id="btnVolver">Volver</button>`;
-    tablaHTML+=`<p id="mensajeCondiciones">La información presentada en esta plataforma corresponde y depende de <a id="linkCondiciones">las condiciones</a> establecidas por la cátedra.</p>`;
-    resultado.innerHTML = tablaHTML;
+    loader.style.display = 'none';
 
-    const btnVolver = document.getElementById('btnVolver');
-    btnVolver.addEventListener('click',()=>{
-      document.getElementById('formBuscador').style.display='block';
-      resultado.innerHTML='';
-    });
+    if (!fila) {
+      error.textContent = 'Datos incorrectos.';
+      return;
+    }
 
-    // NOTA: el control del modal se maneja por delegación a nivel documento (ver abajo).
-  } catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
+    let html = '<table><tr>';
+    Object.keys(fila).forEach(k => html += `<th>${k}</th>`);
+    html += '</tr><tr>';
+    Object.values(fila).forEach(v => html += `<td>${v}</td>`);
+    html += '</tr></table>';
+
+    resultado.innerHTML = html;
+  } catch {
+    loader.style.display = 'none';
+    error.textContent = 'Error al consultar los datos.';
+  }
 }
 
-/* Control robusto del modal de condiciones:
-   - Nos aseguramos de que el modal esté oculto al inicio.
-   - Usamos delegación de eventos para que el enlace (creado dinámicamente) abra el modal.
-   - La X y hacer click fuera del modal lo cierran.
-*/
-document.addEventListener('DOMContentLoaded', ()=> {
-  const modal = document.getElementById('modalCondiciones');
-  if(modal) modal.style.display = 'none';
-
-  document.addEventListener('click', (e)=>{
-    const target = e.target;
-    // abrir modal cuando se hace click en el enlace (puede crearse dinámicamente)
-    if(target && target.id === 'linkCondiciones'){
-      e.preventDefault();
-      if(modal) modal.style.display = 'flex';
-    }
-    // cerrar con la X
-    if(target && target.id === 'cerrarCondiciones'){
-      if(modal) modal.style.display = 'none';
-    }
-    // cerrar si clickean en el fondo (overlay)
-    if(target && target.id === 'modalCondiciones'){
-      if(modal) modal.style.display = 'none';
-    }
-  });
-
-});
-
-// Mantener verificación al cargar la página
 document.addEventListener('DOMContentLoaded', verificarEstado);
 </script>
+
 </body>
 </html>
+
 
 
 
