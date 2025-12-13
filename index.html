@@ -3,144 +3,205 @@
 <head>
 <meta charset="UTF-8" />
 <title>Asistencia y Calificaciones - Toxicología UNLP</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <link rel="icon" href="logo1.png" type="image/png" />
 
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
 
 <style>
 html, body {
+  height: 100%;
   margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  font-family: 'Open Sans', sans-serif;
-  background: linear-gradient(135deg,#087882 0%,#0c8c9c 40%,#045c63 70%,#04545d 100%);
 }
 
 body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(
+    135deg,
+    #04545d 0%,
+    #087882 40%,
+    #0c8c9c 70%,
+    #608b92 100%
+  );
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+header {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 25px 15px 10px;
 }
 
-/* CONTENEDOR GENERAL */
-.main-wrapper {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding: 40px 15px;
-}
-
-/* CAJA PRINCIPAL */
-.main-box {
-  background: rgba(198,213,218,0.96);
-  width: 100%;
-  max-width: 650px;
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: 0 8px 25px rgba(0,0,0,.25);
-}
-
-/* LOGO */
-#logo {
+.header-inner {
   width: 100%;
   max-width: 600px;
+}
+
+header img {
+  width: 100%;
+  height: auto;
   display: block;
-  margin: 0 auto 20px;
-  border-radius: 12px;
 }
 
-/* TITULO */
-h1 {
+.titulo-centro {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  font-size: 2.1em;
+  color: #ffffff;
   text-align: center;
-  color: #04545d;
-  margin-bottom: 20px;
+  margin: 18px 0 0;
+  line-height: 1.2em;
+  user-select: none;
 }
 
-/* CONTENIDO DINÁMICO */
+/* Main */
 main {
+  width: 100%;
+  max-width: 600px;
   background: #f9f8f5;
-  padding: 20px;
+  margin: auto;
+  padding: 2em;
   border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+  box-sizing: border-box;
 }
 
-/* FORMULARIO */
 label {
   display: block;
-  margin-top: 15px;
   font-weight: 600;
-  color: #04545d;
+  margin-top: 1em;
+  margin-bottom: 0.3em;
 }
 
 input[type="text"],
 input[type="email"],
 textarea {
   width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border-radius: 6px;
-  border: 1px solid #608b92;
+  padding: 0.6em;
+  font-size: 1.1em;
+  border: 2px solid #ccc;
+  border-radius: 5px;
   box-sizing: border-box;
 }
 
+input:focus, textarea:focus {
+  border-color: #087882;
+  outline: none;
+}
+
 button {
-  display: block;
-  margin: 20px auto 0;
-  padding: 10px 20px;
-  border-radius: 8px;
-  border: none;
-  background: #0c8c9c;
-  color: white;
-  font-size: 16px;
-  font-weight: 600;
+  border-radius: 6px;
   cursor: pointer;
+  font-weight: 700;
+  display: block;
+  margin: 1em auto 0;
+  background: #087882;
+  color: white;
+  border: none;
 }
 
 button:hover {
-  background: #04545d;
+  opacity: 0.9;
 }
 
-/* RESULTADOS */
 #resultado {
-  margin-top: 15px;
-  font-size: 1em;
+  margin-top: 0.8em;
+  font-size: 1.1em;
+  line-height: 1.5;
   color: #000;
+  word-wrap: break-word;
 }
 
 table {
-  width: 100%;
+  margin-top: 0.4em;
   border-collapse: collapse;
-  margin-top: 10px;
+  width: 100%;
+}
+
+table, th, td {
+  border: 1px solid #ddd;
 }
 
 th, td {
-  border: 1px solid #ccc;
-  padding: 8px;
+  padding: 0.6em;
   text-align: center;
 }
 
 th {
-  background: #e0ecef;
+  background-color: #f1f1f1;
+  font-weight: 700;
 }
 
-/* LOADER */
-#loader {
-  display: none;
+.tabla-scroll {
+  overflow-x: auto;
+}
+
+footer {
+  background: rgba(0,0,0,0.25);
+  color: white;
   text-align: center;
-  margin-top: 15px;
-  font-size: 1.5em;
-  font-weight: bold;
-  color: #04545d;
+  padding: 1em;
+  font-size: 0.85em;
 }
 
-/* ERROR */
-#error {
-  color: #b22222;
-  font-weight: 600;
-  margin-top: 15px;
+/* Modal */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
 }
 
-/* FOOTER */
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 600px;
+  width: 95%;
+  max-height: 90%;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+  border: 5px solid #087882;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  main {
+    max-width: 92%;
+    padding: 1.3em;
+  }
+
+  .titulo-centro {
+    font-size: 1.7em;
+  }
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <img src="logop.png" alt="Logo Cátedra" />
+    <div class="titulo-centro">ASISTENCIA Y CALIFICACIONES</div>
+  </div>
+</header>
+
+<main id="contenido"></main>
+
+<footer>
+© 2026 Cátedra de Toxicología, Facultad de Ciencias Médicas - UNLP.
+</footer>
 .contacto {
   margin: 25px 0;
   text-align: center;
