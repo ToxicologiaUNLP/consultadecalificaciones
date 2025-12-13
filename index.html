@@ -7,104 +7,236 @@
 <link rel="icon" href="logo1.png" type="image/png" />
 
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
 
 <style>
-html, body { height: 100%; margin: 0; }
-body {
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  width: 100%;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: #f9f9f9;
-  display: flex;
-  flex-direction: column;
 }
-header {
+
+body {
   display: flex;
   flex-direction: column;
+  background: linear-gradient(135deg, #087882 0%, #0c8c9c 35%, #045c63 65%, #04545d 100%);
+}
+
+/* CONTENEDOR GENERAL */
+.page {
+  flex: 1;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 40px 15px;
 }
-header img {
-  max-width: 660px;
-  width: 100%;
-}
-.titulo-centro {
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
-  font-size: 2.2em;
-  color: #38828f;
-  text-align: center;
-  margin-top: 20px;
-}
+
+/* MAIN */
 main {
-  max-width: 600px;
-  margin: auto;
-  background: #f9f8f5;
-  padding: 2em;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.15);
-  flex-grow: 1;
-}
-label { font-weight: 600; margin-top: 1em; display: block; }
-input {
   width: 100%;
-  padding: .6em;
-  font-size: 1.1em;
-  border-radius: 5px;
-  border: 2px solid #ccc;
+  max-width: 620px;
+  background: rgba(198, 213, 218, 0.95);
+  border-radius: 20px;
+  padding: 35px 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
 }
-button {
+
+/* HEADER DENTRO DEL MAIN */
+.header-main {
+  text-align: center;
+}
+
+.header-main img {
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  margin: 0 auto 20px auto;
+  display: block;
+}
+
+.titulo-centro {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 1.9em;
+  color: #04545d;
+  margin-bottom: 30px;
+  user-select: none;
+}
+
+/* FORM */
+label {
+  display: block;
+  font-weight: 600;
   margin-top: 1em;
-  padding: .6em 1.2em;
-  background: #2d8390;
-  color: white;
-  border: none;
-  font-weight: 700;
-  border-radius: 5px;
-  cursor: pointer;
+  margin-bottom: 0.3em;
+  color: #04545d;
 }
-#resultado { margin-top: 1em; }
-table {
-  border-collapse: collapse;
+
+input[type="text"],
+input[type="email"],
+textarea {
   width: 100%;
-  margin-top: .5em;
+  padding: 0.6em;
+  font-size: 1.05em;
+  border: 2px solid #608b92;
+  border-radius: 6px;
+  box-sizing: border-box;
 }
-th, td {
-  border: 1px solid #ddd;
-  padding: .6em;
-  text-align: center;
+
+input:focus {
+  outline: none;
+  border-color: #0c8c9c;
 }
-th {
-  background: #f5f5f5;
+
+/* BOTONES */
+button {
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  display: block;
+  margin: 18px auto 0 auto;
+  border: none;
 }
-#error { color: #c00; font-weight: 700; margin-top: 1em; }
-footer {
-  background: #38828f;
+
+#btnConsultar {
+  padding: 14px 24px;
+  font-size: 1.05em;
+  background: #0c8c9c;
   color: white;
-  text-align: center;
-  padding: 1em;
-  font-size: .9em;
 }
+
+#btnVolver {
+  padding: 10px 18px;
+  font-size: 0.9em;
+  background: #04545d;
+  color: white;
+}
+
+#btnConsultar:hover,
+#btnVolver:hover {
+  opacity: 0.9;
+}
+
+/* RESULTADOS */
+#resultado {
+  margin-top: 20px;
+  font-size: 1.1em;
+  color: #000;
+  word-wrap: break-word;
+}
+
+#resultado strong {
+  color: #04545d;
+}
+
+/* TABLA */
+.tabla-scroll {
+  overflow-x: auto;
+  margin-top: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table, th, td {
+  border: 1px solid #b0c2c7;
+}
+
+th {
+  background: #608b92;
+  color: white;
+  padding: 10px;
+}
+
+td {
+  padding: 10px;
+  text-align: center;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>');
+}
+
+#error {
+  color: #b00000;
+  font-weight: 700;
+  margin-top: 15px;
+}
+
+/* LOADER */
 #loader {
   display: none;
   text-align: center;
+  margin-top: 20px;
   font-size: 2em;
-  margin-top: 1em;
+  font-weight: bold;
+  font-family: monospace;
+  letter-spacing: 0.2em;
 }
+
+@keyframes puntos {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+#loader span {
+  opacity: 0;
+  animation: puntos 1.5s infinite;
+}
+
+#loader span:nth-child(1) { animation-delay: 0s; }
+#loader span:nth-child(2) { animation-delay: 0.3s; }
+#loader span:nth-child(3) { animation-delay: 0.6s; }
+
+/* MODAL */
 .overlay {
-  display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.6);
+  background: rgba(0,0,0,0.6);
+  display: none;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 99999;
 }
+
 .modal {
   background: white;
-  max-width: 600px;
   padding: 20px;
   border-radius: 10px;
-  border: 5px solid #38828f;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90%;
+  overflow-y: auto;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  border: 5px solid #04545d;
   position: relative;
+}
+
+#mensajeCondiciones {
+  margin-top: 1cm;
+  color: #555;
+  font-size: 0.85em;
+  text-align: left;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  font-size: 0.85em;
+  color: #c6d5da;
+  padding: 12px 5px;
+}
+
+@media (max-width: 480px) {
+  main {
+    padding: 25px 20px;
+  }
+  .titulo-centro {
+    font-size: 1.6em;
+  }
 }
 </style>
 
@@ -112,112 +244,133 @@ footer {
 </head>
 
 <body>
-<header>
-  <img src="logop.png" alt="Logo Cátedra">
-  <div class="titulo-centro">ASISTENCIA Y CALIFICACIONES</div>
-</header>
 
-<main id="contenido"></main>
+<div class="page">
+<main>
 
-<footer>© 2026 Cátedra de Toxicología – Facultad de Ciencias Médicas – UNLP</footer>
-
-<div class="overlay" id="modalCondiciones">
-  <div class="modal">
-    <span id="cerrarCondiciones" style="position:absolute;top:10px;right:15px;font-size:1.5em;cursor:pointer;">×</span>
-    <h3>Condiciones de la Cátedra</h3>
-    <p style="font-size:.85em; line-height:1.4;">
-      (Texto institucional intacto tal como lo enviaste)
-    </p>
+  <div class="header-main">
+    <img src="logop.png" alt="Logo Cátedra" />
+    <div class="titulo-centro">ASISTENCIA Y CALIFICACIONES</div>
   </div>
+
+  <div id="contenido"></div>
+
+</main>
 </div>
 
-<script>
-const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?output=csv';
+<footer>© 2026 Cátedra de Toxicología, Facultad de Ciencias Médicas - UNLP.</footer>
 
-async function cargarCSV() {
-  const r = await fetch(urlCSV + '&_=' + Date.now());
-  const t = await r.text();
-  return Papa.parse(t, { header: true, skipEmptyLines: true });
+<!-- ===== JS ORIGINAL COMPLETO ===== -->
+<script>
+const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?output=csv';
+
+async function cargarDatos(url) {
+  const res = await fetch(url);
+  const text = await res.text();
+  return Papa.parse(text, {header:true, skipEmptyLines:true, delimiter:","});
 }
 
 async function verificarEstado() {
-  const datos = await cargarCSV();
-  const estado = datos.data[0]?.Estado?.toLowerCase().trim();
-  const c = document.getElementById('contenido');
+  try {
+    const datos = await cargarDatos(urlBase + '&_ts=' + Date.now());
+    const estado = datos.data[0]?.Estado?.trim().toLowerCase();
+    const contenido = document.getElementById('contenido');
 
-  if (estado !== 'habilitado') {
-    c.innerHTML = `<p style="text-align:center;font-weight:700;">Plataforma no disponible.</p>`;
-    return;
-  }
-
-  c.innerHTML = `
-    <div id="form">
-      <label>Legajo</label>
-      <input id="legajo">
-      <label>Email SIU Guaraní</label>
-      <input id="email">
-      <button id="btn">Ver Calificaciones</button>
-      <div id="loader">...</div>
+    if (estado === 'habilitado') {
+      contenido.innerHTML = `
+      <div id="formBuscador">
+        <p>Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
+        <label for="legajo">Legajo</label>
+        <input type="text" id="legajo" placeholder="12345/6" />
+        <label for="email">E-mail asociado al SIU Guaraní*</label>
+        <input type="email" id="email" placeholder="alumno@gmail.com" />
+        <small>*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
+        <button id="btnConsultar">Ver Calificaciones</button>
+      </div>
+      <div id="loader"><span>.</span><span>.</span><span>.</span></div>
+      <div id="resultado"></div>
       <div id="error"></div>
-    </div>
-    <div id="resultado"></div>
-  `;
+      `;
 
-  document.getElementById('btn').onclick = buscar;
+      document.getElementById('btnConsultar').addEventListener('click', buscarNota);
+    } else {
+      contenido.innerHTML = `
+      <div style="text-align:center;">
+        En este momento no es posible acceder a la plataforma.<br>
+        Aguarde a la carga de calificaciones.
+      </div>`;
+    }
+  } catch {
+    document.getElementById('contenido').innerHTML =
+      `<p style="color:red; font-weight:bold; text-align:center;">No se pudo verificar el estado.</p>`;
+  }
 }
 
-async function buscar() {
-  const leg = document.getElementById('legajo').value.trim().toLowerCase();
-  const mail = document.getElementById('email').value.trim().toLowerCase();
-  const res = document.getElementById('resultado');
-  const err = document.getElementById('error');
-  err.textContent = '';
-  res.innerHTML = '';
+async function buscarNota() {
+  const legajo = document.getElementById('legajo').value.trim().toLowerCase();
+  const email = document.getElementById('email').value.trim().toLowerCase();
+  const resultado = document.getElementById('resultado');
+  const errorDiv = document.getElementById('error');
+  const loader = document.getElementById('loader');
 
-  const datos = await cargarCSV();
-  const fila = datos.data.find(f =>
-    f.Legajo?.toLowerCase() === leg &&
-    f.Email?.toLowerCase() === mail
-  );
+  resultado.innerHTML = "";
+  errorDiv.textContent = "";
 
-  if (!fila) {
-    err.textContent = 'Datos incorrectos.';
+  if (!legajo || !email) {
+    errorDiv.textContent = "Por favor, ingrese los datos requeridos.";
     return;
   }
 
-  const nombre = fila['Nombre y Apellido'] || fila['Alumno'] || 'Alumno';
+  loader.style.display = "block";
 
-  const excluir = ['estado','legajo','email','nombre','apellido','nombre y apellido','alumno'];
-  const columnas = Object.keys(fila).filter(c =>
-    !excluir.includes(c.toLowerCase()) && fila[c].trim() !== ''
-  );
+  try {
+    const parsed = await cargarDatos(urlBase + '&_ts=' + Date.now());
+    const columnas = parsed.meta.fields;
+    const fila = parsed.data.find(r =>
+      r.Legajo?.trim().toLowerCase() === legajo &&
+      r.Email?.trim().toLowerCase() === email
+    );
 
-  let html = `<p><strong>${nombre}, tus calificaciones:</strong></p>`;
-  html += `<table><tr>`;
-  columnas.forEach(c => html += `<th>${c}</th>`);
-  html += `</tr><tr>`;
-  columnas.forEach(c => html += `<td>${fila[c]}</td>`);
-  html += `</tr></table>`;
-  html += `<button onclick="location.reload()">Volver</button>`;
-  html += `<p style="font-size:.85em;margin-top:1em;">La información depende de <a href="#" id="linkCond">las condiciones</a>.</p>`;
+    loader.style.display = "none";
 
-  res.innerHTML = html;
+    if (!fila) {
+      errorDiv.textContent = "Datos incorrectos.";
+      return;
+    }
+
+    const nombre = fila[columnas[0]] || "Alumno";
+    const excluir = ['legajo','email','estado'];
+    const visibles = columnas.filter(c => !excluir.includes(c.toLowerCase()) && fila[c]);
+
+    let html = `<p><strong>${nombre}, tus calificaciones son:</strong></p>`;
+    html += `<div class="tabla-scroll"><table><tr>`;
+    visibles.forEach(c => html += `<th>${c}</th>`);
+    html += `</tr><tr>`;
+    visibles.forEach(c => html += `<td>${fila[c]}</td>`);
+    html += `</tr></table></div>`;
+    html += `<button id="btnVolver">Volver</button>`;
+
+    resultado.innerHTML = html;
+
+    document.getElementById('btnVolver').onclick = () => {
+      document.getElementById('formBuscador').style.display = 'block';
+      resultado.innerHTML = '';
+    };
+
+    document.getElementById('formBuscador').style.display = 'none';
+
+  } catch {
+    loader.style.display = "none";
+    errorDiv.textContent = "Error al cargar los datos.";
+  }
 }
 
-document.addEventListener('click', e => {
-  if (e.target.id === 'linkCond') {
-    e.preventDefault();
-    document.getElementById('modalCondiciones').style.display = 'flex';
-  }
-  if (e.target.id === 'cerrarCondiciones' || e.target.id === 'modalCondiciones') {
-    document.getElementById('modalCondiciones').style.display = 'none';
-  }
-});
-
-verificarEstado();
+document.addEventListener('DOMContentLoaded', verificarEstado);
 </script>
+
 </body>
 </html>
+
 
 
 
