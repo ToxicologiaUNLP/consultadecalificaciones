@@ -342,7 +342,7 @@ async function buscarNota() {
     const excluir = ['legajo','email','estado'];
     const visibles = columnas.filter(c => !excluir.includes(c.toLowerCase()) && fila[c]);
 
-    let html = `<p><strong>${nombre}, tus calificaciones son:</strong></p>`;
+    let html = `<p><strong>${nombre}:</strong></p>`;
     html += `<div class="tabla-scroll"><table><tr>`;
     visibles.forEach(c => html += `<th>${c}</th>`);
     html += `</tr><tr>`;
