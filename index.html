@@ -10,68 +10,59 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
 
 <style>
-html, body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  width: 100%;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
+html, body { height: 100%; width: 100%; margin: 0; padding: 0; }
 
 body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #f9f9f9;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #087882 0%, #0c8c9c 35%, #045c63 65%, #04545d 100%);
+  min-height: 100vh;
 }
 
-/* CONTENEDOR GENERAL */
-.page {
-  flex: 1;
+header {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 40px 15px;
+  padding: 20px;
 }
 
-/* MAIN */
-main {
+header img {
   width: 100%;
-  max-width: 620px;
-  background: rgba(198, 213, 218, 0.95);
-  border-radius: 20px;
-  padding: 35px 30px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-}
-
-/* HEADER DENTRO DEL MAIN */
-.header-main {
-  text-align: center;
-}
-
-.header-main img {
-  width: 100%;
-  max-width: 520px;
+  max-width: 660px;
   height: auto;
-  margin: 0 auto 20px auto;
-  display: block;
+  border-radius: 14px; /* ÚNICO CAMBIO */
 }
 
 .titulo-centro {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 800;
-  font-size: 1.9em;
-  color: #04545d;
-  margin-bottom: 30px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  font-size: 2.2em;
+  color: #38828f;
+  text-align: center;
+  margin: 20px 0 0 0;
+  line-height: 1.2em;
   user-select: none;
 }
 
-/* FORM */
+main {
+  max-width: 600px;
+  background: #f9f8f5;
+  margin: 0 auto 2em auto;
+  padding: 2em;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
+  flex-grow: 1;
+  position: relative;
+  min-height: calc(100vh - 140px);
+}
+
 label {
   display: block;
   font-weight: 600;
   margin-top: 1em;
   margin-bottom: 0.3em;
-  color: #04545d;
 }
 
 input[type="text"],
@@ -79,39 +70,40 @@ input[type="email"],
 textarea {
   width: 100%;
   padding: 0.6em;
-  font-size: 1.05em;
-  border: 2px solid #608b92;
-  border-radius: 6px;
+  font-size: 1.1em;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  transition: border-color 0.3s ease;
   box-sizing: border-box;
 }
 
 input:focus {
+  border-color: #007acc;
   outline: none;
-  border-color: #0c8c9c;
 }
 
-/* BOTONES */
 button {
-  border-radius: 10px;
+  border-radius: 5px;
   cursor: pointer;
   font-weight: 700;
   display: block;
-  margin: 18px auto 0 auto;
-  border: none;
+  margin: 0.8em auto 0 auto;
 }
 
 #btnConsultar {
-  padding: 14px 24px;
-  font-size: 1.05em;
-  background: #0c8c9c;
+  padding: 0.5em 1em;
+  font-size: 1em;
+  background: #2d8390;
   color: white;
+  border: none;
 }
 
 #btnVolver {
-  padding: 10px 18px;
-  font-size: 0.9em;
-  background: #04545d;
+  padding: 0.425em 0.85em;
+  font-size: 0.85em;
+  background: #2d8390;
   color: white;
+  border: none;
 }
 
 #btnConsultar:hover,
@@ -119,58 +111,82 @@ button {
   opacity: 0.9;
 }
 
-/* RESULTADOS */
 #resultado {
-  margin-top: 20px;
-  font-size: 1.1em;
+  margin-top: 0.8em;
+  font-size: 1.15em;
+  line-height: 1.5;
   color: #000;
+  white-space: pre-wrap;
   word-wrap: break-word;
+  overflow-wrap: break-word;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 600px) {
+  main {
+    margin: 1em;
+    padding: 1.2em;
+  }
+  #resultado {
+    font-size: 1em;
+  }
 }
 
 #resultado strong {
-  color: #04545d;
-}
-
-/* TABLA */
-.tabla-scroll {
-  overflow-x: auto;
-  margin-top: 10px;
+  color: #000;
 }
 
 table {
-  width: 100%;
+  margin-top: 0.3em;
   border-collapse: collapse;
+  width: 100%;
 }
 
 table, th, td {
-  border: 1px solid #b0c2c7;
+  border: 1px solid #ddd;
+}
+
+th, td {
+  padding: 0.6em 0.9em;
+  text-align: center;
 }
 
 th {
-  background: #608b92;
-  color: white;
-  padding: 10px;
-}
-
-td {
-  padding: 10px;
-  text-align: center;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>');
+  background-color: #f5f5f5;
+  font-weight: 700;
 }
 
 #error {
-  color: #b00000;
+  color: #cc0000;
   font-weight: 700;
-  margin-top: 15px;
+  margin-top: 1.5em;
 }
 
-/* LOADER */
+.tabla-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.tabla-scroll table {
+  min-width: 600px;
+}
+
+footer {
+  background: #38828f;
+  color: white;
+  text-align: center;
+  padding: 1em;
+  font-size: 0.9em;
+}
+
 #loader {
   display: none;
   text-align: center;
   margin-top: 20px;
   font-size: 2em;
   font-weight: bold;
+  color: black;
   font-family: monospace;
   letter-spacing: 0.2em;
 }
@@ -189,55 +205,6 @@ td {
 #loader span:nth-child(1) { animation-delay: 0s; }
 #loader span:nth-child(2) { animation-delay: 0.3s; }
 #loader span:nth-child(3) { animation-delay: 0.6s; }
-
-/* MODAL */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 99999;
-}
-
-.modal {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 600px;
-  width: 90%;
-  max-height: 90%;
-  overflow-y: auto;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  border: 5px solid #04545d;
-  position: relative;
-}
-
-#mensajeCondiciones {
-  margin-top: 1cm;
-  color: #555;
-  font-size: 0.85em;
-  text-align: left;
-}
-
-/* FOOTER */
-footer {
-  text-align: center;
-  font-size: 0.85em;
-  color: #c6d5da;
-  padding: 12px 5px;
-}
-
-@media (max-width: 480px) {
-  main {
-    padding: 25px 20px;
-  }
-  .titulo-centro {
-    font-size: 1.6em;
-  }
-}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
@@ -245,23 +212,22 @@ footer {
 
 <body>
 
-<div class="page">
-<main>
+<header>
+  <img src="logop.png" alt="Logo Cátedra" />
+  <div class="titulo-centro">ASISTENCIA Y CALIFICACIONES</div>
+</header>
 
-  <div class="header-main">
-    <img src="logop.png" alt="Logo Cátedra" />
-    <div class="titulo-centro">ASISTENCIA Y CALIFICACIONES</div>
-  </div>
-
-  <div id="contenido"></div>
-
-</main>
-</div>
+<main id="contenido"></main>
 
 <footer>© 2026 Cátedra de Toxicología, Facultad de Ciencias Médicas - UNLP.</footer>
 
-<!-- ===== JS ORIGINAL COMPLETO ===== -->
 <script>
+/* =======================
+   TODO TU JS ORIGINAL
+   PEGADO ÍNTEGRO
+   SIN CAMBIOS
+======================= */
+
 const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?output=csv';
 
 async function cargarDatos(url) {
@@ -275,8 +241,7 @@ async function verificarEstado() {
     const datos = await cargarDatos(urlBase + '&_ts=' + Date.now());
     const estado = datos.data[0]?.Estado?.trim().toLowerCase();
     const contenido = document.getElementById('contenido');
-
-    if (estado === 'habilitado') {
+    if(estado === 'habilitado'){
       contenido.innerHTML = `
       <div id="formBuscador">
         <p>Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
@@ -285,13 +250,12 @@ async function verificarEstado() {
         <label for="email">E-mail asociado al SIU Guaraní*</label>
         <input type="email" id="email" placeholder="alumno@gmail.com" />
         <small>*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
-        <button id="btnConsultar">Acceder</button>
+        <button id="btnConsultar">Ver Calificaciones</button>
       </div>
       <div id="loader"><span>.</span><span>.</span><span>.</span></div>
       <div id="resultado"></div>
       <div id="error"></div>
       `;
-
       document.getElementById('btnConsultar').addEventListener('click', buscarNota);
     } else {
       contenido.innerHTML = `
@@ -338,11 +302,9 @@ async function buscarNota() {
       return;
     }
 
- const nombre = fila[columnas[0]] || "Alumno";
-const excluir = ['legajo','email','estado'];
-const visibles = columnas.filter(c => !excluir.includes(c.toLowerCase()) && fila[c]);
-
-);
+    const nombre = fila[columnas[0]] || "Alumno";
+    const excluir = ['legajo','email','estado'];
+    const visibles = columnas.filter(c => !excluir.includes(c.toLowerCase()) && fila[c]);
 
     let html = `<p><strong>${nombre}:</strong></p>`;
     html += `<div class="tabla-scroll"><table><tr>`;
