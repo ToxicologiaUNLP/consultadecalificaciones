@@ -27,7 +27,6 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  margin: 0;
 }
 
 /* === MAIN === */
@@ -49,7 +48,6 @@ main header {
 
 main header img {
   width: 100%;
-  max-width: 100%;
   height: auto;
   border-radius: 16px;
   box-shadow: 0 3px 8px rgba(0,0,0,0.18);
@@ -59,10 +57,9 @@ main header img {
   font-family: 'Open Sans', sans-serif;
   font-weight: 700;
   font-size: 2em;
-  color: #38828f; /* mismo verde que talleres */
+  color: #38828f;
   margin: 20px 0 0 0;
   line-height: 1.25;
-
 }
 
 /* === FORM === */
@@ -97,15 +94,17 @@ button {
   border: none;
 }
 
-#btnConsultar {
+#btnConsultar,
+#btnVolver {
   background: #2d8390;
   color: white;
+}
+
+#btnConsultar {
   padding: 0.55em 1.2em;
 }
 
 #btnVolver {
-  background: #2d8390;
-  color: white;
   padding: 0.45em 0.9em;
   font-size: 0.85em;
 }
@@ -150,6 +149,20 @@ th, td {
 
 #resultado table tbody td {
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>');
+}
+
+/* === LINK CONDICIONES === */
+.link-condiciones {
+  color: #38828f;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.link-condiciones:hover {
+  color: #04545d;
 }
 
 /* === ERRORES === */
@@ -207,12 +220,36 @@ footer {
 }
 
 .modal {
+  position: relative;
   background: white;
   border-radius: 16px;
   padding: 20px;
   max-width: 600px;
   width: 100%;
   border: 5px solid #38828f;
+}
+
+/* === BOTÓN CERRAR MODAL === */
+#cerrarCondiciones {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 36px;
+  height: 36px;
+  background: #38828f;
+  color: white;
+  border-radius: 50%;
+  font-size: 1.4em;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+#cerrarCondiciones:hover {
+  background: #04545d;
 }
 
 /* === RESPONSIVE === */
@@ -224,17 +261,6 @@ footer {
   .titulo-centro {
     font-size: 1.8em;
   }
-.link-condiciones {
-  color: #38828f !important;      /* color institucional */
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-  cursor: pointer;
-}
-
-.link-condiciones:hover {
-  color: #04545d !important;
-
 }
 </style>
 
