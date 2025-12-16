@@ -289,7 +289,7 @@ footer {
   -moz-user-select: none;
   -ms-user-select: none;
 
-  pointer-events: none; /* evita interacción */
+  pointer-events: none;
   text-align: left;
 
 }
@@ -325,6 +325,18 @@ footer {
 
   </div>
 <script>
+   function obtenerFechaPrimerAcceso() {
+    const key = 'toxico_primer_acceso';
+
+    let fecha = localStorage.getItem(key);
+
+    if (!fecha) {
+      fecha = new Date().toISOString();
+      localStorage.setItem(key, fecha);
+    }
+
+    return new Date(fecha);
+  }
 const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?output=csv';
 
 async function cargarDatos(url) {
@@ -401,12 +413,21 @@ async function buscarNota(){
     tablaHTML+=`</tr></tbody></table></div>`;
     
   tablaHTML += `<button id="btnVolver">Volver</button>`;
+    const fechaAcceso = obtenerFechaPrimerAcceso();
+  const fechaFormateada = fechaAcceso.toLocaleDateString('es-AR');
+  const horaFormateada = fechaAcceso.toLocaleTimeString('es-AR', {
+    hour: '2-digit',
+    minute: '2-digit'
 
 tablaHTML += `
-<div class="sello-verificacion">
-✔ Información emitida por el área correspondiente de esta cátedra.<br>
-Sistema de consulta académica institucional – FCM UNLP
-</div>
+  <div class="sello-verificacion">
+    ✔ Información emitida por el área correspondiente de esta cátedra.<br>
+    Sistema de consulta académica institucional.<br>
+    Fecha y hora de verificación: ${fechaFormateada} – ${horaFormateada} hs
+  </div>
+  `;
+  ...
+}
 
 <p id="mensajeCondiciones">
   Sujeto a las
