@@ -400,20 +400,20 @@ async function buscarNota(){
     columnasVisibles.forEach(col=>tablaHTML+=`<td>${fila[col]}</td>`);
     tablaHTML+=`</tr></tbody></table></div>`;
     
-    tablaHTML+=`<button id="btnVolver">Volver</button>`;
-    tablaHTML += `
-    tablaHTML += `
+  tablaHTML += `<button id="btnVolver">Volver</button>`;
+
+tablaHTML += `
 <div class="sello-verificacion">
--Información emitida por el área correspondiente de esta cátedra.<br>
-Sistema de consulta académica institucional.
+✔ Información emitida por el área correspondiente de esta cátedra.<br>
+Sistema de consulta académica institucional – FCM UNLP
 </div>
-`;
 
 <p id="mensajeCondiciones">
   Sujeto a las
-  <a href="javascript:void(0)" id="linkCondiciones" class="link-condiciones">condiciones</a> establecidas por la cátedra.
-
-</p>`;
+  <a href="javascript:void(0)" class="link-condiciones">condiciones</a>
+  establecidas por la cátedra.
+</p>
+`;
 
 
     resultado.innerHTML = tablaHTML;
