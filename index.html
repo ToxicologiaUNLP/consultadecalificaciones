@@ -224,16 +224,15 @@ footer {
   .titulo-centro {
     font-size: 1.8em;
   }
-  .link-condiciones {
+ a.link-condiciones {
   color: #0c8c9c !important;
   text-decoration: underline !important;
   cursor: pointer;
   font-weight: 600;
 }
 
-.link-condiciones:hover {
+a.link-condiciones:hover {
   color: #04545d !important;
-  text-decoration: underline !important;
 
 }
 </style>
@@ -347,8 +346,8 @@ async function buscarNota(){
     tablaHTML += `
 <p id="mensajeCondiciones">
   La información presentada en esta plataforma corresponde y depende de las
-  <span class="link-condiciones">condiciones</span>
-  establecidas por la cátedra.
+  <a href="javascript:void(0)" id="linkCondiciones" class="link-condiciones">condiciones</a> establecidas por la cátedra.
+
 </p>`;
 
 
