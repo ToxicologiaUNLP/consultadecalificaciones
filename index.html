@@ -272,6 +272,26 @@ footer {
   .titulo-centro {
     font-size: 1.8em;
   }
+  /* === SELLO DE VERIFICACIÓN INSTITUCIONAL === */
+.sello-verificacion {
+  margin-top: 1.8em;
+  padding: 0.9em 1em;
+  border: 1.5px dashed #000;
+  background: rgba(255,255,255,0.85);
+
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.9em;
+  line-height: 1.4;
+  color: #000;
+
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+
+  pointer-events: none; /* evita interacción */
+  text-align: left;
+
 }
 </style>
 
@@ -382,6 +402,13 @@ async function buscarNota(){
     
     tablaHTML+=`<button id="btnVolver">Volver</button>`;
     tablaHTML += `
+    tablaHTML += `
+<div class="sello-verificacion">
+-Información emitida por el área correspondiente de esta cátedra.<br>
+Sistema de consulta académica institucional.
+</div>
+`;
+
 <p id="mensajeCondiciones">
   Sujeto a las
   <a href="javascript:void(0)" id="linkCondiciones" class="link-condiciones">condiciones</a> establecidas por la cátedra.
