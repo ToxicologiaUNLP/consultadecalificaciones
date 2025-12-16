@@ -234,14 +234,16 @@ footer {
   padding: 20px;
   max-width: 600px;
   width: 100%;
+  max-height: 85vh;          
+  overflow-y: auto;          
   border: 5px solid #38828f;
 }
 
 /* === BOTÓN CERRAR MODAL === */
 #cerrarCondiciones {
-  position: absolute;
-  top: -14px;
-  right: -14px;
+  position: sticky;         
+  top: 0;
+  margin-left: auto;
   width: 36px;
   height: 36px;
   background: #38828f;
@@ -254,6 +256,7 @@ footer {
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  z-index: 10;
 }
 
 #cerrarCondiciones:hover {
@@ -293,7 +296,7 @@ footer {
 <!-- Modal Condiciones -->
 <div class="overlay" id="modalCondiciones">
   <div class="modal">
-    <span id="cerrarCondiciones" style="position:absolute; top:10px; right:15px; font-size:1.5em; font-weight:bold; cursor:pointer;">&times;</span>
+   <span id="cerrarCondiciones">&times;</span>
     <h3>Condiciones establecidas por la Cátedra</h3>
     <p style="text-align:left; font-size:0.85em; color:#555; line-height:1.4;">
       <p><strong>Cursada regular CON examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra. Por lo tanto, podrá faltar a 1 (una) clase de Trabajos Prácticos de casos clínicos y 1 (una) Evaluación Formativa asincrónica. Además, deberá aprobar con 4 o más la evaluación parcial al finalizar la cursada, que se realizará de forma presencial y podrá rendirse hasta un máximo de 3 oportunidades sobre las 4 fechas que publicará la Cátedra. Posteriormente, el estudiante deberá presentarse a rendir el examen final en la mesa que desee.</p>
