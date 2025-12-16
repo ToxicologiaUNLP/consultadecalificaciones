@@ -249,12 +249,12 @@ footer {
 <div class="overlay" id="modalCondiciones">
   <div class="modal">
     <span id="cerrarCondiciones" style="position:absolute; top:10px; right:15px; font-size:1.5em; font-weight:bold; cursor:pointer;">&times;</span>
-    <h3>Condiciones de la Cátedra</h3>
+    <h3>Condiciones establecidad por la Cátedra</h3>
     <p style="text-align:left; font-size:0.85em; color:#555; line-height:1.4;">
-      (Cursada regular CON examen final: El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra, por lo tanto, el estudiante puede faltar a 1(una)  clase de Trabajos prácticos  de casos clínicos y 1 (una) Evaluación Formativa  asincrónica. También debe  aprobar con 4 o más de 4 la EVALUACION PARCIAL al finalizar la cursada  que se realizará de forma presencial pudiendo ser rendido hasta un máximo de 3 oportunidades de las 4 fechas que publicará la Cátedra. Luego se presentará a rendir final en la mesa que desee.
+      <p><strong>Cursada regular CON examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra. Por lo tanto, podrá faltar a 1 (una) clase de Trabajos Prácticos de casos clínicos y 1 (una) Evaluación Formativa asincrónica. Además, deberá aprobar con 4 o más la evaluación parcial al finalizar la cursada, que se realizará de forma presencial y podrá rendirse hasta un máximo de 3 oportunidades sobre las 4 fechas que publicará la Cátedra. Posteriormente, el estudiante deberá presentarse a rendir el examen final en la mesa que desee.</p>
 
-Promoción de cursada regular SIN  examen final: El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra, por lo tanto, el estudiante puede faltar a 1 (una) Clase de integración teórica; 1 (una) clase de Trabajos prácticos  de casos clínicos y 1 (una) Evaluación formativa  asincrónica,  en todo el bimestre.  La asistencia al  Taller de simulación clínica es OBLIGATORIA. También debe  aprobar con 7 o más de 7  una evaluación conceptual de contenidos minimos para promocionar (formato escrito) que se tomará  el día martes de la  6ta semana de cursada. Al llegar a la instancia de parcial en esas condiciones  deberá aprobar con 7 o más de 7 el parcial oral el día jueves de la 6ta semana,  pudiendo ser rendido en una única opción en la primera fecha de parcial que publicará la Cátedra.  Si aprobara con nota superior a 4 pero menor a 7 en el parcial oral automáticamente pasa al sistema de promoción CON examen final.  LAS NOTAS NO SE PROMEDIAN . Si el estudiante aprueba la evaluación conceptual escrita pero en la instancia ORAL saca una calificación menor a 4, pasará a recuperatorio de parcial la siguiente semana.)
-    </p>
+<p><strong>Promoción de cursada regular SIN examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra. Por lo tanto, podrá faltar a 1 (una) clase de integración teórica, 1 (una) clase de Trabajos Prácticos de casos clínicos y 1 (una) Evaluación Formativa asincrónica durante todo el bimestre. La asistencia al Taller de Simulación Clínica es obligatoria. Asimismo, deberá aprobar con 7 o más una evaluación conceptual de contenidos mínimos para promocionar (formato escrito), que se tomará el día martes de la sexta semana de cursada. En la instancia de parcial, deberá aprobar con 7 o más el parcial oral el día jueves de la sexta semana, pudiendo rendirse en una única oportunidad en la primera fecha de parcial que publicará la Cátedra. Si obtuviera una calificación mayor o igual a 4 y menor a 7 en el parcial oral, pasará automáticamente al sistema de promoción con examen final. Las notas no se promedian. En caso de aprobar la evaluación conceptual escrita pero obtener una calificación menor a 4 en la instancia oral, el estudiante pasará a recuperatorio de parcial la semana siguiente.</p>
+
   </div>
 <script>
 const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?output=csv';
@@ -333,8 +333,8 @@ async function buscarNota(){
     tablaHTML+=`</tr></tbody></table></div>`;
     
     tablaHTML+=`<button id="btnVolver">Volver</button>`;
-    tablaHTML+=`<p id="mensajeCondiciones">La información presentada en esta plataforma corresponde y depende de las <span class="link-condiciones" onclick="abrirCondiciones()">condiciones</span>
-  establecidas por la cátedra.</p>`;
+    tablaHTML += `<p id="mensajeCondiciones">La información presentada en esta plataforma corresponde y depende de las <span class="link-condiciones" onclick="abrirCondiciones()">condiciones</span> establecidas por la cátedra.</p>`;
+
     resultado.innerHTML = tablaHTML;
 
     const btnVolver = document.getElementById('btnVolver');
