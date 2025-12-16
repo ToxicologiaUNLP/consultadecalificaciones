@@ -333,7 +333,8 @@ async function buscarNota(){
     tablaHTML+=`</tr></tbody></table></div>`;
     
     tablaHTML+=`<button id="btnVolver">Volver</button>`;
-    tablaHTML+=`<p id="mensajeCondiciones">La información presentada en esta plataforma corresponde y depende de <a id="linkCondiciones">las condiciones</a> establecidas por la cátedra.</p>`;
+    tablaHTML+=`<p id="mensajeCondiciones">La información presentada en esta plataforma corresponde y depende de las <span class="link-condiciones" onclick="abrirCondiciones()">condiciones</span>
+  establecidas por la cátedra.</p>`;
     resultado.innerHTML = tablaHTML;
 
     const btnVolver = document.getElementById('btnVolver');
