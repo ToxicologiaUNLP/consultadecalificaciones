@@ -413,12 +413,12 @@ async function buscarNota(){
     tablaHTML+=`</tr></tbody></table></div>`;
     
   tablaHTML += `<button id="btnVolver">Volver</button>`;
-    const fechaAcceso = obtenerFechaPrimerAcceso();
-  const fechaFormateada = fechaAcceso.toLocaleDateString('es-AR');
-  const horaFormateada = fechaAcceso.toLocaleTimeString('es-AR', {
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  const fechaAcceso = obtenerFechaPrimerAcceso();
+const fechaFormateada = fechaAcceso.toLocaleDateString('es-AR');
+const horaFormateada = fechaAcceso.toLocaleTimeString('es-AR', {
+  hour: '2-digit',
+  minute: '2-digit'
+});
 
 tablaHTML += `
   <div class="sello-verificacion">
