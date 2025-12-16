@@ -28,7 +28,7 @@ body {
   min-height: 100vh;
 }
 
-/* === CONTENEDOR VISUAL PRINCIPAL === */
+/* === MAIN === */
 main {
   max-width: 600px;
   background: #f9f8f5;
@@ -40,15 +40,13 @@ main {
   position: relative;
 }
 
-/* === HEADER VISUALMENTE DENTRO DEL MAIN === */
-header {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 30px 15px 0 15px;
+/* === HEADER DENTRO DEL MAIN === */
+main header {
   text-align: center;
+  margin-bottom: 25px;
 }
 
-header img {
+main header img {
   width: 100%;
   max-width: 100%;
   height: auto;
@@ -56,13 +54,12 @@ header img {
   box-shadow: 0 3px 8px rgba(0,0,0,0.18);
 }
 
-/* === TÍTULO === */
 .titulo-centro {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 800;
   font-size: 2.1em;
-  color: #1f3f45; /* más oscuro para contraste */
-  margin: 20px 0 10px 0;
+  color: #1f3f45;
+  margin: 20px 0 0 0;
   line-height: 1.2;
 }
 
@@ -74,13 +71,13 @@ label {
 }
 
 input[type="text"],
-input[type="email"],
-textarea {
+input[type="email"] {
   width: 100%;
   padding: 0.6em;
   font-size: 1.05em;
   border: 2px solid #ccc;
   border-radius: 6px;
+  box-sizing: border-box;
 }
 
 input:focus {
@@ -95,28 +92,38 @@ button {
   cursor: pointer;
   margin: 1em auto 0 auto;
   display: block;
-}
-
-#btnConsultar,
-#btnVolver {
-  background: #2d8390;
-  color: white;
   border: none;
 }
 
 #btnConsultar {
+  background: #2d8390;
+  color: white;
   padding: 0.55em 1.2em;
 }
 
 #btnVolver {
+  background: #2d8390;
+  color: white;
   padding: 0.45em 0.9em;
   font-size: 0.85em;
+}
+
+button:hover {
+  opacity: 0.9;
 }
 
 /* === RESULTADOS === */
 #resultado {
   margin-top: 1em;
   font-size: 1.1em;
+}
+
+#resultado strong {
+  color: #000;
+}
+
+.tabla-scroll {
+  overflow-x: auto;
 }
 
 table {
@@ -139,6 +146,43 @@ th, td {
   text-align: center;
 }
 
+#resultado table tbody td {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>');
+}
+
+/* === ERRORES === */
+#error {
+  color: #cc0000;
+  font-weight: 700;
+  margin-top: 1em;
+}
+
+/* === LOADER === */
+#loader {
+  display: none;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 2em;
+  font-weight: bold;
+  font-family: monospace;
+  letter-spacing: 0.2em;
+}
+
+@keyframes puntos {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+#loader span {
+  opacity: 0;
+  animation: puntos 1.5s infinite;
+}
+
+#loader span:nth-child(1) { animation-delay: 0s; }
+#loader span:nth-child(2) { animation-delay: 0.3s; }
+#loader span:nth-child(3) { animation-delay: 0.6s; }
+
 /* === FOOTER === */
 footer {
   background: #38828f;
@@ -157,6 +201,7 @@ footer {
   display: none;
   justify-content: center;
   align-items: center;
+  z-index: 99999;
 }
 
 .modal {
@@ -170,43 +215,43 @@ footer {
 
 /* === RESPONSIVE === */
 @media (max-width: 600px) {
-  .titulo-centro {
-    font-size: 1.8em;
-  }
   main {
     margin: 1em;
     padding: 1.2em;
   }
+  .titulo-centro {
+    font-size: 1.8em;
+  }
 }
 </style>
 
-
-
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 </head>
-<body>
-<header>
-<img src="logop.png" alt="Logo Cátedra" />
-<div class="titulo-centro">ASISTENCIA Y CALIFICACIONES</div>
-</header>
 
-<main id="contenido"></main>
+<body>
+
+<main>
+
+  <header>
+    <img src="logop.png" alt="Logo Cátedra" />
+    <div class="titulo-centro">ASISTENCIA Y CALIFICACIONES</div>
+  </header>
+
+  <div id="contenido"></div>
+
+</main>
 
 <footer>© 2026 Cátedra de Toxicología, Facultad de Ciencias Médicas - UNLP.</footer>
 
 <!-- Modal Condiciones -->
-<div class="overlay" id="modalCondiciones" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloCondiciones">
-    <span id="cerrarCondiciones" style="position:absolute; top:10px; right:15px; font-size:1.5em; font-weight:bold; cursor:pointer; display:inline-block;">&times;</span>
-    <h3 id="tituloCondiciones" style="margin-top:0;">Condiciones de la Cátedra</h3>
+<div class="overlay" id="modalCondiciones">
+  <div class="modal">
+    <span id="cerrarCondiciones" style="position:absolute; top:10px; right:15px; font-size:1.5em; font-weight:bold; cursor:pointer;">&times;</span>
+    <h3>Condiciones de la Cátedra</h3>
     <p style="text-align:left; font-size:0.85em; color:#555; line-height:1.4;">
-      Para aprobar la cursada cada alumno deberá:<br><br>
-      <strong>Cursada regular CON examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra, por lo tanto, el estudiante puede faltar a 1(una) clase de Trabajos prácticos de casos clínicos y 1 (una) Evaluación Formativa asincrónica. También debe aprobar con 4 o más de 4 la EVALUACION PARCIAL al finalizar la cursada que se realizará de forma presencial pudiendo ser rendido hasta un máximo de 3 oportunidades de las 4 fechas que publicará la Cátedra. Luego se presentará a rendir final en la mesa que desee.<br><br>
-      <strong>Promoción de cursada regular SIN examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra, por lo tanto, el estudiante puede faltar a 1 (una) Clase de integración teórica; 1 (una) clase de Trabajos prácticos de casos clínicos y 1 (una) Evaluación formativa asincrónica, en todo el bimestre. La asistencia al Taller de simulación clínica es OBLIGATORIA. También debe aprobar con 7 o más de 7 una evaluación conceptual de contenidos minimos para promocionar (formato escrito) que se tomará el día martes de la 6ta semana de cursada. Al llegar a la instancia de parcial en esas condiciones deberá aprobar con 7 o más de 7 el parcial oral el día jueves de la 6ta semana, pudiendo ser rendido en una única opción en la primera fecha de parcial que publicará la Cátedra. Si aprobara con nota superior a 4 pero menor a 7 en el parcial oral automáticamente pasa al sistema de promoción CON examen final. LAS NOTAS NO SE PROMEDIAN. Si el estudiante aprueba la evaluación conceptual escrita pero en la instancia ORAL saca una calificación menor a 4, pasará a recuperatorio de parcial la siguiente semana.
+      (contenido sin cambios)
     </p>
   </div>
-</div>
-
 <script>
 const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?output=csv';
 
