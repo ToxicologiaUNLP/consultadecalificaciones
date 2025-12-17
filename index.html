@@ -279,10 +279,10 @@ footer {
   border: 1.5px dashed #000;
   background: rgba(255,255,255,0.85);
 
-  font-family: 'Courier New', monospace;
-  font-size: 0.60em;
+  font-family: 'Courier New', monospace!important;
+  font-size: 0.60em!important;
   line-height: 1.4;
-  color: #888;
+  color: #888!important;
 
   user-select: none;
   -webkit-user-select: none;
@@ -403,7 +403,6 @@ async function buscarNota(){
   tablaHTML += `<button id="btnVolver">Volver</button>`;
 
 tablaHTML += `
-  <button id="btnVolver">Volver</button>
   <div class="sello-verificacion">
     Información emitida por el área correspondiente de esta cátedra.<br>
     Sistema de consulta académica institucional.<br>
