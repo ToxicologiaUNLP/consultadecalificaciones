@@ -168,13 +168,15 @@ th, td {
 }
 
 .info-institucional {
-  margin-top: 1em;
-  margin-bottom: 8mm; /* distancia exacta al borde inferior del main */
+  position: absolute;
+  bottom: 8mm;        /* ← distancia exacta a la base del main */
+  left: 0;
+  width: 100%;
 
   text-align: center;
 
   font-family: "Courier New", Courier, "Lucida Console", Monaco, monospace;
-  font-size: 0.78em;
+  font-size: 0.98em;  /* +25% aprox */
   line-height: 1.15;
   color: #888;
 
@@ -182,20 +184,12 @@ th, td {
   pointer-events: none;
 }
 
-.info-institucional .link-condiciones {
-  color: #38828f;
-  text-decoration: underline;
-  pointer-events: auto;
-}
-
-
 
 .info-institucional .link-condiciones {
   color: #38828f;
   text-decoration: underline;
   pointer-events: auto;
 }
-
 
 
 /* === ERRORES === */
