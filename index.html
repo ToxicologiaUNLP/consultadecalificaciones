@@ -352,25 +352,16 @@ async function verificarEstado() {
     const contenido = document.getElementById('contenido');
     if(estado === 'habilitado'){
       contenido.innerHTML = `
-  <div id="formBuscador">
-    <p style="color:black; margin:0.5em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
-    <label for="legajo">Legajo</label><input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
-    <label for="email">E-mail asociado al SIU Guaraní*</label><input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
-    <small style="color:#555; font-size:0.9em;">*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
-    <button id="btnConsultar">Acceder</button>
-
-    <!-- Esto agrega el mensaje de condiciones -->
-    <p id="mensajeCondiciones" style="margin-top:1em; font-size:0.85em; color:#555;">
-      Sujeto a las
-      <a href="javascript:void(0)" class="link-condiciones">condiciones</a>
-      establecidas por la cátedra.
-    </p>
-  </div>
-  <div id="loader"><span>.</span><span>.</span><span>.</span></div>
-  <div id="resultado"></div>
-  <div id="error"></div>
-`;
-
+      <div id="formBuscador">
+        <p style="color:black; margin:0.5em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
+        <label for="legajo">Legajo</label><input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
+        <label for="email">E-mail asociado al SIU Guaraní*</label><input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
+        <small style="color:#555; font-size:0.9em;">*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
+        <button id="btnConsultar">Acceder</button>
+      </div>
+      <div id="loader"><span>.</span><span>.</span><span>.</span></div>
+      <div id="resultado"></div>
+      <div id="error"></div>
       `;
       // asegurar modal cerrado por si acaso
       const modal = document.getElementById('modalCondiciones');
@@ -401,14 +392,12 @@ async function buscarNota(){
   resultado.innerHTML = ""; errorDiv.textContent="";
   if(!legajoInput || !emailInput){errorDiv.textContent="Por favor, ingrese los datos requeridos."; return;}
   loader.style.display="block";
-
   try{
     const parsed = await cargarDatos(urlBase + '&_ts=' + Date.now());
     const columnas = parsed.meta.fields;
     const fila = parsed.data.find(row=>row['Legajo'] && row['Email'] && row['Legajo'].trim().toLowerCase()===legajoInput && row['Email'].trim().toLowerCase()===emailInput);
     loader.style.display="none";
     if(!fila){errorDiv.textContent="Datos incorrectos. Verifique e intente nuevamente."; return;}
-    
     const primeraColumna = columnas[0];
     const nombre = fila[primeraColumna] || "Alumno";
     const columnasExcluir = ['legajo','nombre','apellido','nombre y apellido','alumno','email','estado', primeraColumna.toLowerCase()];
@@ -423,20 +412,31 @@ async function buscarNota(){
     columnasVisibles.forEach(col=>tablaHTML+=`<td>${fila[col]}</td>`);
     tablaHTML+=`</tr></tbody></table></div>`;
     
-    tablaHTML += `<button id="btnVolver">Volver</button>`;
+  tablaHTML += `<button id="btnVolver">Volver</button>`;
+  const fechaAcceso = obtenerFechaPrimerAcceso();
+const fechaFormateada = fechaAcceso.toLocaleDateString('es-AR');
+onst horaFormateada = fechaAcceso.toLocaleTimeString('es-AR', {
+    hour: '2-digit',
+    minute: '2-digit'
+});
 
-    // Sello de verificación
-    const fechaAcceso = obtenerFechaPrimerAcceso();
-    const fechaFormateada = fechaAcceso.toLocaleDateString('es-AR');
-    const horaFormateada = fechaAcceso.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
-    
-    tablaHTML += `
-      <div class="sello-verificacion">
-        ✔ Información emitida por el área correspondiente de esta cátedra.<br>
-        Sistema de consulta académica institucional.<br>
-        Fecha y hora de verificación: ${fechaFormateada} – ${horaFormateada} hs
-      </div>
-    `;
+tablaHTML += `
+  <div class="sello-verificacion">
+    Información emitida por el área correspondiente de esta cátedra.<br>
+    Sistema de consulta académica institucional.<br>
+    Fecha y hora de verificación: ${fechaFormateada} – ${horaFormateada} hs
+  </div>
+  `;
+  ...
+}
+
+<p id="mensajeCondiciones">
+  Sujeto a las
+  <a href="javascript:void(0)" class="link-condiciones">condiciones</a>
+  establecidas por la cátedra.
+</p>
+`;
+
 
     resultado.innerHTML = tablaHTML;
 
@@ -446,11 +446,8 @@ async function buscarNota(){
       resultado.innerHTML='';
     });
 
-  } catch(e){
-    loader.style.display="none"; 
-    console.error(e); 
-    errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";
-  }
+    // NOTA: el control del modal se maneja por delegación a nivel documento (ver abajo).
+  } catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
 }
 
 /* Control robusto del modal de condiciones:
