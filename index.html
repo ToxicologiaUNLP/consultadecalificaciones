@@ -274,15 +274,15 @@ footer {
   }
   /* === SELLO DE VERIFICACIÓN INSTITUCIONAL === */
 .sello-verificacion {
-  margin-top: 1.8em;
+  margin-top: 4.0em;
   padding: 0.9em 1em;
   border: 1.5px dashed #000;
   background: rgba(255,255,255,0.85);
 
-  font-family: "Courier New", Courier, monospace;
-  font-size: 0.9em;
+  font-family: 'Courier New', monospace;
+  font-size: 0.60em;
   line-height: 1.4;
-  color: #000;
+  color: #888;
 
   user-select: none;
   -webkit-user-select: none;
@@ -403,10 +403,12 @@ async function buscarNota(){
   tablaHTML += `<button id="btnVolver">Volver</button>`;
 
 tablaHTML += `
-<div class="sello-verificacion">
-✔ Información emitida por el área correspondiente de esta cátedra.<br>
-Sistema de consulta académica institucional – FCM UNLP
-</div>
+  <button id="btnVolver">Volver</button>
+  <div class="sello-verificacion">
+    Información emitida por el área correspondiente de esta cátedra.<br>
+    Sistema de consulta académica institucional.<br>
+    Fecha y hora de verificación: ${fechaFormateada} – ${horaFormateada}
+  </div>
 
 <p id="mensajeCondiciones">
   Sujeto a las
