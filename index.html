@@ -169,20 +169,21 @@ th, td {
 }
 
 .info-institucional {
-  margin-top: 1.6em;
-  margin-bottom: 8mm; /* distancia visual al borde inferior */
+  position: absolute;
+  bottom: 8mm;
+  left: 0;
+  width: 100%;
+
   text-align: center;
 
   font-family: "Courier New", Courier, "Lucida Console", Monaco, monospace;
-  font-size: 0.98em;
+  font-size: 0.74em;   /* ← 25% MÁS CHICO */
   line-height: 1.15;
   color: #888;
 
   user-select: none;
   pointer-events: none;
 }
-
-
 
 .info-institucional .link-condiciones {
   color: #38828f;
@@ -292,6 +293,17 @@ footer {
   .titulo-centro {
     font-size: 1.8em;
   }
+  main {
+  max-width: 600px;
+  background: #f9f8f5;
+  margin: 30px auto 2em auto;
+  padding: 2em;
+  padding-bottom: 4.5em; /* ← ESTE ES EL CAMBIO CLAVE */
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+  position: relative;
+}
+
   /* === SELLO DE VERIFICACIÓN INSTITUCIONAL === */
 
 </style>
