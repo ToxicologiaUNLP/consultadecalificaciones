@@ -413,15 +413,16 @@ async function buscarNota(){
     tablaHTML+=`</tr></tbody></table></div>`;
     
   tablaHTML += `<button id="btnVolver">Volver</button>`;
-    const fechaAcceso = obtenerFechaPrimerAcceso();
-  const fechaFormateada = fechaAcceso.toLocaleDateString('es-AR');
-  const horaFormateada = fechaAcceso.toLocaleTimeString('es-AR', {
-    hour: '2-digit',
-    minute: '2-digit'
+  const fechaAcceso = obtenerFechaPrimerAcceso();
+const fechaFormateada = fechaAcceso.toLocaleDateString('es-AR');
+const horaFormateada = fechaAcceso.toLocaleTimeString('es-AR', {
+  hour: '2-digit',
+  minute: '2-digit'
+});
 
 tablaHTML += `
   <div class="sello-verificacion">
-    Información emitida por el área correspondiente de esta cátedra.<br>
+    ✔ Información emitida por el área correspondiente de esta cátedra.<br>
     Sistema de consulta académica institucional.<br>
     Fecha y hora de verificación: ${fechaFormateada} – ${horaFormateada} hs
   </div>
@@ -482,6 +483,8 @@ document.addEventListener('DOMContentLoaded', verificarEstado);
 </script>
 </body>
 </html>
+
+
 
 
 
