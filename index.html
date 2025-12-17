@@ -282,7 +282,7 @@ footer {
   text-align: center;
   font-family: 'Courier New', monospace !important;
   font-size: 0.60em !important;
-  line-height: 1.4;
+  line-height: 1.15;
   color: #888 !important;
 
   user-select: none;
@@ -404,19 +404,13 @@ async function buscarNota(){
   tablaHTML += `<button id="btnVolver">Volver</button>`;
 
 tablaHTML += `
-  <div class="info-institucional">
-
-    <p id="mensajeCondiciones">
-      Sujeto a las
-      <a href="javascript:void(0)" class="link-condiciones">condiciones</a>
-      establecidas por la cátedra.
-    </p>
-
-    <div class="sello-verificacion">
-      Información emitida por el área institucional correspondiente.
-    </div>
-
-  </div>
+  <p class="info-institucional">
+  Sujeto a las
+  <a href="javascript:void(0)" class="link-condiciones">condiciones</a>
+  establecidas por la cátedra.
+  <br>
+  Información emitida y verificada por el área institucional correspondiente.
+</p>
 `;
 
     resultado.innerHTML = tablaHTML;
