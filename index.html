@@ -405,7 +405,7 @@ async function buscarNota(){
 tablaHTML += `
   <div class="sello-verificacion" style="
        font-family: 'Courier New', monospace !important; 
-       font-size: 1.0em !important; 
+       font-size: 0.7em !important; 
        color: #888 !important; 
        margin-top: 1.5em;
        line-height: 1.4;
@@ -429,11 +429,9 @@ tablaHTML += `
       resultado.innerHTML='';
     });
 
-    // NOTA: el control del modal se maneja por delegación a nivel documento (ver abajo).
   } catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
 }
 
-*/
 document.addEventListener('DOMContentLoaded', ()=> {
   const modal = document.getElementById('modalCondiciones');
   if(modal) modal.style.display = 'none';
@@ -462,6 +460,7 @@ document.addEventListener('DOMContentLoaded', verificarEstado);
 </script>
 </body>
 </html>
+
 
 
 
