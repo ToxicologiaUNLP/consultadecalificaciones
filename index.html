@@ -122,9 +122,10 @@ button:hover {
 
 /* === RESULTADOS === */
 #resultado {
+  width: 100%;
   max-width: 100%;
+  overflow-x: hidden;
 }
-
 
 
 #resultado strong {
@@ -133,8 +134,9 @@ button:hover {
 
 .tabla-scroll {
   width: 100%;
+  max-width: 100%;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow-y: hidden;
 }
 
 
@@ -311,6 +313,8 @@ footer {
   }
   main {
   max-width: 600px;
+  width: 100%;          
+  overflow-x: hidden;  
   background: #f9f8f5;
   margin: 30px auto 2em auto;
   padding: 2em;
