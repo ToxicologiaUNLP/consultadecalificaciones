@@ -33,6 +33,8 @@ body {
 /* === MAIN === */
 main {
   max-width: 600px;
+  width: 100%;          /* ← FALTABA */
+  overflow-x: hidden;  /* ← FALTABA */
   background: #f9f8f5;
   margin: 30px auto 2em auto;
   padding: 2em;
@@ -307,22 +309,10 @@ footer {
   main {
     margin: 1em;
     padding: 1.2em;
+    padding-bottom: 4.5em;
   }
-  .titulo-centro {
-    font-size: 1.8em;
-  }
-  main {
-  max-width: 600px;
-  width: 100%;          
-  overflow-x: hidden;  
-  background: #f9f8f5;
-  margin: 30px auto 2em auto;
-  padding: 2em;
-  padding-bottom: 4.5em; /* ← ESTE ES EL CAMBIO CLAVE */
-  border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
-  position: relative;
 }
+
 
   /* === SELLO DE VERIFICACIÓN INSTITUCIONAL === */
 
