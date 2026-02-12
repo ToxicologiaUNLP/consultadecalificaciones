@@ -27,7 +27,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-
+  overflow-x: hidden; 
 }
 
 /* === MAIN === */
@@ -139,11 +139,11 @@ button:hover {
 
 
 table {
-  width: max-content;
-  min-width: 100%;
+  width: 100%;
   border-collapse: collapse;
   margin-top: 0.5em;
 }
+
 
 .tabla-scroll::after {
     content: "← desplazarse →";
@@ -166,8 +166,9 @@ th {
 th, td {
   padding: 0.6em;
   text-align: center;
-  white-space: nowrap;
+  white-space: nowrap; 
 }
+
 
 #resultado table tbody td {
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>');
