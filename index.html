@@ -122,23 +122,38 @@ button:hover {
 
 /* === RESULTADOS === */
 #resultado {
-  margin-top: 1em;
-  font-size: 1.1em;
+  max-width: 100%;
+  overflow-x: hidden;
 }
+
 
 #resultado strong {
   color: #000;
 }
 
 .tabla-scroll {
+  width: 100%;
   overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
+
 table {
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
   border-collapse: collapse;
   margin-top: 0.5em;
 }
+.tabla-scroll::after {
+    content: "← desplazarse →";
+    display: block;
+    text-align: center;
+    font-size: 0.75em;
+    color: #777;
+    margin-top: 4px;
+  }
+</style>
 
 table, th, td {
   border: 1px solid #ddd;
