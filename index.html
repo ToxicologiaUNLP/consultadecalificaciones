@@ -133,6 +133,7 @@ button:hover {
 
 .tabla-scroll {
   width: 100%;
+  max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
@@ -140,11 +141,12 @@ button:hover {
 
 
 table {
-  width: max-content;
-  min-width: 100%;
+  width: 100%;
   border-collapse: collapse;
   margin-top: 0.5em;
+  table-layout: fixed;
 }
+
 .tabla-scroll::after {
     content: "← desplazarse →";
     display: block;
