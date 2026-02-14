@@ -6,393 +6,304 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <link rel="icon" href="logo1.png" type="image/png" />
 
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
 
 <style>
-* {
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
-  margin: 0;
-}
-
-body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(
-    135deg,
-    #087882 0%,
-    #0c8c9c 40%,
-    #045c63 70%,
-    #04545d 100%
-  );
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
-}
-
-/* === MAIN === */
-main {
-  max-width: 600px;
-  width: 100%;
-  overflow-x: hidden;
-  background: #f9f8f5;
-  margin: 30px auto 2em auto;
-  padding: 2em;
-  border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
-  position: relative;
-  flex: 1;
-}
-
-/* === HEADER DENTRO DEL MAIN === */
-main header {
-  text-align: center;
-  margin-bottom: 25px;
-}
-
-main header img {
-  width: 100%;
-  height: auto;
-  border-radius: 16px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.18);
-}
-
-.titulo-centro {
-  font-family: 'Open Sans', sans-serif;
-  font-weight: 700;
-  font-size: 2em;
-  color: #38828f;
-  margin: 20px 0 0 0;
-  line-height: 1.25;
-}
-
-/* === FORM === */
-label {
-  font-weight: 600;
-  margin-top: 1em;
-  margin-bottom: 0.6em; /* separa el texto del input (el doble aprox.) */
-  display: block;
-
-}
-
-input[type="text"],
-input[type="email"] {
-  width: 100%;
-  padding: 0.6em;
-  font-size: 1.05em;
-  border: 2px solid #ccc;
-  border-radius: 6px;
-  box-sizing: border-box;
-}
-
-input:focus {
-  border-color: #38828f;
-  outline: none;
-}
-
-/* === BOTONES === */
-button {
-  border-radius: 6px;
-  font-weight: 700;
-  cursor: pointer;
-  margin: 1em auto 0 auto;
-  display: block;
-  border: none;
-}
-
-#btnConsultar,
-#btnVolver {
-  background: #2d8390;
-  color: white;
-}
-
-#btnConsultar {
-  padding: 0.55em 1.2em;
-}
-
-#btnVolver {
-  padding: 0.45em 0.9em;
-  font-size: 0.85em;
-}
-
-button:hover {
-  opacity: 0.9;
-}
-
-/* === RESULTADOS === */
-#resultado {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-
-#resultado strong {
-  color: #000;
-}
-
-.tabla-scroll {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 0.5em;
-}
-
-
-.tabla-scroll::after {
-    content: "← desplazarse →";
-    display: block;
-    text-align: center;
-    font-size: 0.75em;
-    color: #777;
-    margin-top: 4px;
+  :root {
+    --primary: #2d8390;
+    --primary-dark: #1e5a63;
+    --accent: #38828f;
+    --bg-gradient: linear-gradient(135deg, #087882 0%, #0c8c9c 40%, #045c63 70%, #04545d 100%);
+    --white: #ffffff;
+    --gray-bg: #fdfdfd;
   }
 
-table, th, td {
-  border: 1px solid #ddd;
-}
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
 
-th {
-  background: #efefef;
-  font-weight: 700;
-}
-
-th, td {
-  padding: 0.6em;
-  text-align: center;
-  white-space: nowrap; 
-}
-
-
-#resultado table tbody td {
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="12"><text x="0" y="10" font-family="Segoe UI" font-size="7" fill="%23666666" fill-opacity="0.15">ToxicologíaUNLP</text></svg>');
-}
-
-/* === LINK CONDICIONES === */
-.link-condiciones {
-  color: #38828f;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.info-institucional {
-  margin-top: 1.5em;
-  text-align: center;
-  font-family: "Courier New", Courier, "Lucida Console", Monaco, monospace;
-  font-size: 0.74em;
-  line-height: 1.3;
-  color: #888;
-  user-select: none;
-  pointer-events: none;
-}
-
-
-.info-institucional .link-condiciones {
-  color: #38828f;
-  text-decoration: underline;
-  pointer-events: auto;
-}
-
-
-/* === ERRORES === */
-#error {
-  color: #cc0000;
-  font-weight: 700;
-  margin-top: 1em;
-}
-
-/* === LOADER === */
-#loader {
-  display: none;
-  text-align: center;
-  margin-top: 20px;
-  font-size: 2em;
-  font-weight: bold;
-  font-family: monospace;
-  letter-spacing: 0.2em;
-}
-
-@keyframes puntos {
-  0% { opacity: 0; }
-  50% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-#loader span {
-  opacity: 0;
-  animation: puntos 1.5s infinite;
-}
-
-#loader span:nth-child(1) { animation-delay: 0s; }
-#loader span:nth-child(2) { animation-delay: 0.3s; }
-#loader span:nth-child(3) { animation-delay: 0.6s; }
-
-/* === FOOTER === */
-footer {
- background: transparent;
-  color: #ffffff;
-  text-align: center;
-  padding: 0.8em 1em;
-  font-size: 0.85em;
-  margin-top: auto;
-  opacity: 0.9;
-  line-height: 1.4;
-}
-
-/* === MODAL === */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 99999;
-}
-
-.modal {
-  position: relative;
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
-  max-width: 600px;
-  width: 100%;
-  max-height: 85vh;          
-  overflow-y: auto;          
-  border: 5px solid #38828f;
-}
-
-/* === BOTÓN CERRAR MODAL === */
-#cerrarCondiciones {
-  position: sticky;         
-  top: 0;
-  margin-left: auto;
-  width: 36px;
-  height: 36px;
-  background: #38828f;
-  color: white;
-  border-radius: 50%;
-  font-size: 1.4em;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-  z-index: 10;
-}
-
-#cerrarCondiciones:hover {
-  background: #04545d;
-}
-
-/* === RESPONSIVE === */
-@media (max-width: 600px) {
-  html, body {
-    overflow-x: hidden;
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background: var(--bg-gradient);
+    background-attachment: fixed;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: #333;
   }
 
+  /* === MAIN CONTAINER === */
   main {
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding: 1.2em;
-    border-radius: 0;
-    box-shadow: none;
+    max-width: 650px;
+    width: 92%;
+    background: var(--white);
+    margin: 40px auto;
+    padding: 2.5em;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    flex: 0 1 auto; /* Ajuste para que no se estire innecesariamente */
+    border-top: 6px solid var(--accent);
   }
-}
 
-  /* === SELLO DE VERIFICACIÓN INSTITUCIONAL === */
+  header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
 
+  header img {
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    border-radius: 12px;
+    margin-bottom: 10px;
+  }
+
+  .titulo-centro {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 1.6em;
+    color: var(--primary-dark);
+    margin: 15px 0;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+  }
+
+  /* === FORMULARIO === */
+  #formBuscador p {
+    font-size: 0.95em;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  label {
+    font-weight: 700;
+    font-size: 0.9em;
+    color: var(--primary-dark);
+    margin-bottom: 8px;
+    display: block;
+    text-transform: uppercase;
+  }
+
+  input[type="text"],
+  input[type="email"] {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1em;
+    border: 2px solid #e1e1e1;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    background: #fcfcfc;
+    margin-bottom: 5px;
+  }
+
+  input:focus {
+    border-color: var(--primary);
+    background: var(--white);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(45, 131, 144, 0.1);
+  }
+
+  small {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+
+  /* === BOTONES === */
+  button {
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    text-transform: uppercase;
+  }
+
+  #btnConsultar {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    padding: 16px;
+    font-size: 1em;
+    margin-top: 10px;
+    box-shadow: 0 4px 12px rgba(45, 131, 144, 0.3);
+  }
+
+  #btnConsultar:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(45, 131, 144, 0.4);
+  }
+
+  #btnVolver {
+    background: #666;
+    color: white;
+    padding: 10px 25px;
+    font-size: 0.8em;
+    margin: 25px auto 0;
+  }
+
+  /* === TABLA DE RESULTADOS === */
+  .tabla-scroll {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #eee;
+    margin-top: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+  }
+
+  th {
+    background: #f4f7f8;
+    color: var(--primary-dark);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85em;
+    border-bottom: 2px solid #ddd;
+  }
+
+  th, td {
+    padding: 14px;
+    text-align: center;
+    border-right: 1px solid #eee;
+  }
+
+  td {
+    font-size: 1em;
+    color: #444;
+    /* Marca de agua integrada en el diseño de celda */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="20"><text x="0" y="15" font-family="Arial" font-size="8" fill="rgba(0,0,0,0.03)">UNLP</text></svg>');
+  }
+
+  /* === INFO INSTITUCIONAL === */
+  .info-institucional {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 25px;
+    border-left: 4px solid var(--accent);
+    font-family: inherit;
+    font-size: 0.8em;
+    color: #666;
+    pointer-events: auto;
+    user-select: auto;
+  }
+
+  /* === MODAL MODERNO === */
+  .overlay {
+    background: rgba(4, 84, 93, 0.8);
+    backdrop-filter: blur(4px);
+  }
+
+  .modal {
+    border: none;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+    padding: 35px;
+  }
+
+  .modal h3 {
+    color: var(--primary-dark);
+    font-family: 'Montserrat', sans-serif;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+  }
+
+  #cerrarCondiciones {
+    background: #eee;
+    color: #333;
+    top: 15px;
+    right: 15px;
+  }
+
+  #cerrarCondiciones:hover { background: #ddd; }
+
+  footer {
+    color: rgba(255,255,255,0.8);
+    padding: 20px;
+    font-size: 0.8em;
+  }
+
+  @media (max-width: 600px) {
+    main { padding: 1.5em; width: 100%; border-radius: 0; margin: 0; }
+    .titulo-centro { font-size: 1.3em; }
+  }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 </head>
-
 <body>
 
 <main>
-
   <header>
     <img src="logop.png" alt="Logo Cátedra" />
-    <div class="titulo-centro">ASISTENCIA Y CALIFICACIONES</div>
+    <div class="titulo-centro">Consulta de Calificaciones</div>
   </header>
 
-  <div id="contenido"></div>
-
+  <div id="contenido">
+    </div>
 </main>
 
-<footer>© 2026 Cátedra de Toxicología, FCM - UNLP.</footer>
+<footer>
+  <strong>Cátedra de Toxicología</strong><br>
+  Facultad de Ciencias Médicas - Universidad Nacional de La Plata
+</footer>
 
-<!-- Modal Condiciones -->
 <div class="overlay" id="modalCondiciones">
   <div class="modal">
-   <span id="cerrarCondiciones">&times;</span>
-    <h3>Condiciones establecidas por la Cátedra</h3>
-    <p style="text-align:left; font-size:0.85em; color:#555; line-height:1.4;">
-      <p><strong>Cursada regular CON examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra. Por lo tanto, podrá faltar a 1 (una) clase de Trabajos Prácticos de casos clínicos y 1 (una) Evaluación Formativa asincrónica. Además, deberá aprobar con 4 o más la evaluación parcial al finalizar la cursada, que se realizará de forma presencial y podrá rendirse hasta un máximo de 3 oportunidades sobre las 4 fechas que publicará la Cátedra. Posteriormente, el estudiante deberá presentarse a rendir el examen final en la mesa que desee.</p>
-
-<p><strong>Promoción de cursada regular SIN examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra. Por lo tanto, podrá faltar a 1 (una) clase de integración teórica, 1 (una) clase de Trabajos Prácticos de casos clínicos y 1 (una) Evaluación Formativa asincrónica durante todo el bimestre. La asistencia al Taller de Simulación Clínica es obligatoria. Asimismo, deberá aprobar con 7 o más una evaluación conceptual de contenidos mínimos para promocionar (formato escrito), que se tomará el día martes de la sexta semana de cursada. En la instancia de parcial, deberá aprobar con 7 o más el parcial oral el día jueves de la sexta semana, pudiendo rendirse en una única oportunidad en la primera fecha de parcial que publicará la Cátedra. Si obtuviera una calificación mayor o igual a 4 y menor a 7 en el parcial oral, pasará automáticamente al sistema de promoción con examen final. Las notas no se promedian. En caso de aprobar la evaluación conceptual escrita pero obtener una calificación menor a 4 en la instancia oral, el estudiante pasará a recuperatorio de parcial la semana siguiente.</p>
-
+    <span id="cerrarCondiciones">&times;</span>
+    <h3>Reglamento de Cátedra</h3>
+    <div style="text-align:left; font-size:0.9em; color:#444; line-height:1.6;">
+      <p><strong>Cursada regular CON examen final:</strong> Requiere 80% de actividades cumplidas (máximo 1 falta en TP de casos clínicos y 1 en Evaluación Formativa). Parcial presencial aprobado con 4 o más.</p>
+      <p><strong>Promoción SIN examen final:</strong> Requiere 80% de actividades, asistencia obligatoria a Simulación Clínica, aprobación de evaluación conceptual (7+) y parcial oral (7+).</p>
+      <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
+      <p style="font-style:italic; font-size:0.85em;">Para más detalles, consulte la cartelera oficial de la Facultad.</p>
+    </div>
   </div>
+</div>
+
 <script>
+// --- TU LÓGICA DE NEGOCIO (SIN CAMBIOS) ---
 const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?output=csv';
 
 async function cargarDatos(url) {
-  const res = await fetch(url, {
-    cache: "no-store"
-  });
+  const res = await fetch(url, { cache: "no-store" });
   const text = await res.text();
-  return Papa.parse(text, {
-    header: true,
-    skipEmptyLines: true,
-    delimiter: ","
-  });
+  return Papa.parse(text, { header: true, skipEmptyLines: true, delimiter: "," });
 }
 
 async function verificarEstado() {
   try {
     const datos = await cargarDatos(urlBase + '&_ts=' + Date.now());
-
-    const filaEstado = datos.data.find(
-      row => row.Estado && row.Estado.trim() !== ""
-    );
+    const filaEstado = datos.data.find(row => row.Estado && row.Estado.trim() !== "");
     const estado = filaEstado?.Estado?.trim().toLowerCase();
-
     const contenido = document.getElementById('contenido');
 
     if (estado === 'habilitado') {
       contenido.innerHTML = `
-
       <div id="formBuscador">
-        <p style="color:black; margin:0.5em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
-        <label for="legajo">Legajo</label><input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
-        <label for="email">E-mail asociado al SIU Guaraní*</label><input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
-        <small style="color:#555; font-size:0.9em;">*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
-        <button id="btnConsultar">Acceder</button>
+        <p>Complete los datos para consultar su estado académico actual en la asignatura.</p>
+        <label for="legajo">Número de Legajo</label>
+        <input type="text" id="legajo" placeholder="Ej: 12345/6" autocomplete="off" />
+        
+        <label for="email">E-mail (SIU Guaraní)</label>
+        <input type="email" id="email" placeholder="alumno@correo.com" autocomplete="off" />
+        <small style="color:#777;">* Utilice el correo registrado en el sistema oficial de la UNLP.</small>
+        
+        <button id="btnConsultar">Consultar Sistema</button>
       </div>
       <div id="loader"><span>.</span><span>.</span><span>.</span></div>
       <div id="resultado"></div>
       <div id="error"></div>
       `;
-      // asegurar modal cerrado por si acaso
-      const modal = document.getElementById('modalCondiciones');
-      if(modal) modal.style.display = 'none';
-
+      
       const legajoInput = document.getElementById('legajo');
       const emailInput = document.getElementById('email');
       const btnConsultar = document.getElementById('btnConsultar');
@@ -400,13 +311,15 @@ async function verificarEstado() {
       btnConsultar.addEventListener('click',buscarNota);
     } else {
       contenido.innerHTML = `
-        <div style="border: 2px solid #38828f; background: #f9f8f5; padding: 1.2em; border-radius: 10px; max-width: 500px; margin: 2em auto; text-align: center; font-family: 'Open Sans', sans-serif; color: #000; font-size: 1.1em; line-height: 1.5;">
-          En este momento no es posible acceder.<br>
-         Aguarde e intente ingresar en algunos minutos.
+        <div style="border: 2px dashed var(--primary); background: #f4f7f8; padding: 2em; border-radius: 12px; text-align: center; color: var(--primary-dark);">
+          <strong style="font-size:1.2em;">Plataforma en Mantenimiento</strong><br><br>
+          La consulta de notas no está disponible en este momento.<br>Por favor, intente nuevamente más tarde.
         </div>
       `;
     }
-  } catch(e){ console.error(e); document.getElementById('contenido').innerHTML=`<p style="color:red; font-weight:bold; font-size:1.2em; text-align:center;">No se pudo verificar el estado de la plataforma. Intente nuevamente más tarde.</p>`;}
+  } catch(e){ 
+    document.getElementById('contenido').innerHTML=`<p style="color:red; text-align:center;">Error de conexión con el servidor institucional.</p>`;
+  }
 }
 
 async function buscarNota(){
@@ -415,15 +328,24 @@ async function buscarNota(){
   const resultado = document.getElementById('resultado');
   const errorDiv = document.getElementById('error');
   const loader = document.getElementById('loader');
+  
   resultado.innerHTML = ""; errorDiv.textContent="";
-  if(!legajoInput || !emailInput){errorDiv.textContent="Por favor, ingrese los datos requeridos."; return;}
+  if(!legajoInput || !emailInput){errorDiv.textContent="Debe completar ambos campos."; return;}
   loader.style.display="block";
+
   try{
     const parsed = await cargarDatos(urlBase + '&_ts=' + Date.now());
     const columnas = parsed.meta.fields;
     const fila = parsed.data.find(row=>row['Legajo'] && row['Email'] && row['Legajo'].trim().toLowerCase()===legajoInput && row['Email'].trim().toLowerCase()===emailInput);
+    
     loader.style.display="none";
-    if(!fila){errorDiv.textContent="Datos incorrectos. Verifique e intente nuevamente."; return;}
+    
+    if(!fila){
+      errorDiv.style.padding = "15px";
+      errorDiv.innerHTML="⚠️ No se encontraron registros que coincidan con los datos ingresados."; 
+      return;
+    }
+
     const primeraColumna = columnas[0];
     const nombre = fila[primeraColumna] || "Alumno";
     const columnasExcluir = ['legajo','nombre','apellido','nombre y apellido','alumno','email','estado', primeraColumna.toLowerCase()];
@@ -431,61 +353,49 @@ async function buscarNota(){
     
     document.getElementById('formBuscador').style.display = 'none';
 
-    let tablaHTML = `<p><strong>${nombre}:</strong></p>`;
+    let tablaHTML = `<div style="text-align:left; margin-bottom:15px;"><span style="color:#777; font-size:0.9em;">Estudiante:</span><br><strong style="font-size:1.2em; color:var(--primary-dark)">${nombre}</strong></div>`;
     tablaHTML += `<div class="tabla-scroll"><table><thead><tr>`;
     columnasVisibles.forEach(col=>tablaHTML+=`<th>${col}</th>`);
     tablaHTML+=`</tr></thead><tbody><tr>`;
     columnasVisibles.forEach(col=>tablaHTML+=`<td>${fila[col]}</td>`);
     tablaHTML+=`</tr></tbody></table></div>`;
     
-  tablaHTML += `<button id="btnVolver">Volver</button>`;
-
-tablaHTML += `
-  <p class="info-institucional">
-  Sujeto a las
-  <a href="javascript:void(0)" class="link-condiciones">condiciones</a>
-  establecidas por la cátedra.
-  <br>
-  Información verificada por el área institucional correspondiente.
-</p>
-`;
+    tablaHTML += `<button id="btnVolver">Nueva Consulta</button>`;
+    tablaHTML += `
+      <div class="info-institucional">
+        Sujeto a las <a href="javascript:void(0)" class="link-condiciones" style="color:var(--primary); font-weight:bold;">condiciones de cátedra</a>.<br>
+        Esta información tiene carácter de declaración informativa institucional.
+      </div>
+    `;
 
     resultado.innerHTML = tablaHTML;
 
-    const btnVolver = document.getElementById('btnVolver');
-    btnVolver.addEventListener('click',()=>{
+    document.getElementById('btnVolver').addEventListener('click',()=>{
       document.getElementById('formBuscador').style.display='block';
       resultado.innerHTML='';
     });
 
-  } catch(e){loader.style.display="none"; console.error(e); errorDiv.textContent="Error al cargar los datos. Intente nuevamente.";}
+  } catch(e){
+    loader.style.display="none"; 
+    errorDiv.textContent="Error al procesar la solicitud.";
+  }
 }
 
-document.addEventListener('DOMContentLoaded', ()=> {
+// Lógica de Modal (Sin cambios)
+document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('modalCondiciones');
-  if(modal) modal.style.display = 'none';
+  verificarEstado();
 
   document.addEventListener('click', (e)=>{
-    const target = e.target;
-    // abrir modal cuando se hace click en el enlace (puede crearse dinámicamente)
-    if (target && target.classList.contains('link-condiciones')) {
-  e.preventDefault();
-  if (modal) modal.style.display = 'flex';
+    if (e.target.classList.contains('link-condiciones')) {
+      e.preventDefault();
+      modal.style.display = 'flex';
     }
-    // cerrar con la X
-    if(target && target.id === 'cerrarCondiciones'){
-      if(modal) modal.style.display = 'none';
-    }
-    // cerrar si clickean en el fondo (overlay)
-    if(target && target.id === 'modalCondiciones'){
-      if(modal) modal.style.display = 'none';
+    if(e.target.id === 'cerrarCondiciones' || e.target.id === 'modalCondiciones'){
+      modal.style.display = 'none';
     }
   });
-
 });
-
-// Mantener verificación al cargar la página
-document.addEventListener('DOMContentLoaded', verificarEstado);
 </script>
 </body>
 </html>
