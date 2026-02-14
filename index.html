@@ -353,9 +353,15 @@ footer {
 const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?output=csv';
 
 async function cargarDatos(url) {
-  const res = await fetch(url);
+  const res = await fetch(url, {
+    cache: "no-store"
+  });
   const text = await res.text();
-  return Papa.parse(text, {header:true, skipEmptyLines:true, delimiter:","});
+  return Papa.parse(text, {
+    header: true,
+    skipEmptyLines: true,
+    delimiter: ","
+  });
 }
 
 async function verificarEstado() {
