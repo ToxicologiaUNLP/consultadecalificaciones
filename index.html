@@ -367,10 +367,17 @@ async function cargarDatos(url) {
 async function verificarEstado() {
   try {
     const datos = await cargarDatos(urlBase + '&_ts=' + Date.now());
-    const estado = datos.data[0]?.Estado?.trim().toLowerCase();
+
+    const filaEstado = datos.data.find(
+      row => row.Estado && row.Estado.trim() !== ""
+    );
+    const estado = filaEstado?.Estado?.trim().toLowerCase();
+
     const contenido = document.getElementById('contenido');
-    if(estado === 'habilitado'){
+
+    if (estado === 'habilitado') {
       contenido.innerHTML = `
+
       <div id="formBuscador">
         <p style="color:black; margin:0.5em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
         <label for="legajo">Legajo</label><input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
