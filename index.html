@@ -67,13 +67,15 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
 
 /* === BLOQUES DE RESULTADOS VERTICALES === */
 .categoria-bloque {
-  margin-bottom: 20px; background: #fff; border-radius: 10px; padding: 15px; border: 1px solid #e0e6e7; border-left: 5px solid #38828f;
+  margin-bottom: 15px; background: #fff; border-radius: 10px; padding: 15px; border: 1px solid #e0e6e7; border-left: 5px solid #38828f;
 }
 .categoria-titulo { font-family: 'Montserrat', sans-serif; font-size: 0.85em; color: #38828f; font-weight: 800; margin-bottom: 12px; text-transform: uppercase; }
 .grid-datos { display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 8px; }
 .dato-item { background: #f4f8f9; border: 1px solid #d1dfe1; padding: 10px 4px; border-radius: 6px; text-align: center; }
 .dato-label { display: block; font-size: 0.65em; color: #668a90; font-weight: 700; }
 .dato-valor { display: block; font-size: 1.1em; font-weight: 800; color: #2c565d; }
+
+.aclaracion-chiquita { font-size: 0.65em; color: #999; margin-top: 8px; font-style: italic; }
 
 .promocion { background-color: #e8f5e9 !important; border-color: #a5d6a7 !important; }
 .promocion .dato-valor { color: #2e7d32 !important; }
@@ -112,8 +114,8 @@ footer { background: transparent; color: #ffffff; text-align: center; padding: 0
     <span id="cerrarCondiciones">&times;</span>
     <h3>Condiciones establecidas por la Cátedra</h3>
     <div style="text-align:left; font-size:0.85em; color:#555; line-height:1.4;">
-      <p><strong>Cursada regular CON examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra. Por lo tanto, podrá faltar a 1 (una) clase de Trabajos Prácticos de casos clínicos y 1 (una) Evaluación Formativa asincrónica. Además, deberá aprobar con 4 o más la evaluación parcial al finalizar la cursada, que se realizará de forma presencial y podrá rendirse hasta un máximo de 3 oportunidades sobre las 4 fechas que publicará la Cátedra. Posteriormente, el estudiante deberá presentarse a rendir el examen final en la mesa que desee.</p>
-      <p><strong>Promoción de cursada regular SIN examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra. Por lo tanto, podrá faltar a 1 (una) clase de integración teórica, 1 (una) clase de Trabajos Prácticos de casos clínicos y 1 (una) Evaluación Formativa asincrónica durante todo el bimestre. La asistencia al Taller de Simulación Clínica es obligatoria. Asimismo, deberá aprobar con 7 o más una evaluación conceptual de contenidos mínimos para promocionar (formato escrito), que se tomará el día martes de la sexta semana de cursada. En la instancia de parcial, deberá aprobar con 7 o más el parcial oral el día jueves de la sexta semana, pudiendo rendirse en una única oportunidad en la primera fecha de parcial que publicará la Cátedra. Si obtuviera una calificación mayor o igual a 4 y menor a 7 en el parcial oral, pasará automáticamente al sistema de promoción con examen final. Las notas no se promedian. En caso de aprobar la evaluación conceptual escrita pero obtener una calificación menor a 4 en la instancia oral, el estudiante pasará a recuperatorio de parcial la semana siguiente.</p>
+      <p><strong>Cursada regular CON examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra...</p>
+      <p><strong>Promoción de cursada regular SIN examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra...</p>
     </div>
   </div>
 </div>
@@ -146,7 +148,7 @@ async function verificarEstado() {
       <div id="error" style="color:red; text-align:center; margin-top:10px;"></div>`;
     document.getElementById('btnConsultar').onclick = buscarNota;
   } else {
-    contenido.innerHTML = `<div style="text-align:center; margin:2em; font-weight:bold;">En este momento no es posible acceder.<br>Aguarden e intenten ingresar en algunos minutos.</div>`;
+    contenido.innerHTML = `<div style="text-align:center; margin:2em; font-weight:bold;">En este momento no es posible acceder.</div>`;
   }
 }
 
@@ -156,26 +158,24 @@ async function buscarNota(){
   const resDiv = document.getElementById('resultado');
   const parsed = await cargarDatos(urlBase + '&_ts=' + Date.now());
   
-  const columnas = parsed.meta.fields; // Capturamos nombres de columnas
+  const columnas = parsed.meta.fields;
   const fila = parsed.data.find(row => row['Legajo']?.trim().toLowerCase() === legajo && row['Email']?.trim().toLowerCase() === email);
 
-  if(!fila) { document.getElementById('error').textContent = "Datos incorrectos. Verifique e intente nuevamente."; return; }
+  if(!fila) { document.getElementById('error').textContent = "Datos incorrectos."; return; }
 
   document.getElementById('formBuscador').style.display = 'none';
-  
-  // Captura el nombre de la Columna A (la primera columna del Excel)
   const nombreEstudiante = fila[columnas[0]] || "Estudiante";
 
   let html = `<p><strong>${nombreEstudiante}:</strong></p>`;
   
-  html += generarBloque(fila, "T", "Teóricos");
-  html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL"]);
-  html += generarBloque(fila, "S", "Simulación");
+  html += generarBloque(fila, "T", "Teóricos", ["TECP"], "A: Ausente | P: Presente");
+  html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "PFI"], "A: Ausente | P: Presente");
+  html += generarBloque(fila, "S", "Simulación", [], "A: Ausente | P: Presente");
   html += generarBloqueEvaluacion(fila);
 
   html += `
     <div class="seccion-referencias">
-      <strong>Referencias:</strong> T: Teóricos | P: Prácticos | S: Simulación | ECP: Conceptual Promoción | °/F: Fechas Parcial.
+      <strong>Referencias:</strong> T: Teóricos | P: Prácticos | S: Simulación | PFI: Parcial Final Integrador | TECP1: Taller Evaluación Continua | °/F: Fechas Parcial.
     </div>
     <button id="btnVolver">Volver</button>
     <p class="info-institucional">Sujeto a las <a href="javascript:void(0)" class="link-condiciones">condiciones</a> establecidas por la cátedra.</p>
@@ -185,7 +185,7 @@ async function buscarNota(){
   document.getElementById('btnVolver').onclick = () => { document.getElementById('formBuscador').style.display='block'; resDiv.innerHTML=''; };
 }
 
-function generarBloque(fila, prefijo, titulo, excluir = []) {
+function generarBloque(fila, prefijo, titulo, excluir = [], aclaracion = "") {
   const columnas = Object.keys(fila).filter(col => {
     const c = col.toUpperCase();
     return c.startsWith(prefijo.toUpperCase()) && !excluir.some(ex => c.includes(ex.toUpperCase())) && fila[col]?.trim() !== "";
@@ -193,26 +193,29 @@ function generarBloque(fila, prefijo, titulo, excluir = []) {
   if (columnas.length === 0) return "";
   let b = `<div class="categoria-bloque"><div class="categoria-titulo">${titulo}</div><div class="grid-datos">`;
   columnas.forEach(c => { b += `<div class="dato-item"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`; });
-  return b + `</div></div>`;
+  b += `</div><div class="aclaracion-chiquita">${aclaracion}</div></div>`;
+  return b;
 }
 
 function generarBloqueEvaluacion(fila) {
   const columnas = Object.keys(fila).filter(col => {
     const c = col.toUpperCase();
     const esFechaParcial = c.includes("°") || c.includes("F") || c.includes("PARCIAL");
-    const esECP = c.startsWith("ECP");
-    return (esFechaParcial || esECP) && fila[col]?.trim() !== "";
+    const esPFI = c.startsWith("PFI");
+    const esTECP = c.startsWith("TECP");
+    return (esFechaParcial || esPFI || esTECP) && fila[col]?.trim() !== "";
   });
   if (columnas.length === 0) return "";
   let b = `<div class="categoria-bloque"><div class="categoria-titulo">EVALUACIONES</div><div class="grid-datos">`;
   columnas.forEach(c => {
     const val = fila[c].trim();
     let clase = "";
-    if (val.toUpperCase() === "D") clase = "desaprobado";
-    else if (!isNaN(parseFloat(val)) && parseFloat(val) >= 7) clase = "promocion";
+    if (val.toUpperCase() === "D" || val.toLowerCase() === "desaprobado") clase = "desaprobado";
+    else if (val.toUpperCase() === "A" || val.toLowerCase() === "aprobado" || (!isNaN(parseFloat(val)) && parseFloat(val) >= 7)) clase = "promocion";
     b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${val}</span></div>`;
   });
-  return b + `</div></div>`;
+  b += `</div><div class="aclaracion-chiquita">A: Aprobado | D: Desaprobado | 7 o más: Promoción</div></div>`;
+  return b;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
