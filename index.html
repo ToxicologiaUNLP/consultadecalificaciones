@@ -75,7 +75,6 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
 .dato-label { display: block; font-size: 0.65em; color: #668a90; font-weight: 700; }
 .dato-valor { display: block; font-size: 1.1em; font-weight: 800; color: #2c565d; }
 
-/* Resaltados de Notas */
 .promocion { background-color: #e8f5e9 !important; border-color: #a5d6a7 !important; }
 .promocion .dato-valor { color: #2e7d32 !important; }
 .desaprobado { background-color: #ffebee !important; border-color: #ef9a9a !important; }
@@ -140,14 +139,14 @@ async function verificarEstado() {
         <p style="color:black; margin:0.5em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
         <label for="legajo">Legajo</label><input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
         <label for="email">E-mail asociado al SIU Guaraní*</label><input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
-        <small style="color:#555; font-size:0.9em;">*Correo electrónico oficial.</small>
+        <small style="color:#555; font-size:0.9em;">*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
         <button id="btnConsultar">Acceder</button>
       </div>
       <div id="resultado"></div>
       <div id="error" style="color:red; text-align:center; margin-top:10px;"></div>`;
     document.getElementById('btnConsultar').onclick = buscarNota;
   } else {
-    contenido.innerHTML = `<div style="text-align:center; margin:2em; font-weight:bold;">Sistema no disponible actualmente.</div>`;
+    contenido.innerHTML = `<div style="text-align:center; margin:2em; font-weight:bold;">En este momento no es posible acceder.<br>Aguarden e intenten ingresar en algunos minutos.</div>`;
   }
 }
 
@@ -156,25 +155,27 @@ async function buscarNota(){
   const email = document.getElementById('email').value.trim().toLowerCase();
   const resDiv = document.getElementById('resultado');
   const parsed = await cargarDatos(urlBase + '&_ts=' + Date.now());
+  
+  const columnas = parsed.meta.fields; // Capturamos nombres de columnas
   const fila = parsed.data.find(row => row['Legajo']?.trim().toLowerCase() === legajo && row['Email']?.trim().toLowerCase() === email);
 
-  if(!fila) { document.getElementById('error').textContent = "Datos incorrectos."; return; }
+  if(!fila) { document.getElementById('error').textContent = "Datos incorrectos. Verifique e intente nuevamente."; return; }
 
   document.getElementById('formBuscador').style.display = 'none';
-  let html = `<p><strong>${fila['Nombre'] || 'Estudiante'}:</strong></p>`;
   
-  // 1. Bloque Teóricos
+  // Captura el nombre de la Columna A (la primera columna del Excel)
+  const nombreEstudiante = fila[columnas[0]] || "Estudiante";
+
+  let html = `<p><strong>${nombreEstudiante}:</strong></p>`;
+  
   html += generarBloque(fila, "T", "Teóricos");
-  // 2. Bloque Prácticos (Excluimos los que tengan símbolos de grado o F de fecha)
   html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL"]);
-  // 3. Bloque Simulación
   html += generarBloque(fila, "S", "Simulación");
-  // 4. Bloque EVALUACIONES (Contiene ECP y Parciales con °, F o "Parcial")
   html += generarBloqueEvaluacion(fila);
 
   html += `
     <div class="seccion-referencias">
-      <strong>Referencias:</strong> T: Teóricos | P: Prácticos | S: Simulación | ECP: Examen Conceptual | °/F: Fechas de Parcial.
+      <strong>Referencias:</strong> T: Teóricos | P: Prácticos | S: Simulación | ECP: Conceptual Promoción | °/F: Fechas Parcial.
     </div>
     <button id="btnVolver">Volver</button>
     <p class="info-institucional">Sujeto a las <a href="javascript:void(0)" class="link-condiciones">condiciones</a> establecidas por la cátedra.</p>
@@ -224,7 +225,6 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
-
 
 
 
