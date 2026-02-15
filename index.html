@@ -52,6 +52,15 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
 #btnConsultar { padding: 0.6em 1.5em; font-size: 1.1em; }
 #btnVolver { padding: 0.45em 0.9em; font-size: 0.85em; }
 
+/* CARTEL DE ESTADO */
+.alerta-estado {
+  padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center;
+  font-family: 'Montserrat', sans-serif; font-weight: 800; border: 2px solid transparent;
+}
+.estado-libre { background: #ffebee; border-color: #ef9a9a; color: #c62828; }
+.estado-regular { background: #fff3e0; border-color: #ffcc80; color: #e65100; }
+.estado-promocion { background: #e8f5e9; border-color: #a5d6a7; color: #2e7d32; }
+
 /* === CARGA SIMULADA === */
 #loader { display: none; text-align: center; padding: 2em 0; }
 .spinner {
@@ -136,6 +145,35 @@ async function verificarEstado() {
   }
 }
 
+// Lógica de cálculo de estado según reglamento
+function calcularEstadoAcademico(fila) {
+  const contarFaltas = (prefijo) => Object.keys(fila).filter(k => k.toUpperCase().startsWith(prefijo.toUpperCase()) && fila[k].toUpperCase() === 'A').length;
+  
+  const faltasT = contarFaltas('T');
+  const faltasP = contarFaltas('P');
+  const faltasAE = contarFaltas('AE');
+  const faltasS = contarFaltas('S');
+  const totalFaltas = faltasT + faltasP + faltasAE;
+
+  const simuObligatoriaOk = faltasS === 0;
+  const limitesPorTipoOk = (faltasT <= 2 && faltasP <= 2 && faltasAE <= 2);
+  const limiteTotalOk = totalFaltas <= 4;
+
+  if (!simuObligatoriaOk || !limitesPorTipoOk || !limiteTotalOk) {
+    return { clase: 'estado-libre', texto: 'SITUACIÓN: LIBRE', desc: 'Superó el límite de faltas o adeuda actividad obligatoria.' };
+  }
+
+  // Verificar Nota Parcial para Promoción (>=7) o Regular (>=4)
+  const notaP = parseFloat(fila['PARCIAL']) || 0;
+  if (notaP >= 7) {
+    return { clase: 'estado-promocion', texto: 'SITUACIÓN: PROMOCIÓN', desc: 'Cumple asistencia y nota para promoción sin examen final.' };
+  } else if (notaP >= 4) {
+    return { clase: 'estado-regular', texto: 'SITUACIÓN: REGULAR', desc: 'Cumple asistencia y nota para cursada con examen final.' };
+  } else {
+    return { clase: 'estado-promocion', texto: 'SITUACIÓN: EN CURSADA', desc: 'Mantenga las asistencias y autoevaluaciones al día.' };
+  }
+}
+
 async function buscarNota(){
   const legajo = document.getElementById('legajo').value.trim().toLowerCase();
   const email = document.getElementById('email').value.trim().toLowerCase();
@@ -151,10 +189,6 @@ async function buscarNota(){
   formBuscador.style.display = 'none';
   loader.style.display = 'block';
 
-  setTimeout(() => { loaderText.textContent = "Datos encontrados..."; }, 1500);
-  setTimeout(() => { loaderText.textContent = "Verificando condiciones de cursada..."; }, 3000);
-  setTimeout(() => { loaderText.textContent = "Mostrando información..."; }, 4200);
-
   const parsed = await cargarDatos(urlBase + '&_ts=' + Date.now());
   const columnas = parsed.meta.fields;
   const fila = parsed.data.find(row => row['Legajo']?.trim().toLowerCase() === legajo && row['Email']?.trim().toLowerCase() === email);
@@ -167,13 +201,16 @@ async function buscarNota(){
       return;
     }
 
+    const estado = calcularEstadoAcademico(fila);
     const nombreEstudiante = fila[columnas[0]] || "Estudiante";
-    let html = `<p><strong>${nombreEstudiante}:</strong></p>`;
+    
+    let html = `<div class="alerta-estado ${estado.clase}">${estado.texto}<br><small style="font-weight:400">${estado.desc}</small></div>`;
+    html += `<p><strong>${nombreEstudiante}:</strong></p>`;
     
     html += generarBloque(fila, "T", "Teóricos", ["TECP"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "PFI"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "S", "Simulación", [], "A: Ausente | P: Presente");
-    html += generarBloqueAE(fila); // NUEVO BLOQUE AE
+    html += generarBloqueAE(fila);
     html += generarBloqueEvaluacion(fila);
 
     html += `
@@ -186,7 +223,7 @@ async function buscarNota(){
 
     resDiv.innerHTML = html;
     document.getElementById('btnVolver').onclick = () => { location.reload(); };
-  }, 5000);
+  }, 2000);
 }
 
 function generarBloque(fila, prefijo, titulo, excluir = [], aclaracion = "") {
@@ -196,7 +233,11 @@ function generarBloque(fila, prefijo, titulo, excluir = [], aclaracion = "") {
   });
   if (columnas.length === 0) return "";
   let b = `<div class="categoria-bloque"><div class="categoria-titulo">${titulo}</div><div class="grid-datos">`;
-  columnas.forEach(c => { b += `<div class="dato-item"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`; });
+  columnas.forEach(c => { 
+    const val = fila[c].trim().toUpperCase();
+    let clase = (val === "A") ? "desaprobado" : "";
+    b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`; 
+  });
   b += `</div><div class="aclaracion-chiquita">${aclaracion}</div></div>`;
   return b;
 }
@@ -209,10 +250,10 @@ function generarBloqueAE(fila) {
     const val = fila[c].trim().toUpperCase();
     let clase = "";
     if (val === "A" || val === "D") clase = "desaprobado";
-    else if (val === "P" || val === "OK") clase = "promocion";
+    else if (val === "P" || val === "OK" || (!isNaN(parseFloat(val)) && parseFloat(val) >= 4)) clase = "promocion";
     b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`;
   });
-  b += `</div><div class="aclaracion-chiquita">Importante: Deben estar todas completas para mantener la regularidad.</div></div>`;
+  b += `</div><div class="aclaracion-chiquita">Deben estar todas completas para mantener la regularidad.</div></div>`;
   return b;
 }
 
@@ -229,7 +270,7 @@ function generarBloqueEvaluacion(fila) {
   columnas.forEach(c => {
     const val = fila[c].trim();
     let clase = "";
-    if (val.toUpperCase() === "D" || val.toLowerCase() === "desaprobado") clase = "desaprobado";
+    if (val.toUpperCase() === "D" || val.toLowerCase() === "desaprobado" || (parseFloat(val) < 4)) clase = "desaprobado";
     else if (val.toUpperCase() === "A" || val.toLowerCase() === "aprobado" || (!isNaN(parseFloat(val)) && parseFloat(val) >= 7)) clase = "promocion";
     b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${val}</span></div>`;
   });
