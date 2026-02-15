@@ -22,27 +22,19 @@ body {
   overflow-x: hidden;
 }
 
-/* === MAIN ORIGINAL === */
 main {
   max-width: 600px;
   width: 100%;
-  overflow-x: hidden;
   background: #f9f8f5;
   margin: 30px auto 2em auto;
   padding: 2em;
   border-radius: 16px;
   box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-  position: relative;
   flex: 1;
 }
 
 main header { text-align: center; margin-bottom: 25px; }
-main header img {
-  width: 100%;
-  height: auto;
-  border-radius: 16px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.18);
-}
+main header img { width: 100%; height: auto; border-radius: 16px; box-shadow: 0 3px 8px rgba(0,0,0,0.18); }
 
 .titulo-centro {
   font-family: 'Open Sans', sans-serif;
@@ -50,22 +42,35 @@ main header img {
   font-size: 2em;
   color: #38828f;
   margin: 20px 0 0 0;
-  line-height: 1.25;
 }
 
-/* === FORM === */
 label { font-weight: 600; margin-top: 1em; margin-bottom: 0.6em; display: block; }
-input[type="text"], input[type="email"] {
-  width: 100%; padding: 0.7em; font-size: 1.05em; border: 2px solid #ccc; border-radius: 8px; box-sizing: border-box;
-}
+input { width: 100%; padding: 0.7em; font-size: 1.05em; border: 2px solid #ccc; border-radius: 8px; }
 
-/* === BOTONES === */
 button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto 0 auto; display: block; border: none; transition: opacity 0.2s; }
 #btnConsultar, #btnVolver { background: #2d8390; color: white; }
 #btnConsultar { padding: 0.6em 1.5em; font-size: 1.1em; }
 #btnVolver { padding: 0.45em 0.9em; font-size: 0.85em; }
 
-/* === BLOQUES DE RESULTADOS VERTICALES === */
+/* === ANIMACIÓN DE CARGA === */
+#loader {
+  display: none;
+  text-align: center;
+  padding: 2em 0;
+}
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #38828f;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 15px auto;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+#loaderText { font-family: 'Montserrat', sans-serif; color: #38828f; font-weight: 700; font-size: 0.9em; }
+
+/* === BLOQUES DE RESULTADOS === */
 .categoria-bloque {
   margin-bottom: 15px; background: #fff; border-radius: 10px; padding: 15px; border: 1px solid #e0e6e7; border-left: 5px solid #38828f;
 }
@@ -84,14 +89,9 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
 
 .seccion-referencias { margin-top: 20px; padding: 12px; background: #eee; border-radius: 8px; font-size: 0.75em; color: #666; line-height: 1.4; }
 .info-institucional { margin-top: 1.5em; text-align: center; font-family: "Courier New", Courier, "Lucida Console", Monaco, monospace; font-size: 0.74em; line-height: 1.3; color: #888; }
-.link-condiciones { color: #38828f; text-decoration: underline; cursor: pointer; font-weight: 600; pointer-events: auto; }
+.link-condiciones { color: #38828f; text-decoration: underline; font-weight: 600; }
 
-/* === MODAL === */
-.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 99999; }
-.modal { position: relative; background: white; border-radius: 16px; padding: 20px; max-width: 600px; width: 100%; max-height: 85vh; overflow-y: auto; border: 5px solid #38828f; }
-#cerrarCondiciones { position: sticky; top: 0; margin-left: auto; width: 36px; height: 36px; background: #38828f; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-
-footer { background: transparent; color: #ffffff; text-align: center; padding: 0.8em 1em; font-size: 0.85em; margin-top: auto; }
+footer { color: #ffffff; text-align: center; padding: 1em; font-size: 0.85em; margin-top: auto; }
 
 @media (max-width: 600px) { main { width: 100%; margin: 0; border-radius: 0; } }
 </style>
@@ -105,20 +105,14 @@ footer { background: transparent; color: #ffffff; text-align: center; padding: 0
     <div class="titulo-centro">ASISTENCIA Y CALIFICACIONES</div>
   </header>
   <div id="contenido"></div>
+  
+  <div id="loader">
+    <div class="spinner"></div>
+    <div id="loaderText">Consultando base de datos...</div>
+  </div>
 </main>
 
 <footer>© 2026 Cátedra de Toxicología, FCM - UNLP.</footer>
-
-<div class="overlay" id="modalCondiciones">
-  <div class="modal">
-    <span id="cerrarCondiciones">&times;</span>
-    <h3>Condiciones establecidas por la Cátedra</h3>
-    <div style="text-align:left; font-size:0.85em; color:#555; line-height:1.4;">
-      <p><strong>Cursada regular CON examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra...</p>
-      <p><strong>Promoción de cursada regular SIN examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra...</p>
-    </div>
-  </div>
-</div>
 
 <script>
 const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?output=csv';
@@ -139,9 +133,9 @@ async function verificarEstado() {
     contenido.innerHTML = `
       <div id="formBuscador">
         <p style="color:black; margin:0.5em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
-        <label for="legajo">Legajo</label><input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
-        <label for="email">E-mail asociado al SIU Guaraní*</label><input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
-        <small style="color:#555; font-size:0.9em;">*Correo electrónico que usted ha seleccionado para recibir información oficial de las cátedras.</small>
+        <label for="legajo">Legajo</label><input type="text" id="legajo" placeholder="12345/6" />
+        <label for="email">E-mail asociado al SIU Guaraní*</label><input type="email" id="email" placeholder="alumno@gmail.com" />
+        <small style="color:#555; font-size:0.9em;">*Correo electrónico oficial del SIU.</small>
         <button id="btnConsultar">Acceder</button>
       </div>
       <div id="resultado"></div>
@@ -156,33 +150,60 @@ async function buscarNota(){
   const legajo = document.getElementById('legajo').value.trim().toLowerCase();
   const email = document.getElementById('email').value.trim().toLowerCase();
   const resDiv = document.getElementById('resultado');
+  const errorDiv = document.getElementById('error');
+  const formBuscador = document.getElementById('formBuscador');
+  const loader = document.getElementById('loader');
+  const loaderText = document.getElementById('loaderText');
+
+  errorDiv.textContent = "";
+
+  if(!legajo || !email) {
+    errorDiv.textContent = "Por favor, complete ambos campos.";
+    return;
+  }
+
+  // Ocultar buscador y mostrar loader
+  formBuscador.style.display = 'none';
+  loader.style.display = 'block';
+
+  // Iniciar frases de carga
+  setTimeout(() => { loaderText.textContent = "Datos encontrados..."; }, 1200);
+  setTimeout(() => { loaderText.textContent = "Mostrando información..."; }, 2300);
+
+  // Buscar datos realmente
   const parsed = await cargarDatos(urlBase + '&_ts=' + Date.now());
-  
   const columnas = parsed.meta.fields;
   const fila = parsed.data.find(row => row['Legajo']?.trim().toLowerCase() === legajo && row['Email']?.trim().toLowerCase() === email);
 
-  if(!fila) { document.getElementById('error').textContent = "Datos incorrectos."; return; }
+  // Esperar a que terminen los 3 segundos de "ansiedad"
+  setTimeout(() => {
+    loader.style.display = 'none';
 
-  document.getElementById('formBuscador').style.display = 'none';
-  const nombreEstudiante = fila[columnas[0]] || "Estudiante";
+    if(!fila) {
+      formBuscador.style.display = 'block';
+      errorDiv.textContent = "Datos incorrectos. Verifique e intente nuevamente.";
+      return;
+    }
 
-  let html = `<p><strong>${nombreEstudiante}:</strong></p>`;
-  
-  html += generarBloque(fila, "T", "Teóricos", ["TECP"], "A: Ausente | P: Presente");
-  html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "PFI"], "A: Ausente | P: Presente");
-  html += generarBloque(fila, "S", "Simulación", [], "A: Ausente | P: Presente");
-  html += generarBloqueEvaluacion(fila);
+    const nombreEstudiante = fila[columnas[0]] || "Estudiante";
+    let html = `<p><strong>${nombreEstudiante}:</strong></p>`;
+    
+    html += generarBloque(fila, "T", "Teóricos", ["TECP"], "A: Ausente | P: Presente");
+    html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "PFI"], "A: Ausente | P: Presente");
+    html += generarBloque(fila, "S", "Simulación", [], "A: Ausente | P: Presente");
+    html += generarBloqueEvaluacion(fila);
 
-  html += `
-    <div class="seccion-referencias">
-      <strong>Referencias:</strong> T: Teóricos | P: Prácticos | S: Simulación | PFI: Parcial Final Integrador | TECP1: Taller Evaluación Continua | °/F: Fechas Parcial.
-    </div>
-    <button id="btnVolver">Volver</button>
-    <p class="info-institucional">Sujeto a las <a href="javascript:void(0)" class="link-condiciones">condiciones</a> establecidas por la cátedra.</p>
-  `;
+    html += `
+      <div class="seccion-referencias">
+        <strong>Referencias:</strong> T: Teóricos | P: Prácticos | S: Simulación | PFI: Parcial Final Integrador | TECP: Taller Evaluación Continua | °/F: Fechas Parcial.
+      </div>
+      <button id="btnVolver">Volver</button>
+      <p class="info-institucional">Sujeto a las <a href="https://educativa.med.unlp.edu.ar/course/view.php?id=290" target="_blank" class="link-condiciones">condiciones</a> establecidas por la cátedra.</p>
+    `;
 
-  resDiv.innerHTML = html;
-  document.getElementById('btnVolver').onclick = () => { document.getElementById('formBuscador').style.display='block'; resDiv.innerHTML=''; };
+    resDiv.innerHTML = html;
+    document.getElementById('btnVolver').onclick = () => { location.reload(); };
+  }, 3200);
 }
 
 function generarBloque(fila, prefijo, titulo, excluir = [], aclaracion = "") {
@@ -218,77 +239,10 @@ function generarBloqueEvaluacion(fila) {
   return b;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  verificarEstado();
-  document.addEventListener('click', (e)=>{
-    if (e.target.classList.contains('link-condiciones')) document.getElementById('modalCondiciones').style.display = 'flex';
-    if(e.target.id === 'cerrarCondiciones' || e.target.id === 'modalCondiciones') document.getElementById('modalCondiciones').style.display = 'none';
-  });
-});
+window.onload = verificarEstado;
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
