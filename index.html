@@ -235,7 +235,7 @@ function generarBloqueEvaluacion(fila) {
     else if (val.toUpperCase() === "A" || val.toLowerCase() === "aprobado" || (!isNaN(parseFloat(val)) && parseFloat(val) >= 7)) clase = "promocion";
     b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${val}</span></div>`;
   });
-  b += `</div><div class="aclaracion-chiquita">A: Aprobado | D: Desaprobado | 7 o más: Promoción</div></div>`;
+  b += `</div><div class="aclaracion-chiquita">A: Aprobado | D: Desaprobado | 7 o más: Promoción (según requisitos)</div></div>`;
   return b;
 }
 
