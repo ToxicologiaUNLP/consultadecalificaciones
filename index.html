@@ -166,7 +166,7 @@ async function buscarNota(){
     html += generarBloque(fila, "T", "Teóricos", ["TECP"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "PFI"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "S", "Simulación", [], "A: Ausente | P: Presente");
-    html += generarBloque(fila, "AE", "Autoevaluaciones Asincrónicas (Obligatorias)", [], "Deben estar todas completas para mantener la regularidad.");
+    html += generarBloque(fila, "AE", "Autoevaluaciones Asincrónicas Obligatorias", [], "Deben estar todas completas para mantener la regularidad.");
     html += generarBloqueEvaluacion(fila);
 
     html += `
@@ -231,7 +231,7 @@ function generarBloqueEvaluacion(fila) {
     
     b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`;
   });
-  b += `</div><div class="aclaracion-chiquita">P1°F (4 o más: Aprobado) | Resto Fechas/TECP (A: Aprobado | D: Desaprobado)</div></div>`;
+  b += `</div><div class="aclaracion-chiquita">(A: Aprobado | D: Desaprobado)</div></div>`;
   return b;
 }
 
