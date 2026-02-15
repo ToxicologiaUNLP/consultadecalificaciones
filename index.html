@@ -52,7 +52,6 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
 #btnConsultar { padding: 0.6em 1.5em; font-size: 1.1em; }
 #btnVolver { padding: 0.45em 0.9em; font-size: 0.85em; }
 
-/* === CARTEL DE ESTADO === */
 .alerta-estado {
   padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center;
   font-family: 'Montserrat', sans-serif; font-weight: 800; border: 2px solid transparent;
@@ -61,7 +60,6 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
 .estado-regular { background: #fff3e0; border-color: #ffcc80; color: #e65100; }
 .estado-promocion { background: #e8f5e9; border-color: #a5d6a7; color: #2e7d32; }
 
-/* === CARGA SIMULADA === */
 #loader { display: none; text-align: center; padding: 2em 0; }
 .spinner {
   width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #38828f;
@@ -70,7 +68,6 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 #loaderText { font-family: 'Montserrat', sans-serif; color: #38828f; font-weight: 700; font-size: 0.9em; }
 
-/* === BLOQUES DE RESULTADOS === */
 .categoria-bloque {
   margin-bottom: 15px; background: #fff; border-radius: 10px; padding: 15px; border: 1px solid #e0e6e7; border-left: 5px solid #38828f;
 }
@@ -146,32 +143,28 @@ async function verificarEstado() {
 }
 
 function calcularEstadoAcademico(fila) {
-  // 1. Asistencia
   const contarFaltas = (p) => Object.keys(fila).filter(k => k.toUpperCase().startsWith(p) && !["°", "F", "PARCIAL", "PFI", "TECP"].some(ex => k.toUpperCase().includes(ex)) && fila[k].toUpperCase() === 'A').length;
   const fT = contarFaltas('T'), fP = contarFaltas('P'), fAE = contarFaltas('AE'), fS = contarFaltas('S');
   const totalF = fT + fP + fAE;
 
-  // 2. Evaluaciones específicas
   const nota1ra = parseFloat(fila['P1°F']) || 0;
   const notaPFI = parseFloat(fila['PFI']) || 0;
-  const tecpOk = !Object.keys(fila).some(k => k.startsWith('TECP') && (fila[k].toUpperCase() === 'D' || fila[k].toUpperCase() === 'A'));
+  
+  // Para TECP, 'A' es aprobado, por eso chequeamos si dice 'D' para invalidar promocion
+  const tecpOk = !Object.keys(fila).some(k => k.startsWith('TECP') && (fila[k].toUpperCase() === 'D'));
 
-  // 3. Mejores notas para regularidad
   const todasNotas = Object.keys(fila).filter(k => k.includes('PARCIAL') || k.includes('°') || k.includes('F'))
                        .map(k => parseFloat(fila[k])).filter(n => !isNaN(n));
   const mejorNota = todasNotas.length > 0 ? Math.max(...todasNotas) : 0;
 
-  // Lógica LIBRE
   if (fS > 0 || fT > 2 || fP > 2 || fAE > 2 || totalF > 4) {
     return { clase: 'estado-libre', texto: 'SITUACIÓN: LIBRE', desc: 'Incumplimiento de asistencia u obligatoriedad.' };
   }
 
-  // Lógica PROMOCIÓN (Específica: 1ra fecha >=7, PFI >=7, TECP ok)
   if (nota1ra >= 7 && notaPFI >= 7 && tecpOk) {
     return { clase: 'estado-promocion', texto: 'SITUACIÓN: PROMOCIÓN', desc: 'Promocionado. Cumple 1ra fecha, PFI y asistencias.' };
   }
 
-  // Lógica REGULAR
   if (mejorNota >= 4 && todasNotas.length <= 3) {
     return { clase: 'estado-regular', texto: 'SITUACIÓN: REGULAR', desc: 'Cursada aprobada (con final). No cumple requisitos de promoción.' };
   }
@@ -194,7 +187,6 @@ async function buscarNota(){
   loader.style.display = 'block';
 
   const parsed = await cargarDatos(urlBase + '&_ts=' + Date.now());
-  const columnas = parsed.meta.fields;
   const fila = parsed.data.find(row => row['Legajo']?.trim().toLowerCase() === legajo && row['Email']?.trim().toLowerCase() === email);
 
   setTimeout(() => {
@@ -206,7 +198,7 @@ async function buscarNota(){
     }
 
     const estado = calcularEstadoAcademico(fila);
-    const nombreEstudiante = fila[columnas[0]] || "Estudiante";
+    const nombreEstudiante = fila[parsed.meta.fields[0]] || "Estudiante";
     
     let html = `<div class="alerta-estado ${estado.clase}">${estado.texto}<br><small style="font-weight:400">${estado.desc}</small></div>`;
     html += `<p><strong>${nombreEstudiante}:</strong></p>`;
@@ -267,14 +259,23 @@ function generarBloqueEvaluacion(fila) {
   if (columnas.length === 0) return "";
   let b = `<div class="categoria-bloque"><div class="categoria-titulo">EVALUACIONES</div><div class="grid-datos">`;
   columnas.forEach(c => {
-    const val = fila[c].trim();
+    const val = fila[c].trim().toUpperCase();
     const num = parseFloat(val);
     let clase = "";
-    if (val.toUpperCase() === "D" || val.toUpperCase() === "A" || (!isNaN(num) && num < 4)) clase = "desaprobado";
-    else if (!isNaN(num) && num >= 7) clase = "promocion";
-    b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${val}</span></div>`;
+    
+    // Lógica especial para TECP: A es Aprobado
+    if (c.toUpperCase().startsWith("TECP")) {
+      if (val === "A" || val === "P") clase = "promocion";
+      else if (val === "D") clase = "desaprobado";
+    } else {
+      // Lógica para Parciales y PFI
+      if (val === "D" || val === "A" || (!isNaN(num) && num < 4)) clase = "desaprobado";
+      else if (!isNaN(num) && num >= 7) clase = "promocion";
+    }
+    
+    b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`;
   });
-  b += `</div><div class="aclaracion-chiquita">A: Aprobado | D: Desaprobado | 7 o más: Promoción (según requisitos)</div></div>`;
+  b += `</div><div class="aclaracion-chiquita">Parciales/PFI (7 o más: Promo) | TECP (A: Aprobado)</div></div>`;
   return b;
 }
 
