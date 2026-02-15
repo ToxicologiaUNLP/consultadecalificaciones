@@ -52,7 +52,7 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
 #btnConsultar { padding: 0.6em 1.5em; font-size: 1.1em; }
 #btnVolver { padding: 0.45em 0.9em; font-size: 0.85em; }
 
-/* CARTEL DE ESTADO */
+/* === CARTEL DE ESTADO === */
 .alerta-estado {
   padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center;
   font-family: 'Montserrat', sans-serif; font-weight: 800; border: 2px solid transparent;
@@ -145,33 +145,38 @@ async function verificarEstado() {
   }
 }
 
-// Lógica de cálculo de estado según reglamento
 function calcularEstadoAcademico(fila) {
-  const contarFaltas = (prefijo) => Object.keys(fila).filter(k => k.toUpperCase().startsWith(prefijo.toUpperCase()) && fila[k].toUpperCase() === 'A').length;
-  
-  const faltasT = contarFaltas('T');
-  const faltasP = contarFaltas('P');
-  const faltasAE = contarFaltas('AE');
-  const faltasS = contarFaltas('S');
-  const totalFaltas = faltasT + faltasP + faltasAE;
+  // 1. Asistencia
+  const contarFaltas = (p) => Object.keys(fila).filter(k => k.toUpperCase().startsWith(p) && !["°", "F", "PARCIAL", "PFI", "TECP"].some(ex => k.toUpperCase().includes(ex)) && fila[k].toUpperCase() === 'A').length;
+  const fT = contarFaltas('T'), fP = contarFaltas('P'), fAE = contarFaltas('AE'), fS = contarFaltas('S');
+  const totalF = fT + fP + fAE;
 
-  const simuObligatoriaOk = faltasS === 0;
-  const limitesPorTipoOk = (faltasT <= 2 && faltasP <= 2 && faltasAE <= 2);
-  const limiteTotalOk = totalFaltas <= 4;
+  // 2. Evaluaciones específicas
+  const nota1ra = parseFloat(fila['P1°F']) || 0;
+  const notaPFI = parseFloat(fila['PFI']) || 0;
+  const tecpOk = !Object.keys(fila).some(k => k.startsWith('TECP') && (fila[k].toUpperCase() === 'D' || fila[k].toUpperCase() === 'A'));
 
-  if (!simuObligatoriaOk || !limitesPorTipoOk || !limiteTotalOk) {
-    return { clase: 'estado-libre', texto: 'SITUACIÓN: LIBRE', desc: 'Superó el límite de faltas o adeuda actividad obligatoria.' };
+  // 3. Mejores notas para regularidad
+  const todasNotas = Object.keys(fila).filter(k => k.includes('PARCIAL') || k.includes('°') || k.includes('F'))
+                       .map(k => parseFloat(fila[k])).filter(n => !isNaN(n));
+  const mejorNota = todasNotas.length > 0 ? Math.max(...todasNotas) : 0;
+
+  // Lógica LIBRE
+  if (fS > 0 || fT > 2 || fP > 2 || fAE > 2 || totalF > 4) {
+    return { clase: 'estado-libre', texto: 'SITUACIÓN: LIBRE', desc: 'Incumplimiento de asistencia u obligatoriedad.' };
   }
 
-  // Verificar Nota Parcial para Promoción (>=7) o Regular (>=4)
-  const notaP = parseFloat(fila['PARCIAL']) || 0;
-  if (notaP >= 7) {
-    return { clase: 'estado-promocion', texto: 'SITUACIÓN: PROMOCIÓN', desc: 'Cumple asistencia y nota para promoción sin examen final.' };
-  } else if (notaP >= 4) {
-    return { clase: 'estado-regular', texto: 'SITUACIÓN: REGULAR', desc: 'Cumple asistencia y nota para cursada con examen final.' };
-  } else {
-    return { clase: 'estado-promocion', texto: 'SITUACIÓN: EN CURSADA', desc: 'Mantenga las asistencias y autoevaluaciones al día.' };
+  // Lógica PROMOCIÓN (Específica: 1ra fecha >=7, PFI >=7, TECP ok)
+  if (nota1ra >= 7 && notaPFI >= 7 && tecpOk) {
+    return { clase: 'estado-promocion', texto: 'SITUACIÓN: PROMOCIÓN', desc: 'Promocionado. Cumple 1ra fecha, PFI y asistencias.' };
   }
+
+  // Lógica REGULAR
+  if (mejorNota >= 4 && todasNotas.length <= 3) {
+    return { clase: 'estado-regular', texto: 'SITUACIÓN: REGULAR', desc: 'Cursada aprobada (con final). No cumple requisitos de promoción.' };
+  }
+
+  return { clase: 'estado-regular', texto: 'SITUACIÓN: EN CURSADA', desc: 'Mantenga asistencia y actividades para definir su condición.' };
 }
 
 async function buscarNota(){
@@ -181,7 +186,6 @@ async function buscarNota(){
   const errorDiv = document.getElementById('error');
   const formBuscador = document.getElementById('formBuscador');
   const loader = document.getElementById('loader');
-  const loaderText = document.getElementById('loaderText');
 
   errorDiv.textContent = "";
   if(!legajo || !email) { errorDiv.textContent = "Complete ambos campos."; return; }
@@ -223,7 +227,7 @@ async function buscarNota(){
 
     resDiv.innerHTML = html;
     document.getElementById('btnVolver').onclick = () => { location.reload(); };
-  }, 2000);
+  }, 1500);
 }
 
 function generarBloque(fila, prefijo, titulo, excluir = [], aclaracion = "") {
@@ -248,9 +252,7 @@ function generarBloqueAE(fila) {
   let b = `<div class="categoria-bloque" style="border-left-color: #c96d00;"><div class="categoria-titulo" style="color: #c96d00;">Autoevaluaciones Asincrónicas (Obligatorias)</div><div class="grid-datos">`;
   columnas.forEach(c => {
     const val = fila[c].trim().toUpperCase();
-    let clase = "";
-    if (val === "A" || val === "D") clase = "desaprobado";
-    else if (val === "P" || val === "OK" || (!isNaN(parseFloat(val)) && parseFloat(val) >= 4)) clase = "promocion";
+    let clase = (val === "A" || val === "D") ? "desaprobado" : "promocion";
     b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`;
   });
   b += `</div><div class="aclaracion-chiquita">Deben estar todas completas para mantener la regularidad.</div></div>`;
@@ -260,18 +262,16 @@ function generarBloqueAE(fila) {
 function generarBloqueEvaluacion(fila) {
   const columnas = Object.keys(fila).filter(col => {
     const c = col.toUpperCase();
-    const esFechaParcial = c.includes("°") || c.includes("F") || c.includes("PARCIAL");
-    const esPFI = c.startsWith("PFI");
-    const esTECP = c.startsWith("TECP");
-    return (esFechaParcial || esPFI || esTECP) && fila[col]?.trim() !== "";
+    return (c.includes("°") || c.includes("F") || c.includes("PARCIAL") || c.startsWith("PFI") || c.startsWith("TECP")) && fila[col]?.trim() !== "";
   });
   if (columnas.length === 0) return "";
   let b = `<div class="categoria-bloque"><div class="categoria-titulo">EVALUACIONES</div><div class="grid-datos">`;
   columnas.forEach(c => {
     const val = fila[c].trim();
+    const num = parseFloat(val);
     let clase = "";
-    if (val.toUpperCase() === "D" || val.toLowerCase() === "desaprobado" || (parseFloat(val) < 4)) clase = "desaprobado";
-    else if (val.toUpperCase() === "A" || val.toLowerCase() === "aprobado" || (!isNaN(parseFloat(val)) && parseFloat(val) >= 7)) clase = "promocion";
+    if (val.toUpperCase() === "D" || val.toUpperCase() === "A" || (!isNaN(num) && num < 4)) clase = "desaprobado";
+    else if (!isNaN(num) && num >= 7) clase = "promocion";
     b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${val}</span></div>`;
   });
   b += `</div><div class="aclaracion-chiquita">A: Aprobado | D: Desaprobado | 7 o más: Promoción (según requisitos)</div></div>`;
