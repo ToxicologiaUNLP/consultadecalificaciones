@@ -151,7 +151,6 @@ async function buscarNota(){
   formBuscador.style.display = 'none';
   loader.style.display = 'block';
 
-  // Frases de suspenso (5 segundos total)
   setTimeout(() => { loaderText.textContent = "Datos encontrados..."; }, 1500);
   setTimeout(() => { loaderText.textContent = "Verificando condiciones de cursada..."; }, 3000);
   setTimeout(() => { loaderText.textContent = "Mostrando información..."; }, 4200);
@@ -174,11 +173,12 @@ async function buscarNota(){
     html += generarBloque(fila, "T", "Teóricos", ["TECP"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "PFI"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "S", "Simulación", [], "A: Ausente | P: Presente");
+    html += generarBloqueAE(fila); // NUEVO BLOQUE AE
     html += generarBloqueEvaluacion(fila);
 
     html += `
       <div class="seccion-referencias">
-        <strong>Referencias:</strong> T: Teóricos | P: Prácticos | S: Simulación | PFI: Parcial Final Integrador | TECP: Taller Evaluación Continua | °/F: Fechas Parcial.
+        <strong>Referencias:</strong> T: Teóricos | P: Prácticos | S: Simulación | AE: Autoevaluación | PFI: Parcial Final Integrador | TECP: Taller Evaluación Continua | °/F: Fechas Parcial.
       </div>
       <button id="btnVolver">Volver</button>
       <p class="info-institucional">Sujeto a las <a href="https://educativa.med.unlp.edu.ar/course/view.php?id=290" target="_blank" class="link-condiciones">condiciones</a> establecidas por la cátedra.</p>
@@ -198,6 +198,21 @@ function generarBloque(fila, prefijo, titulo, excluir = [], aclaracion = "") {
   let b = `<div class="categoria-bloque"><div class="categoria-titulo">${titulo}</div><div class="grid-datos">`;
   columnas.forEach(c => { b += `<div class="dato-item"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`; });
   b += `</div><div class="aclaracion-chiquita">${aclaracion}</div></div>`;
+  return b;
+}
+
+function generarBloqueAE(fila) {
+  const columnas = Object.keys(fila).filter(col => col.toUpperCase().startsWith("AE") && fila[col]?.trim() !== "");
+  if (columnas.length === 0) return "";
+  let b = `<div class="categoria-bloque" style="border-left-color: #c96d00;"><div class="categoria-titulo" style="color: #c96d00;">Autoevaluaciones Asincrónicas (Obligatorias)</div><div class="grid-datos">`;
+  columnas.forEach(c => {
+    const val = fila[c].trim().toUpperCase();
+    let clase = "";
+    if (val === "A" || val === "D") clase = "desaprobado";
+    else if (val === "P" || val === "OK") clase = "promocion";
+    b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`;
+  });
+  b += `</div><div class="aclaracion-chiquita">Importante: Deben estar todas completas para mantener la regularidad.</div></div>`;
   return b;
 }
 
