@@ -22,101 +22,77 @@ body {
   overflow-x: hidden;
 }
 
-/* === MAIN === */
+/* === MAIN ORIGINAL === */
 main {
   max-width: 600px;
   width: 100%;
+  overflow-x: hidden;
   background: #f9f8f5;
   margin: 30px auto 2em auto;
   padding: 2em;
   border-radius: 16px;
   box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  position: relative;
   flex: 1;
 }
 
 main header { text-align: center; margin-bottom: 25px; }
-main header img { width: 100%; height: auto; border-radius: 16px; box-shadow: 0 3px 8px rgba(0,0,0,0.18); }
+main header img {
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+}
 
 .titulo-centro {
   font-family: 'Open Sans', sans-serif;
   font-weight: 700;
-  font-size: 1.8em;
+  font-size: 2em;
   color: #38828f;
-  margin-top: 15px;
+  margin: 20px 0 0 0;
+  line-height: 1.25;
 }
 
-/* === BUSCADOR === */
-label { font-weight: 600; margin-top: 1em; display: block; color: #444; }
-input { width: 100%; padding: 0.8em; margin: 0.5em 0; border: 2px solid #ccc; border-radius: 8px; font-size: 1em; }
+/* === FORM === */
+label { font-weight: 600; margin-top: 1em; margin-bottom: 0.6em; display: block; }
+input[type="text"], input[type="email"] {
+  width: 100%; padding: 0.7em; font-size: 1.05em; border: 2px solid #ccc; border-radius: 8px; box-sizing: border-box;
+}
 
-/* === BLOQUES VERTICALES === */
+/* === BOTONES === */
+button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto 0 auto; display: block; border: none; transition: opacity 0.2s; }
+#btnConsultar, #btnVolver { background: #2d8390; color: white; }
+#btnConsultar { padding: 0.6em 1.5em; font-size: 1.1em; }
+#btnVolver { padding: 0.45em 0.9em; font-size: 0.85em; }
+
+/* === BLOQUES DE RESULTADOS VERTICALES === */
 .categoria-bloque {
-  margin-bottom: 20px;
-  background: #ffffff;
-  border-radius: 10px;
-  padding: 15px;
-  border: 1px solid #e0e6e7;
-  border-left: 5px solid #38828f;
+  margin-bottom: 20px; background: #fff; border-radius: 10px; padding: 15px; border: 1px solid #e0e6e7; border-left: 5px solid #38828f;
 }
-
-.categoria-titulo {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.85em;
-  color: #38828f;
-  font-weight: 800;
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.grid-datos {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
-  gap: 8px;
-}
-
-.dato-item {
-  background: #f4f8f9;
-  border: 1px solid #d1dfe1;
-  padding: 10px 4px;
-  border-radius: 6px;
-  text-align: center;
-}
-
+.categoria-titulo { font-family: 'Montserrat', sans-serif; font-size: 0.85em; color: #38828f; font-weight: 800; margin-bottom: 12px; text-transform: uppercase; }
+.grid-datos { display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 8px; }
+.dato-item { background: #f4f8f9; border: 1px solid #d1dfe1; padding: 10px 4px; border-radius: 6px; text-align: center; }
 .dato-label { display: block; font-size: 0.65em; color: #668a90; font-weight: 700; }
 .dato-valor { display: block; font-size: 1.1em; font-weight: 800; color: #2c565d; }
 
-/* Resaltado para Promoción */
-.aprobado-promocion {
-  background-color: #e8f5e9 !important;
-  border-color: #a5d6a7 !important;
-}
-.aprobado-promocion .dato-valor { color: #2e7d32 !important; }
+/* Resaltados de Notas */
+.promocion { background-color: #e8f5e9 !important; border-color: #a5d6a7 !important; }
+.promocion .dato-valor { color: #2e7d32 !important; }
+.desaprobado { background-color: #ffebee !important; border-color: #ef9a9a !important; }
+.desaprobado .dato-valor { color: #c62828 !important; }
 
-/* === REFERENCIAS === */
-.seccion-referencias {
-  margin-top: 25px;
-  padding: 15px;
-  background: #eeeeee;
-  border-radius: 10px;
-  font-size: 0.75em;
-  color: #555;
-  line-height: 1.6;
-}
-.seccion-referencias strong { color: #38828f; }
+.seccion-referencias { margin-top: 20px; padding: 12px; background: #eee; border-radius: 8px; font-size: 0.75em; color: #666; line-height: 1.4; }
+.info-institucional { margin-top: 1.5em; text-align: center; font-family: "Courier New", Courier, "Lucida Console", Monaco, monospace; font-size: 0.74em; line-height: 1.3; color: #888; }
+.link-condiciones { color: #38828f; text-decoration: underline; cursor: pointer; font-weight: 600; pointer-events: auto; }
 
-/* === BOTONES === */
-button { width: 100%; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; transition: 0.3s; }
-#btnConsultar { background: #2d8390; color: white; padding: 1em; margin-top: 1em; font-size: 1.1em; }
-#btnVolver { background: #607d8b; color: white; padding: 0.8em; margin-top: 20px; }
-button:active { transform: scale(0.98); }
+/* === MODAL === */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 99999; }
+.modal { position: relative; background: white; border-radius: 16px; padding: 20px; max-width: 600px; width: 100%; max-height: 85vh; overflow-y: auto; border: 5px solid #38828f; }
+#cerrarCondiciones { position: sticky; top: 0; margin-left: auto; width: 36px; height: 36px; background: #38828f; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-.info-institucional { font-size: 0.72em; color: #888; text-align: center; margin-top: 20px; line-height: 1.4; }
-footer { color: white; text-align: center; padding: 1.5em; font-size: 0.8em; }
+footer { background: transparent; color: #ffffff; text-align: center; padding: 0.8em 1em; font-size: 0.85em; margin-top: auto; }
 
-@media (max-width: 600px) {
-  main { margin: 0; border-radius: 0; padding: 1.5em; }
-}
+@media (max-width: 600px) { main { width: 100%; margin: 0; border-radius: 0; } }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 </head>
@@ -124,13 +100,24 @@ footer { color: white; text-align: center; padding: 1.5em; font-size: 0.8em; }
 <body>
 <main>
   <header>
-    <img src="https://notas-toxicologia-unlp.netlify.app/logop.png" alt="Logo Cátedra" />
-    <div class="titulo-centro">CONSULTA DE NOTAS</div>
+    <img src="logop.png" alt="Logo Cátedra" />
+    <div class="titulo-centro">ASISTENCIA Y CALIFICACIONES</div>
   </header>
   <div id="contenido"></div>
 </main>
 
 <footer>© 2026 Cátedra de Toxicología, FCM - UNLP.</footer>
+
+<div class="overlay" id="modalCondiciones">
+  <div class="modal">
+    <span id="cerrarCondiciones">&times;</span>
+    <h3>Condiciones establecidas por la Cátedra</h3>
+    <div style="text-align:left; font-size:0.85em; color:#555; line-height:1.4;">
+      <p><strong>Cursada regular CON examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra. Por lo tanto, podrá faltar a 1 (una) clase de Trabajos Prácticos de casos clínicos y 1 (una) Evaluación Formativa asincrónica. Además, deberá aprobar con 4 o más la evaluación parcial al finalizar la cursada, que se realizará de forma presencial y podrá rendirse hasta un máximo de 3 oportunidades sobre las 4 fechas que publicará la Cátedra. Posteriormente, el estudiante deberá presentarse a rendir el examen final en la mesa que desee.</p>
+      <p><strong>Promoción de cursada regular SIN examen final:</strong> El estudiante deberá cumplir el 80% de las actividades propuestas por la cátedra. Por lo tanto, podrá faltar a 1 (una) clase de integración teórica, 1 (una) clase de Trabajos Prácticos de casos clínicos y 1 (una) Evaluación Formativa asincrónica durante todo el bimestre. La asistencia al Taller de Simulación Clínica es obligatoria. Asimismo, deberá aprobar con 7 o más una evaluación conceptual de contenidos mínimos para promocionar (formato escrito), que se tomará el día martes de la sexta semana de cursada. En la instancia de parcial, deberá aprobar con 7 o más el parcial oral el día jueves de la sexta semana, pudiendo rendirse en una única oportunidad en la primera fecha de parcial que publicará la Cátedra. Si obtuviera una calificación mayor o igual a 4 y menor a 7 en el parcial oral, pasará automáticamente al sistema de promoción con examen final. Las notas no se promedian. En caso de aprobar la evaluación conceptual escrita pero obtener una calificación menor a 4 en la instancia oral, el estudiante pasará a recuperatorio de parcial la semana siguiente.</p>
+    </div>
+  </div>
+</div>
 
 <script>
 const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?output=csv';
@@ -138,107 +125,105 @@ const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58
 async function cargarDatos(url) {
   const res = await fetch(url, { cache: "no-store" });
   const text = await res.text();
-  return Papa.parse(text, { header: true, skipEmptyLines: true });
+  return Papa.parse(text, { header: true, skipEmptyLines: true, delimiter: "," });
 }
 
 async function verificarEstado() {
-  try {
-    const datos = await cargarDatos(urlBase + '&_ts=' + Date.now());
-    const estado = datos.data.find(row => row.Estado)?.Estado?.trim().toLowerCase();
-    const contenido = document.getElementById('contenido');
+  const datos = await cargarDatos(urlBase + '&_ts=' + Date.now());
+  const filaEstado = datos.data.find(row => row.Estado && row.Estado.trim() !== "");
+  const estado = filaEstado?.Estado?.trim().toLowerCase();
+  const contenido = document.getElementById('contenido');
 
-    if (estado === 'habilitado') {
-      contenido.innerHTML = `
-        <div id="formBuscador">
-          <p style="font-size:0.9em; margin-bottom:15px;">Ingrese sus datos para visualizar su estado académico.</p>
-          <label>Legajo</label><input type="text" id="legajo" placeholder="Ej: 12345/6" />
-          <label>E-mail (SIU Guaraní)</label><input type="email" id="email" placeholder="alumno@correo.com" />
-          <button id="btnConsultar">ACCEDER</button>
-        </div>
-        <div id="resultado"></div>
-        <div id="error" style="color:red; text-align:center; margin-top:15px; font-weight:bold;"></div>`;
-      
-      document.getElementById('btnConsultar').onclick = buscarNota;
-    } else {
-      contenido.innerHTML = `<div style="text-align:center; padding:2em; color:#38828f; font-weight:600;">El sistema se encuentra momentáneamente fuera de servicio por actualización de datos.</div>`;
-    }
-  } catch(e) { console.error(e); }
+  if (estado === 'habilitado') {
+    contenido.innerHTML = `
+      <div id="formBuscador">
+        <p style="color:black; margin:0.5em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
+        <label for="legajo">Legajo</label><input type="text" id="legajo" placeholder="12345/6" autocomplete="off" />
+        <label for="email">E-mail asociado al SIU Guaraní*</label><input type="email" id="email" placeholder="alumno@gmail.com" autocomplete="off" />
+        <small style="color:#555; font-size:0.9em;">*Correo electrónico oficial.</small>
+        <button id="btnConsultar">Acceder</button>
+      </div>
+      <div id="resultado"></div>
+      <div id="error" style="color:red; text-align:center; margin-top:10px;"></div>`;
+    document.getElementById('btnConsultar').onclick = buscarNota;
+  } else {
+    contenido.innerHTML = `<div style="text-align:center; margin:2em; font-weight:bold;">Sistema no disponible actualmente.</div>`;
+  }
 }
 
 async function buscarNota(){
   const legajo = document.getElementById('legajo').value.trim().toLowerCase();
   const email = document.getElementById('email').value.trim().toLowerCase();
   const resDiv = document.getElementById('resultado');
-  const errorDiv = document.getElementById('error');
-  
-  errorDiv.textContent = "";
-  if(!legajo || !email) { errorDiv.textContent = "Complete todos los campos."; return; }
-
   const parsed = await cargarDatos(urlBase + '&_ts=' + Date.now());
   const fila = parsed.data.find(row => row['Legajo']?.trim().toLowerCase() === legajo && row['Email']?.trim().toLowerCase() === email);
 
-  if(!fila) {
-    errorDiv.textContent = "Datos no encontrados. Verifique legajo y mail.";
-    return;
-  }
+  if(!fila) { document.getElementById('error').textContent = "Datos incorrectos."; return; }
 
   document.getElementById('formBuscador').style.display = 'none';
-
-  let html = `<p style="margin-bottom:15px;">Estudiante: <strong>${fila['Nombre'] || 'Alumno'}</strong></p>`;
+  let html = `<p><strong>${fila['Nombre'] || 'Estudiante'}:</strong></p>`;
   
-  // Agrupación por categorías verticales
-  html += generarBloque(fila, "T", "Clases Teóricas");
-  html += generarBloque(fila, "P", "Trabajos Prácticos", ["PA", "Parcial"]);
-  html += generarBloque(fila, "S", "Talleres de Simulación");
-  html += generarBloque(fila, "ECP", "Examen Conceptual de Promoción", [], true);
-  html += generarBloque(fila, "PA", "Evaluaciones Parciales", [], true);
-  html += generarBloque(fila, "Parcial", "Nota de Parcial", [], true);
+  // 1. Bloque Teóricos
+  html += generarBloque(fila, "T", "Teóricos");
+  // 2. Bloque Prácticos (Excluimos los que tengan símbolos de grado o F de fecha)
+  html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL"]);
+  // 3. Bloque Simulación
+  html += generarBloque(fila, "S", "Simulación");
+  // 4. Bloque EVALUACIONES (Contiene ECP y Parciales con °, F o "Parcial")
+  html += generarBloqueEvaluacion(fila);
 
-  // Referencias al final
   html += `
     <div class="seccion-referencias">
-      <strong>Glosario de Referencias:</strong><br>
-      <strong>T:</strong> Teóricos | <strong>P:</strong> Trabajos Prácticos | 
-      <strong>S:</strong> Simulación Clínica | <strong>ECP:</strong> Examen Conceptual | 
-      <strong>PA:</strong> Instancia de Parcial.
+      <strong>Referencias:</strong> T: Teóricos | P: Prácticos | S: Simulación | ECP: Examen Conceptual | °/F: Fechas de Parcial.
     </div>
+    <button id="btnVolver">Volver</button>
+    <p class="info-institucional">Sujeto a las <a href="javascript:void(0)" class="link-condiciones">condiciones</a> establecidas por la cátedra.</p>
   `;
 
-  html += `<button id="btnVolver">REALIZAR OTRA CONSULTA</button>`;
-  html += `<p class="info-institucional">Sujeto a las condiciones establecidas por la cátedra.<br>La información aquí expuesta tiene carácter oficial.</p>`;
-  
   resDiv.innerHTML = html;
-  document.getElementById('btnVolver').onclick = () => { location.reload(); };
+  document.getElementById('btnVolver').onclick = () => { document.getElementById('formBuscador').style.display='block'; resDiv.innerHTML=''; };
 }
 
-function generarBloque(fila, prefijo, titulo, excluir = [], resaltarPromocion = false) {
+function generarBloque(fila, prefijo, titulo, excluir = []) {
   const columnas = Object.keys(fila).filter(col => {
     const c = col.toUpperCase();
-    const p = prefijo.toUpperCase();
-    return c.startsWith(p) && !excluir.some(ex => c.includes(ex.toUpperCase())) && fila[col]?.trim() !== "";
+    return c.startsWith(prefijo.toUpperCase()) && !excluir.some(ex => c.includes(ex.toUpperCase())) && fila[col]?.trim() !== "";
   });
-
   if (columnas.length === 0) return "";
-
   let b = `<div class="categoria-bloque"><div class="categoria-titulo">${titulo}</div><div class="grid-datos">`;
-  columnas.forEach(c => {
-    const valor = fila[c];
-    // Si es examen, evaluamos si la nota es >= 7 para poner el color verde
-    let claseExtra = "";
-    if (resaltarPromocion && !isNaN(parseFloat(valor)) && parseFloat(valor) >= 7) {
-      claseExtra = "aprobado-promocion";
-    }
+  columnas.forEach(c => { b += `<div class="dato-item"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`; });
+  return b + `</div></div>`;
+}
 
-    b += `<div class="dato-item ${claseExtra}"><span class="dato-label">${c}</span><span class="dato-valor">${valor}</span></div>`;
+function generarBloqueEvaluacion(fila) {
+  const columnas = Object.keys(fila).filter(col => {
+    const c = col.toUpperCase();
+    const esFechaParcial = c.includes("°") || c.includes("F") || c.includes("PARCIAL");
+    const esECP = c.startsWith("ECP");
+    return (esFechaParcial || esECP) && fila[col]?.trim() !== "";
+  });
+  if (columnas.length === 0) return "";
+  let b = `<div class="categoria-bloque"><div class="categoria-titulo">EVALUACIONES</div><div class="grid-datos">`;
+  columnas.forEach(c => {
+    const val = fila[c].trim();
+    let clase = "";
+    if (val.toUpperCase() === "D") clase = "desaprobado";
+    else if (!isNaN(parseFloat(val)) && parseFloat(val) >= 7) clase = "promocion";
+    b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${val}</span></div>`;
   });
   return b + `</div></div>`;
 }
 
-window.onload = verificarEstado;
+document.addEventListener('DOMContentLoaded', () => {
+  verificarEstado();
+  document.addEventListener('click', (e)=>{
+    if (e.target.classList.contains('link-condiciones')) document.getElementById('modalCondiciones').style.display = 'flex';
+    if(e.target.id === 'cerrarCondiciones' || e.target.id === 'modalCondiciones') document.getElementById('modalCondiciones').style.display = 'none';
+  });
+});
 </script>
 </body>
 </html>
-
 
 
 
