@@ -52,7 +52,6 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
 #btnConsultar { padding: 0.6em 1.5em; font-size: 1.1em; }
 #btnVolver { padding: 0.45em 0.9em; font-size: 0.85em; }
 
-/* === BLOQUES DE RESULTADOS === */
 .categoria-bloque {
   margin-bottom: 15px; background: #fff; border-radius: 10px; padding: 15px; border: 1px solid #e0e6e7; border-left: 5px solid #38828f;
 }
@@ -160,7 +159,6 @@ async function buscarNota(){
     }
 
     const nombreEstudiante = fila[parsed.meta.fields[0]] || "Estudiante";
-    
     let html = `<p><strong>${nombreEstudiante}:</strong></p>`;
     
     html += generarBloque(fila, "T", "Teóricos", ["TECP"], "A: Ausente | P: Presente");
@@ -181,6 +179,17 @@ async function buscarNota(){
   }, 1500);
 }
 
+function aplicarLogicaColores(valor, esEvaluacion = false) {
+    const v = valor.trim().toUpperCase();
+    if (v === "A" && !esEvaluacion) return "desaprobado"; // Ausente -> Rojo
+    if (v === "P") return "promocion"; // Presente -> Verde
+    if (v === "A" && esEvaluacion) return "promocion"; // Aprobado -> Verde
+    if (v === "D") return "desaprobado"; // Desaprobado -> Rojo
+    const num = parseFloat(v);
+    if (!isNaN(num)) return (num >= 4) ? "promocion" : "desaprobado";
+    return "";
+}
+
 function generarBloque(fila, prefijo, titulo, excluir = [], aclaracion = "") {
   const columnas = Object.keys(fila).filter(col => {
     const c = col.toUpperCase();
@@ -190,13 +199,7 @@ function generarBloque(fila, prefijo, titulo, excluir = [], aclaracion = "") {
   
   let b = `<div class="categoria-bloque"><div class="categoria-titulo">${titulo}</div><div class="grid-datos">`;
   columnas.forEach(c => { 
-    const val = fila[c].trim().toUpperCase();
-    let clase = "";
-    if (prefijo === "AE") {
-        clase = (val === "A" || val === "D") ? "desaprobado" : "promocion";
-    } else {
-        clase = (val === "A") ? "desaprobado" : "";
-    }
+    const clase = aplicarLogicaColores(fila[c], false);
     b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`; 
   });
   b += `</div><div class="aclaracion-chiquita">${aclaracion}</div></div>`;
@@ -212,26 +215,10 @@ function generarBloqueEvaluacion(fila) {
 
   let b = `<div class="categoria-bloque"><div class="categoria-titulo">EVALUACIONES</div><div class="grid-datos">`;
   columnas.forEach(c => {
-    const val = fila[c].trim().toUpperCase();
-    const num = parseFloat(val);
-    let clase = "";
-    
-    if (c === "P1°F") {
-        if (!isNaN(num)) clase = (num >= 4) ? "promocion" : "desaprobado";
-        else if (val === "D") clase = "desaprobado";
-    } else if (c.toUpperCase().startsWith("TECP")) {
-        if (val === "A") clase = "promocion";
-        else if (val === "D") clase = "desaprobado";
-    } else {
-        // Para 2da, 3ra, 4ta fecha y PFI
-        if (val === "A") clase = "promocion";
-        else if (val === "D") clase = "desaprobado";
-        else if (!isNaN(num)) clase = (num >= 4) ? "promocion" : "desaprobado";
-    }
-    
+    const clase = aplicarLogicaColores(fila[c], true);
     b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`;
   });
-  b += `</div><div class="aclaracion-chiquita">(A: Aprobado | D: Desaprobado)</div></div>`;
+  b += `</div><div class="aclaracion-chiquita">(A: Aprobado | D: Desaprobado | P: Presente)</div></div>`;
   return b;
 }
 
@@ -239,7 +226,6 @@ window.onload = verificarEstado;
 </script>
 </body>
 </html>
-
 
 
 
