@@ -16,58 +16,130 @@ html, body { height: 100%; margin: 0; }
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #087882 0%, #0c8c9c 40%, #045c63 70%, #04545d 100%);
-  min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
 }
 
 main {
-  max-width: 600px; width: 100%; background: #f9f8f5; margin: 30px auto 2em auto;
-  padding: 2em; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); flex: 1;
+  max-width: 600px;
+  width: 100%;
+  background: #f9f8f5;
+  margin: 30px auto 2em auto;
+  padding: 2em;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  flex: 1;
 }
 
 main header { text-align: center; margin-bottom: 25px; }
-main header img { width: 100%; height: auto; border-radius: 16px; cursor: pointer; transition: transform 0.3s; }
-main header img:active { transform: scale(0.95); }
+main header img { width: 100%; height: auto; border-radius: 16px; box-shadow: 0 3px 8px rgba(0,0,0,0.18); }
 
-.titulo-centro { font-family: 'Open Sans', sans-serif; font-weight: 700; font-size: 2em; color: #38828f; margin: 20px 0 0 0; }
+.titulo-centro {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  font-size: 2em;
+  color: #38828f;
+  margin: 20px 0 0 0;
+}
 
 label { font-weight: 600; margin-top: 1em; margin-bottom: 0.6em; display: block; }
 input { width: 100%; padding: 0.7em; font-size: 1.05em; border: 2px solid #ccc; border-radius: 8px; }
 
-button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto 0 auto; display: block; border: none; transition: 0.2s; }
-#btnConsultar, #btnVolver, #btnDocente { background: #2d8390; color: white; padding: 0.6em 1.5em; }
-.btn-admin { background: #444 !important; margin-top: 20px; font-size: 0.8em; }
+button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto 0 auto; display: block; border: none; transition: opacity 0.2s; }
+#btnConsultar, #btnVolver { background: #2d8390; color: white; }
+#btnConsultar { padding: 0.6em 1.5em; font-size: 1.1em; }
+#btnVolver { padding: 0.45em 0.9em; font-size: 0.85em; }
 
-/* PANEL DOCENTE */
-#panelDocente { display: none; background: #ececec; padding: 1.5em; border-radius: 12px; border: 2px dashed #38828f; margin-top: 10px; }
-.admin-badge { background: #38828f; color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.7em; margin-bottom: 10px; display: inline-block; }
-
-.categoria-bloque { margin-bottom: 15px; background: #fff; border-radius: 10px; padding: 15px; border: 1px solid #e0e6e7; border-left: 5px solid #38828f; }
+.categoria-bloque {
+  margin-bottom: 15px; background: #fff; border-radius: 10px; padding: 15px; border: 1px solid #e0e6e7; border-left: 5px solid #38828f;
+}
 .categoria-titulo { font-family: 'Montserrat', sans-serif; font-size: 0.85em; color: #38828f; font-weight: 800; margin-bottom: 12px; text-transform: uppercase; }
 .grid-datos { display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 8px; }
 .dato-item { background: #f4f8f9; border: 1px solid #d1dfe1; padding: 10px 4px; border-radius: 6px; text-align: center; }
 .dato-label { display: block; font-size: 0.65em; color: #668a90; font-weight: 700; }
 .dato-valor { display: block; font-size: 1.1em; font-weight: 800; color: #2c565d; }
 
+.aclaracion-chiquita { font-size: 0.65em; color: #999; margin-top: 8px; font-style: italic; }
+
 .promocion { background-color: #e8f5e9 !important; border-color: #a5d6a7 !important; }
 .promocion .dato-valor { color: #2e7d32 !important; }
 .desaprobado { background-color: #ffebee !important; border-color: #ef9a9a !important; }
 .desaprobado .dato-valor { color: #c62828 !important; }
 
-/* SELLO */
-.sello-contenedor { display: flex; justify-content: center; margin: 30px 0 10px 0; }
-.sello-verificado { position: relative; padding: 10px 25px; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(5px); border-radius: 4px; border: 1px solid #cddde0; overflow: hidden; text-align: center; }
-.sello-verificado::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent 45%, rgba(255, 255, 255, 0.8) 50%, transparent 55%); transform: rotate(25deg); animation: brilloHolografico 4s infinite; }
-.sello-texto { font-family: 'Montserrat', sans-serif; font-size: 0.8em; font-weight: 700; color: #557b81; letter-spacing: 1.5px; text-transform: uppercase; position: relative; z-index: 1; }
+/* === SELLO INSTITUCIONAL HOLOGRÁFICO === */
+.sello-contenedor {
+  display: flex;
+  justify-content: center;
+  margin: 30px 0 10px 0;
+}
 
-@keyframes brilloHolografico { 0% { left: -100%; } 20% { left: 100%; } 100% { left: 100%; } }
+.sello-verificado {
+  position: relative;
+  padding: 10px 25px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(5px);
+  border-radius: 4px;
+  border: 1px solid #cddde0;
+  box-shadow: 
+    0 4px 15px rgba(0,0,0,0.05),
+    inset 0 0 15px rgba(255,255,255,0.5);
+  overflow: hidden;
+  text-align: center;
+}
 
-.seccion-referencias { margin-top: 20px; padding: 12px; background: #eee; border-radius: 8px; font-size: 0.75em; color: #666; }
-.info-institucional { margin-top: 1.5em; text-align: center; font-size: 0.74em; color: #888; }
+/* Efecto de brillo holográfico que pasa por el sello */
+.sello-verificado::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 45%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 55%,
+    transparent 100%
+  );
+  transform: rotate(25deg);
+  animation: brilloHolografico 4s infinite;
+}
+
+.sello-texto {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8em;
+  font-weight: 700;
+  color: #557b81;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes brilloHolografico {
+  0% { left: -100%; }
+  20% { left: 100%; }
+  100% { left: 100%; }
+}
+
+.seccion-referencias { margin-top: 20px; padding: 12px; background: #eee; border-radius: 8px; font-size: 0.75em; color: #666; line-height: 1.4; }
+.info-institucional { margin-top: 1.5em; text-align: center; font-family: "Courier New", Courier, "Lucida Console", Monaco, monospace; font-size: 0.74em; line-height: 1.3; color: #888; }
+.link-condiciones { color: #38828f; text-decoration: underline; font-weight: 600; }
+
 footer { color: #ffffff; text-align: center; padding: 1em; font-size: 0.85em; margin-top: auto; }
 
 #loader { display: none; text-align: center; padding: 2em 0; }
-.spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #38828f; border-radius: 50%; animation: spin 1s linear infinite; margin: auto; }
+.spinner {
+  width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #38828f;
+  border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto;
+}
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+@media (max-width: 600px) { main { width: 100%; margin: 0; border-radius: 0; } }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 </head>
@@ -75,137 +147,1006 @@ footer { color: #ffffff; text-align: center; padding: 1em; font-size: 0.85em; ma
 <body>
 <main>
   <header>
-    <img src="logop.png" alt="Logo Cátedra" id="logoAdmin" title="Acceso Institucional" />
+    <img src="logop.png" alt="Logo Cátedra" />
     <div class="titulo-centro">ASISTENCIA Y CALIFICACIONES</div>
   </header>
-
   <div id="contenido"></div>
-  
-  <div id="panelDocente">
-    <span class="admin-badge">MODO DOCENTE</span>
-    <label>Buscar por Legajo (solo números):</label>
-    <input type="text" id="legajoDocente" placeholder="Ej: 123456" />
-    <button id="btnDocente" onclick="busquedaDocente()">Consultar Alumno</button>
+  <div id="loader">
+    <div class="spinner"></div>
+    <div id="loaderText" style="font-family: 'Montserrat'; color: #38828f;">Consultando base de datos...</div>
   </div>
-
-  <div id="loader"><div class="spinner"></div></div>
-  <div id="resultado"></div>
-  <div id="error" style="color:red; text-align:center; margin-top:10px;"></div>
 </main>
 
 <footer>© 2026 Cátedra de Toxicología, FCM - UNLP.</footer>
 
 <script>
 const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/pub?output=csv';
-const urlEdicion = 'https://docs.google.com/spreadsheets/d/1vReNWOvv7g2rK58C0Ari6MtMo8LT1Si1hYRm_hueR-ad88Utj6TlK0wfMyJJEHv1Q/edit'; // Link para editar
 
-async function cargarDatos() {
-  const res = await fetch(urlBase + '&_ts=' + Date.now(), { cache: "no-store" });
+async function cargarDatos(url) {
+  const res = await fetch(url, { cache: "no-store" });
   const text = await res.text();
-  return Papa.parse(text, { header: true, skipEmptyLines: true });
+  return Papa.parse(text, { header: true, skipEmptyLines: true, delimiter: "," });
 }
 
 async function verificarEstado() {
-  const datos = await cargarDatos();
-  const filaEstado = datos.data.find(row => row.Estado?.trim() !== "");
-  if (filaEstado?.Estado?.toLowerCase().trim() === 'habilitado') {
-    document.getElementById('contenido').innerHTML = `
+  const datos = await cargarDatos(urlBase + '&_ts=' + Date.now());
+  const filaEstado = datos.data.find(row => row.Estado && row.Estado.trim() !== "");
+  const estado = filaEstado?.Estado?.trim().toLowerCase();
+  const contenido = document.getElementById('contenido');
+
+  if (estado === 'habilitado') {
+    contenido.innerHTML = `
       <div id="formBuscador">
-        <label>Legajo</label><input type="text" id="legajo" placeholder="12345/6" />
-        <label>E-mail SIU Guaraní</label><input type="email" id="email" placeholder="alumno@gmail.com" />
-        <button id="btnConsultar" onclick="buscarNota()">Acceder</button>
-      </div>`;
+        <p style="color:black; margin:0.5em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
+        <label for="legajo">Legajo</label><input type="text" id="legajo" placeholder="12345/6" />
+        <label for="email">E-mail asociado al SIU Guaraní*</label><input type="email" id="email" placeholder="alumno@gmail.com" />
+        <small style="color:#555; font-size:0.9em;">*Correo electrónico elegido para recibir información desde las cátedras.</small>
+        <button id="btnConsultar">Acceder</button>
+      </div>
+      <div id="resultado"></div>
+      <div id="error" style="color:red; text-align:center; margin-top:10px;"></div>`;
+    document.getElementById('btnConsultar').onclick = buscarNota;
   } else {
-    document.getElementById('contenido').innerHTML = '<p style="text-align:center">Acceso no habilitado.</p>';
+    contenido.innerHTML = `<div style="text-align:center; margin:2em; font-weight:bold;">En este momento no es posible acceder.</div>`;
   }
 }
 
-// Lógica Acceso Docente
-document.getElementById('logoAdmin').addEventListener('click', () => {
-  const clave = prompt("Ingrese clave de acceso docente:");
-  if (clave === "4321") {
-    document.getElementById('formBuscador')?.remove();
-    document.getElementById('panelDocente').style.display = 'block';
-  }
-});
+async function buscarNota(){
+  const legajo = document.getElementById('legajo').value.trim().toLowerCase();
+  const email = document.getElementById('email').value.trim().toLowerCase();
+  const resDiv = document.getElementById('resultado');
+  const errorDiv = document.getElementById('error');
+  const formBuscador = document.getElementById('formBuscador');
+  const loader = document.getElementById('loader');
 
-async function busquedaDocente() {
-  const input = document.getElementById('legajoDocente').value.trim();
-  if(!input) return;
-  mostrarResultado(input, true);
+  errorDiv.textContent = "";
+  if(!legajo || !email) { errorDiv.textContent = "Complete ambos campos."; return; }
+
+  formBuscador.style.display = 'none';
+  loader.style.display = 'block';
+
+  const parsed = await cargarDatos(urlBase + '&_ts=' + Date.now());
+  const fila = parsed.data.find(row => row['Legajo']?.trim().toLowerCase() === legajo && row['Email']?.trim().toLowerCase() === email);
+
+  setTimeout(() => {
+    loader.style.display = 'none';
+    if(!fila) {
+      formBuscador.style.display = 'block';
+      errorDiv.textContent = "Datos incorrectos. Verifique e intente nuevamente.";
+      return;
+    }
+
+    const nombreEstudiante = fila[parsed.meta.fields[0]] || "Estudiante";
+    let html = `<p><strong>${nombreEstudiante}:</strong></p>`;
+    
+    html += generarBloque(fila, "T", "Teóricos", ["TECP"], "A: Ausente | P: Presente");
+    html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "PFI"], "A: Ausente | P: Presente");
+    html += generarBloque(fila, "S", "Simulación", [], "A: Ausente | P: Presente");
+    html += generarBloque(fila, "AE", "Autoevaluaciones Asincrónicas Obligatorias", [], "Deben estar todas completas para mantener la regularidad.");
+    html += generarBloqueEvaluacion(fila);
+
+    html += `
+      <div class="sello-contenedor">
+        <div class="sello-verificado">
+          <div class="sello-texto">Información Verificada</div>
+        </div>
+      </div>
+
+      <div class="seccion-referencias">
+        <strong>Referencias:</strong> T: Teóricos | P: Prácticos | S: Simulación | AE: Autoevaluación | PFI: Parcial Final Integrador | TECP: Taller de Evaluación Continua para Promoción | °/F: Fechas Parcial.
+      </div>
+      <button id="btnVolver" onclick="location.reload()">Volver</button>
+      <p class="info-institucional">Sujeto a las <a href="https://educativa.med.unlp.edu.ar/course/view.php?id=290" target="_blank" class="link-condiciones">condiciones</a> establecidas por la cátedra.</p>
+    `;
+
+    resDiv.innerHTML = html;
+  }, 1200);
 }
 
-async function buscarNota() {
-  const leg = document.getElementById('legajo').value.trim().toLowerCase();
-  const mail = document.getElementById('email').value.trim().toLowerCase();
-  if(!leg || !mail) return;
-  mostrarResultado(leg, false, mail);
+function aplicarLogicaColores(valor, esEvaluacion = false) {
+    if (!valor) return "";
+    const v = valor.trim().toUpperCase();
+    if (v === "A" && !esEvaluacion) return "desaprobado"; 
+    if (v === "P") return "promocion"; 
+    if (v === "A" && esEvaluacion) return "promocion"; 
+    if (v === "D") return "desaprobado"; 
+    const num = parseFloat(v);
+    if (!isNaN(num)) return (num >= 4) ? "promocion" : "desaprobado";
+    return "";
 }
 
-async function mostrarResultado(busqueda, esDocente, mail = "") {
-  document.getElementById('loader').style.display = 'block';
-  document.getElementById('resultado').innerHTML = "";
-  const parsed = await cargarDatos();
-  
-  const fila = parsed.data.find(row => {
-    const legajoExcel = row['Legajo']?.toString().toLowerCase().replace(/[^0-9]/g, '');
-    const legajoBusqueda = busqueda.replace(/[^0-9]/g, '');
-    if (esDocente) return legajoExcel === legajoBusqueda;
-    return legajoExcel === legajoBusqueda && row['Email']?.trim().toLowerCase() === mail;
+function generarBloque(fila, prefijo, titulo, excluir = [], aclaracion = "") {
+  const columnas = Object.keys(fila).filter(col => {
+    const c = col.toUpperCase();
+    return c.startsWith(prefijo.toUpperCase()) && !excluir.some(ex => c.includes(ex.toUpperCase())) && fila[col]?.trim() !== "";
   });
-
-  document.getElementById('loader').style.display = 'none';
-  if(!fila) { alert("No se encontraron datos."); return; }
-
-  if(!esDocente) document.getElementById('formBuscador').style.display = 'none';
-
-  let html = `<p><strong>${fila['Apellido y Nombre'] || 'Estudiante'}:</strong></p>`;
-  html += generarBloque(fila, "T", "Teóricos");
-  html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "PFI"]);
-  html += generarBloque(fila, "S", "Simulación");
-  html += generarBloque(fila, "AE", "Autoevaluaciones");
-  html += generarBloqueEvaluacion(fila);
+  if (columnas.length === 0) return "";
   
-  if(esDocente) {
-    html += `<button class="btn-admin" onclick="window.open('${urlEdicion}')">🛠 Modificar en Planilla</button>`;
-  } else {
-    html += `<div class="sello-contenedor"><div class="sello-verificado"><div class="sello-texto">Información Verificada</div></div></div>
-             <button id="btnVolver" onclick="location.reload()">Volver</button>`;
-  }
-  
-  document.getElementById('resultado').innerHTML = html;
-}
-
-function aplicarLogicaColores(valor, esEval) {
-  if(!valor) return "";
-  const v = valor.trim().toUpperCase();
-  if (v === "A") return esEval ? "promocion" : "desaprobado";
-  if (v === "P") return "promocion";
-  if (v === "D") return "desaprobado";
-  const n = parseFloat(v);
-  return !isNaN(n) ? (n >= 4 ? "promocion" : "desaprobado") : "";
-}
-
-function generarBloque(fila, pref, tit, excl = []) {
-  const cols = Object.keys(fila).filter(k => k.startsWith(pref) && !excl.some(e => k.includes(e)) && fila[k]?.trim() !== "");
-  if(!cols.length) return "";
-  let b = `<div class="categoria-bloque"><div class="categoria-titulo">${tit}</div><div class="grid-datos">`;
-  cols.forEach(c => b += `<div class="dato-item ${aplicarLogicaColores(fila[c], false)}"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`);
-  return b + `</div></div>`;
+  let b = `<div class="categoria-bloque"><div class="categoria-titulo">${titulo}</div><div class="grid-datos">`;
+  columnas.forEach(c => { 
+    const clase = aplicarLogicaColores(fila[c], false);
+    b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`; 
+  });
+  b += `</div><div class="aclaracion-chiquita">${aclaracion}</div></div>`;
+  return b;
 }
 
 function generarBloqueEvaluacion(fila) {
-  const cols = Object.keys(fila).filter(k => (k.includes("°") || k.includes("F") || k.includes("PARCIAL") || k.startsWith("PFI") || k.startsWith("TECP")) && fila[k]?.trim() !== "");
-  if(!cols.length) return "";
+  const columnas = Object.keys(fila).filter(col => {
+    const c = col.toUpperCase();
+    return (c.includes("°") || c.includes("F") || c.includes("PARCIAL") || c.startsWith("PFI") || c.startsWith("TECP")) && fila[col]?.trim() !== "";
+  });
+  if (columnas.length === 0) return "";
+
   let b = `<div class="categoria-bloque"><div class="categoria-titulo">EVALUACIONES</div><div class="grid-datos">`;
-  cols.forEach(c => b += `<div class="dato-item ${aplicarLogicaColores(fila[c], true)}"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`);
-  return b + `</div></div>`;
+  columnas.forEach(c => {
+    const clase = aplicarLogicaColores(fila[c], true);
+    b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`;
+  });
+  b += `</div><div class="aclaracion-chiquita">(A: Aprobado | D: Desaprobado | P: Presente)</div></div>`;
+  return b;
 }
 
 window.onload = verificarEstado;
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
