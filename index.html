@@ -222,7 +222,7 @@ async function buscarNota(){
     html += generarBloque(fila, "T", "Teóricos", ["TECP"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "PFI"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "S", "Simulación", [], "A: Ausente | P: Presente");
-    html += generarBloque(fila, "AE", "Autoevaluaciones Asincrónicas Obligatorias", [], "Deben estar todas completas para mantener la regularidad.");
+    html += generarBloque(fila, "AE", "Autoevaluaciones Asincrónicas Obligatorias", [], "A: Ausente | P: Presente");
     html += generarBloqueEvaluacion(fila);
 
     html += `
