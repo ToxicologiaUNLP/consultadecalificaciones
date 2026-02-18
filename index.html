@@ -283,7 +283,7 @@ function generarBloqueEvaluacion(fila) {
     const clase = aplicarLogicaColores(fila[c], true);
     b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`;
   });
-  b += `</div><div class="aclaracion-chiquita">(A: Aprobado | D: Desaprobado | P: Presente)</div></div>`;
+  b += `</div><div class="aclaracion-chiquita">(A: Aprobado | D: Desaprobado | Calificación numérica)</div></div>`;
   return b;
 }
 
