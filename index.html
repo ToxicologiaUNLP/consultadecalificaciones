@@ -52,6 +52,34 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
 #btnConsultar { padding: 0.6em 1.5em; font-size: 1.1em; }
 #btnVolver { padding: 0.45em 0.9em; font-size: 0.85em; }
 
+/* === ESTILOS DE CONDICIÓN (BADGES) === */
+.badge-condicion {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.55em;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-left: 8px;
+  vertical-align: middle;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 800;
+  display: inline-block;
+}
+.badge-promocion { background-color: #38828f; color: white; }
+.badge-regular { background-color: #4caf50; color: white; }
+.badge-irregular { 
+  background-color: #d32f2f; 
+  color: white; 
+  animation: parpadeo-alerta 1.5s infinite; 
+}
+.badge-pendiente { background-color: #9e9e9e; color: white; }
+
+@keyframes parpadeo-alerta {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
 .categoria-bloque {
   margin-bottom: 15px; background: #fff; border-radius: 10px; padding: 15px; border: 1px solid #e0e6e7; border-left: 5px solid #38828f;
 }
@@ -68,63 +96,21 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
 .desaprobado { background-color: #ffebee !important; border-color: #ef9a9a !important; }
 .desaprobado .dato-valor { color: #c62828 !important; }
 
-/* === SELLO INSTITUCIONAL HOLOGRÁFICO === */
-.sello-contenedor {
-  display: flex;
-  justify-content: center;
-  margin: 30px 0 10px 0;
-}
-
+/* === SELLO INSTITUCIONAL === */
+.sello-contenedor { display: flex; justify-content: center; margin: 30px 0 10px 0; }
 .sello-verificado {
-  position: relative;
-  padding: 10px 25px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(5px);
-  border-radius: 4px;
-  border: 1px solid #cddde0;
-  box-shadow: 
-    0 4px 15px rgba(0,0,0,0.05),
-    inset 0 0 15px rgba(255,255,255,0.5);
-  overflow: hidden;
-  text-align: center;
+  position: relative; padding: 10px 25px; background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(5px); border-radius: 4px; border: 1px solid #cddde0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05), inset 0 0 15px rgba(255,255,255,0.5);
+  overflow: hidden; text-align: center;
 }
-
-/* Efecto de brillo holográfico que pasa por el sello */
 .sello-verificado::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    45deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0) 45%,
-    rgba(255, 255, 255, 0.8) 50%,
-    rgba(255, 255, 255, 0) 55%,
-    transparent 100%
-  );
-  transform: rotate(25deg);
-  animation: brilloHolografico 4s infinite;
+  content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+  background: linear-gradient(45deg, transparent 0%, rgba(255, 255, 255, 0) 45%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 55%, transparent 100%);
+  transform: rotate(25deg); animation: brilloHolografico 4s infinite;
 }
-
-.sello-texto {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.8em;
-  font-weight: 700;
-  color: #557b81;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  position: relative;
-  z-index: 1;
-}
-
-@keyframes brilloHolografico {
-  0% { left: -100%; }
-  20% { left: 100%; }
-  100% { left: 100%; }
-}
+.sello-texto { font-family: 'Montserrat', sans-serif; font-size: 0.8em; font-weight: 700; color: #557b81; letter-spacing: 1.5px; text-transform: uppercase; position: relative; z-index: 1; }
+@keyframes brilloHolografico { 0% { left: -100%; } 20% { left: 100%; } 100% { left: 100%; } }
 
 .seccion-referencias { margin-top: 20px; padding: 12px; background: #eee; border-radius: 8px; font-size: 0.75em; color: #666; line-height: 1.4; }
 .info-institucional { margin-top: 1.5em; text-align: center; font-family: "Courier New", Courier, "Lucida Console", Monaco, monospace; font-size: 0.74em; line-height: 1.3; color: #888; }
@@ -133,10 +119,7 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
 footer { color: #ffffff; text-align: center; padding: 1em; font-size: 0.85em; margin-top: auto; }
 
 #loader { display: none; text-align: center; padding: 2em 0; }
-.spinner {
-  width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #38828f;
-  border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto;
-}
+.spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #38828f; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 @media (max-width: 600px) { main { width: 100%; margin: 0; border-radius: 0; } }
@@ -217,7 +200,23 @@ async function buscarNota(){
     }
 
     const nombreEstudiante = fila[parsed.meta.fields[0]] || "Estudiante";
-    let html = `<p><strong>${nombreEstudiante}:</strong></p>`;
+    const condicion = fila['Condición'] || "EN CURSO / PENDIENTE";
+    let claseBadge = "badge-pendiente";
+
+    // Lógica de asignación de clases para el badge
+    const condUpper = condicion.toUpperCase();
+    if (condUpper.includes("PROMOCION")) {
+        claseBadge = "badge-promocion";
+    } else if (condUpper.includes("REGULAR") && !condUpper.includes("NO")) {
+        claseBadge = "badge-regular";
+    } else if (condUpper.includes("NO REGULAR")) {
+        claseBadge = "badge-irregular";
+    }
+
+    let html = `<p style="font-size: 1.1em; margin-bottom: 20px;">
+                  <strong>${nombreEstudiante}:</strong> 
+                  <span class="badge-condicion ${claseBadge}">${condicion}</span>
+                </p>`;
     
     html += generarBloque(fila, "T", "Teóricos", ["TECP"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "PFI"], "A: Ausente | P: Presente");
@@ -231,7 +230,6 @@ async function buscarNota(){
           <div class="sello-texto">Información Verificada</div>
         </div>
       </div>
-
       <div class="seccion-referencias">
         <strong>Referencias:</strong> T: Teóricos | P: Prácticos | S: Simulación | AE: Autoevaluación | PFI: Parcial Final Integrador | TECP: Taller de Evaluación Continua para Promoción | °/F: Fechas Parcial.
       </div>
