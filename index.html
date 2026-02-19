@@ -200,10 +200,9 @@ async function buscarNota(){
     }
 
     const nombreEstudiante = fila[parsed.meta.fields[0]] || "Estudiante";
-    const condicion = fila['Condición'] || "EN CURSO / PENDIENTE";
+    const condicion = (fila['Condición'] || "EN CURSO / PENDIENTE").trim();
     let claseBadge = "badge-pendiente";
 
-    // Lógica de asignación de clases para el badge
     const condUpper = condicion.toUpperCase();
     if (condUpper.includes("PROMOCION")) {
         claseBadge = "badge-promocion";
@@ -218,10 +217,11 @@ async function buscarNota(){
                   <span class="badge-condicion ${claseBadge}">${condicion}</span>
                 </p>`;
     
-    html += generarBloque(fila, "T", "Teóricos", ["TECP"], "A: Ausente | P: Presente");
-    html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "PFI"], "A: Ausente | P: Presente");
-    html += generarBloque(fila, "S", "Simulación", [], "A: Ausente | P: Presente");
-    html += generarBloque(fila, "AE", "Autoevaluaciones Asincrónicas Obligatorias", [], "A: Ausente | P: Presente");
+    // El filtro "Condición" asegura que la columna AI no se meta en los cuadraditos de datos
+    html += generarBloque(fila, "T", "Teóricos", ["TECP", "Condición"], "A: Ausente | P: Presente");
+    html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "PFI", "Condición"], "A: Ausente | P: Presente");
+    html += generarBloque(fila, "S", "Simulación", ["Condición"], "A: Ausente | P: Presente");
+    html += generarBloque(fila, "AE", "Autoevaluaciones Asincrónicas Obligatorias", ["Condición"], "A: Ausente | P: Presente");
     html += generarBloqueEvaluacion(fila);
 
     html += `
@@ -256,6 +256,7 @@ function aplicarLogicaColores(valor, esEvaluacion = false) {
 function generarBloque(fila, prefijo, titulo, excluir = [], aclaracion = "") {
   const columnas = Object.keys(fila).filter(col => {
     const c = col.toUpperCase();
+    // Filtro estricto: Debe empezar con el prefijo y NO estar en la lista de excluidos
     return c.startsWith(prefijo.toUpperCase()) && !excluir.some(ex => c.includes(ex.toUpperCase())) && fila[col]?.trim() !== "";
   });
   if (columnas.length === 0) return "";
@@ -272,7 +273,8 @@ function generarBloque(fila, prefijo, titulo, excluir = [], aclaracion = "") {
 function generarBloqueEvaluacion(fila) {
   const columnas = Object.keys(fila).filter(col => {
     const c = col.toUpperCase();
-    return (c.includes("°") || c.includes("F") || c.includes("PARCIAL") || c.startsWith("PFI") || c.startsWith("TECP")) && fila[col]?.trim() !== "";
+    // Excluimos explícitamente "Condición" para que no aparezca como un cuadradito de examen
+    return (c.includes("°") || c.includes("F") || c.includes("PARCIAL") || c.startsWith("PFI") || c.startsWith("TECP")) && !c.includes("CONDICIÓN") && fila[col]?.trim() !== "";
   });
   if (columnas.length === 0) return "";
 
