@@ -52,7 +52,6 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
 #btnConsultar { padding: 0.6em 1.5em; font-size: 1.1em; }
 #btnVolver { padding: 0.45em 0.9em; font-size: 0.85em; }
 
-/* BOTÓN PDF */
 .btn-pdf {
     background: #1a3a40;
     color: #fff;
@@ -145,7 +144,7 @@ footer { color: #ffffff; text-align: center; padding: 1em; font-size: 0.85em; ma
 <body>
 <main>
   <header>
-    <img src="logop.png" alt="Logo Cátedra" id="imgLogo" />
+    <img src="logop.png" alt="Logo Cátedra" id="imgLogo" crossorigin="anonymous" />
     <div class="titulo-centro">ASISTENCIA Y CALIFICACIONES</div>
   </header>
   <div id="contenido"></div>
@@ -241,7 +240,7 @@ async function buscarNota(){
           <div class="sello-texto">Información Verificada</div>
         </div>
         <button class="btn-pdf" onclick='generarPDF(${JSON.stringify(fila)})'>
-            <span>📄 Descargar información (PDF)</span>
+            <span>📄 Descargar información (pdf)</span>
         </button>
       </div>
       <div class="seccion-referencias">
@@ -259,43 +258,70 @@ function generarPDF(fila) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     const fechaDescarga = new Date().toLocaleString();
+    const logoImg = document.getElementById('imgLogo');
+
+    // CONFIGURACIÓN DE INEDITABLE (Propiedades del documento)
+    doc.setProperties({
+        title: 'Información de Cursada - Toxicología',
+        subject: 'Registros de cursada',
+        author: 'Cátedra de Toxicología FCM UNLP',
+        keywords: 'toxicologia, unlp, notas',
+        creator: 'Sistema de Gestión Toxicología'
+    });
+
+    // FUNCION MARCA DE AGUA
+    function agregarMarcasDeAgua() {
+        doc.saveGraphicsState();
+        doc.setGState(new doc.GState({opacity: 0.05})); // Opacidad muy baja (5%)
+        for(let i=0; i<5; i++) {
+            for(let j=0; j<4; j++) {
+                doc.addImage(logoImg, 'PNG', j*55, i*65, 45, 45, undefined, 'FAST');
+            }
+        }
+        doc.restoreGraphicsState();
+    }
+
+    agregarMarcasDeAgua();
 
     // Fondo y marcos decorativos
     doc.setDrawColor(56, 130, 143);
     doc.setLineWidth(1);
     doc.rect(5, 5, 200, 287); 
 
-    // Encabezado
+    // Encabezado con Logo
+    try {
+        doc.addImage(logoImg, 'PNG', 15, 12, 40, 25);
+    } catch(e) { console.log("Error al cargar logo en PDF"); }
+
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
     doc.setTextColor(36, 109, 119);
-    doc.text("CÁTEDRA DE TOXICOLOGÍA", 105, 25, { align: "center" });
+    doc.text("CÁTEDRA DE TOXICOLOGÍA", 110, 22, { align: "center" });
     doc.setFontSize(10);
-    doc.text("FACULTAD DE CIENCIAS MÉDICAS - UNLP", 105, 31, { align: "center" });
+    doc.text("FACULTAD DE CIENCIAS MÉDICAS - UNLP", 110, 28, { align: "center" });
     
     doc.setDrawColor(200);
-    doc.line(20, 38, 190, 38);
+    doc.line(20, 42, 190, 42);
 
     // Título del documento
     doc.setFontSize(14);
-    doc.text("CONSTANCIA DE ANTECEDENTES ACADÉMICOS", 105, 50, { align: "center" });
+    doc.text("INFORME DE SITUACIÓN ACADÉMICA", 105, 55, { align: "center" });
 
     // Datos del Alumno
     doc.setFontSize(11);
     doc.setTextColor(0);
-    doc.text(`Alumno/a: ${fila[Object.keys(fila)[0]]}`, 20, 65);
-    doc.text(`Legajo: ${fila['Legajo']}`, 20, 72);
-    doc.text(`Condición Final: ${fila['Condición'] || 'Pendiente'}`, 20, 79);
+    doc.text(`Alumno/a: ${fila[Object.keys(fila)[0]]}`, 20, 70);
+    doc.text(`Legajo: ${fila['Legajo']}`, 20, 77);
+    doc.text(`Condición Final: ${fila['Condición'] || 'Pendiente'}`, 20, 84);
 
-    // Contenido de Notas
-    let yPos = 95;
+    let yPos = 100;
     const keys = Object.keys(fila);
 
     function agregarSeccion(titulo, prefijo, excluir = []) {
         const cols = keys.filter(k => k.toUpperCase().startsWith(prefijo.toUpperCase()) && !excluir.some(ex => k.toUpperCase().includes(ex.toUpperCase())) && fila[k]?.trim() !== "");
         if (cols.length > 0) {
             doc.setFont("helvetica", "bold");
-            doc.setFillColor(240, 248, 249);
+            doc.setFillColor(235, 245, 246);
             doc.rect(20, yPos - 5, 170, 7, 'F');
             doc.text(titulo, 22, yPos);
             yPos += 8;
@@ -316,11 +342,10 @@ function generarPDF(fila) {
     agregarSeccion("SIMULACIÓN", "S", ["Condición"]);
     agregarSeccion("AUTOEVALUACIONES", "AE", ["Condición"]);
 
-    // Evaluaciones Especiales
     const evalCols = keys.filter(k => (k.includes("°") || k.includes("F") || k.includes("PARCIAL") || k.startsWith("PFI") || k.startsWith("TECP")) && !k.toUpperCase().includes("CONDICIÓN") && fila[k]?.trim() !== "");
     if (evalCols.length > 0) {
         doc.setFont("helvetica", "bold");
-        doc.text("EXÁMENES Y EVALUACIONES", 22, yPos);
+        doc.text("CALIFICACIONES DE EXÁMENES", 22, yPos);
         yPos += 8;
         doc.setFont("helvetica", "normal");
         evalCols.forEach(c => {
@@ -330,20 +355,22 @@ function generarPDF(fila) {
     }
 
     // Pie de página con código de barras
-    const barcodeVal = `TOX-${fila['Legajo'].replace('/','-')}`;
+    const barcodeVal = `UNLP-TOX-${fila['Legajo'].replace('/','-')}`;
     JsBarcode("#barcode", barcodeVal, { format: "CODE128", displayValue: false });
     const canvas = document.getElementById("barcode");
     const barcodeImg = canvas.toDataURL("image/png");
 
     doc.addImage(barcodeImg, 'PNG', 140, 255, 50, 15);
     doc.setFontSize(8);
-    doc.setTextColor(150);
-    doc.text(`ID de Validación: ${barcodeVal}`, 140, 275);
-    doc.text(`Documento generado el: ${fechaDescarga}`, 20, 275);
-    doc.text("Este documento es de carácter informativo y está sujeto a verificación en actas oficiales.", 20, 282);
+    doc.setTextColor(130);
+    doc.text(`Validación: ${barcodeVal}`, 140, 275);
+    doc.text(`Emitido: ${fechaDescarga}`, 20, 275);
+    doc.setFont("helvetica", "italic");
+    doc.text("Este informe es un documento digital ineditable generado por el sistema de la Cátedra.", 20, 280);
+    doc.text("Cualquier alteración anula la validez del mismo ante las autoridades correspondientes.", 20, 284);
 
-    // Guardar
-    doc.save(`Antecedentes_Toxicologia_${fila['Legajo'].replace('/','_')}.pdf`);
+    // Guardar con nuevo nombre
+    doc.save(`Informacion_de_cursada_TOX_${fila['Legajo'].replace('/','_')}.pdf`);
 }
 
 function aplicarLogicaColores(valor, esEvaluacion = false) {
