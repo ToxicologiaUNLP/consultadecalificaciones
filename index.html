@@ -52,7 +52,23 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
 #btnConsultar { padding: 0.6em 1.5em; font-size: 1.1em; }
 #btnVolver { padding: 0.45em 0.9em; font-size: 0.85em; }
 
-/* === ESTILOS DE CONDICIÓN (BADGES) === */
+/* BOTÓN PDF */
+.btn-pdf {
+    background: #1a3a40;
+    color: #fff;
+    padding: 12px 20px;
+    font-size: 0.85em;
+    border-radius: 8px;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.btn-pdf:hover { background: #246d77; }
+
 .badge-condicion {
   font-family: 'Montserrat', sans-serif;
   font-size: 0.55em;
@@ -74,11 +90,7 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
 }
 .badge-pendiente { background-color: #9e9e9e; color: white; }
 
-@keyframes parpadeo-alerta {
-  0% { opacity: 1; }
-  50% { opacity: 0.4; }
-  100% { opacity: 1; }
-}
+@keyframes parpadeo-alerta { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
 .categoria-bloque {
   margin-bottom: 15px; background: #fff; border-radius: 10px; padding: 15px; border: 1px solid #e0e6e7; border-left: 5px solid #38828f;
@@ -96,8 +108,7 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
 .desaprobado { background-color: #ffebee !important; border-color: #ef9a9a !important; }
 .desaprobado .dato-valor { color: #c62828 !important; }
 
-/* === SELLO INSTITUCIONAL === */
-.sello-contenedor { display: flex; justify-content: center; margin: 30px 0 10px 0; }
+.sello-contenedor { display: flex; flex-direction: column; align-items: center; margin: 30px 0 10px 0; }
 .sello-verificado {
   position: relative; padding: 10px 25px; background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(5px); border-radius: 4px; border: 1px solid #cddde0;
@@ -124,13 +135,17 @@ footer { color: #ffffff; text-align: center; padding: 1em; font-size: 0.85em; ma
 
 @media (max-width: 600px) { main { width: 100%; margin: 0; border-radius: 0; } }
 </style>
+
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+
 </head>
 
 <body>
 <main>
   <header>
-    <img src="logop.png" alt="Logo Cátedra" />
+    <img src="logop.png" alt="Logo Cátedra" id="imgLogo" />
     <div class="titulo-centro">ASISTENCIA Y CALIFICACIONES</div>
   </header>
   <div id="contenido"></div>
@@ -138,6 +153,7 @@ footer { color: #ffffff; text-align: center; padding: 1em; font-size: 0.85em; ma
     <div class="spinner"></div>
     <div id="loaderText" style="font-family: 'Montserrat'; color: #38828f;">Consultando base de datos...</div>
   </div>
+  <canvas id="barcode" style="display:none;"></canvas>
 </main>
 
 <footer>© 2026 Cátedra de Toxicología, FCM - UNLP.</footer>
@@ -162,7 +178,7 @@ async function verificarEstado() {
       <div id="formBuscador">
         <p style="color:black; margin:0.5em 0;">Ingrese sus datos de la forma solicitada y el sistema le brindará la información.</p>
         <label for="legajo">Legajo</label><input type="text" id="legajo" placeholder="12345/6" />
-        <label for="email">E-mail asociado al SIU Guaraní*</label><input type="email" id="email" placeholder="alumno@gmail.com" />
+        <label for="email">e-mail asociado al SIU Guaraní*</label><input type="email" id="email" placeholder="alumno@gmail.com" />
         <small style="color:#555; font-size:0.9em;">*Correo electrónico elegido para recibir información desde las cátedras.</small>
         <button id="btnConsultar">Acceder</button>
       </div>
@@ -204,20 +220,15 @@ async function buscarNota(){
     let claseBadge = "badge-pendiente";
 
     const condUpper = condicion.toUpperCase();
-    if (condUpper.includes("PROMOCION")) {
-        claseBadge = "badge-promocion";
-    } else if (condUpper.includes("REGULAR") && !condUpper.includes("NO")) {
-        claseBadge = "badge-regular";
-    } else if (condUpper.includes("NO REGULAR")) {
-        claseBadge = "badge-irregular";
-    }
+    if (condUpper.includes("PROMOCION")) { claseBadge = "badge-promocion"; } 
+    else if (condUpper.includes("REGULAR") && !condUpper.includes("NO")) { claseBadge = "badge-regular"; } 
+    else if (condUpper.includes("NO REGULAR")) { claseBadge = "badge-irregular"; }
 
     let html = `<p style="font-size: 1.1em; margin-bottom: 20px;">
                   <strong>${nombreEstudiante}:</strong> 
                   <span class="badge-condicion ${claseBadge}">${condicion}</span>
                 </p>`;
     
-    // El filtro "Condición" asegura que la columna AI no se meta en los cuadraditos de datos
     html += generarBloque(fila, "T", "Teóricos", ["TECP", "Condición"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "PFI", "Condición"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "S", "Simulación", ["Condición"], "A: Ausente | P: Presente");
@@ -229,6 +240,9 @@ async function buscarNota(){
         <div class="sello-verificado">
           <div class="sello-texto">Información Verificada</div>
         </div>
+        <button class="btn-pdf" onclick='generarPDF(${JSON.stringify(fila)})'>
+            <span>📄 Descargar información (PDF)</span>
+        </button>
       </div>
       <div class="seccion-referencias">
         <strong>Referencias:</strong> T: Teóricos | P: Prácticos | S: Simulación | AE: Autoevaluación | PFI: Parcial Final Integrador | TECP: Taller de Evaluación Continua para Promoción | °/F: Fechas Parcial.
@@ -239,6 +253,97 @@ async function buscarNota(){
 
     resDiv.innerHTML = html;
   }, 1200);
+}
+
+function generarPDF(fila) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const fechaDescarga = new Date().toLocaleString();
+
+    // Fondo y marcos decorativos
+    doc.setDrawColor(56, 130, 143);
+    doc.setLineWidth(1);
+    doc.rect(5, 5, 200, 287); 
+
+    // Encabezado
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.setTextColor(36, 109, 119);
+    doc.text("CÁTEDRA DE TOXICOLOGÍA", 105, 25, { align: "center" });
+    doc.setFontSize(10);
+    doc.text("FACULTAD DE CIENCIAS MÉDICAS - UNLP", 105, 31, { align: "center" });
+    
+    doc.setDrawColor(200);
+    doc.line(20, 38, 190, 38);
+
+    // Título del documento
+    doc.setFontSize(14);
+    doc.text("CONSTANCIA DE ANTECEDENTES ACADÉMICOS", 105, 50, { align: "center" });
+
+    // Datos del Alumno
+    doc.setFontSize(11);
+    doc.setTextColor(0);
+    doc.text(`Alumno/a: ${fila[Object.keys(fila)[0]]}`, 20, 65);
+    doc.text(`Legajo: ${fila['Legajo']}`, 20, 72);
+    doc.text(`Condición Final: ${fila['Condición'] || 'Pendiente'}`, 20, 79);
+
+    // Contenido de Notas
+    let yPos = 95;
+    const keys = Object.keys(fila);
+
+    function agregarSeccion(titulo, prefijo, excluir = []) {
+        const cols = keys.filter(k => k.toUpperCase().startsWith(prefijo.toUpperCase()) && !excluir.some(ex => k.toUpperCase().includes(ex.toUpperCase())) && fila[k]?.trim() !== "");
+        if (cols.length > 0) {
+            doc.setFont("helvetica", "bold");
+            doc.setFillColor(240, 248, 249);
+            doc.rect(20, yPos - 5, 170, 7, 'F');
+            doc.text(titulo, 22, yPos);
+            yPos += 8;
+            doc.setFont("helvetica", "normal");
+            let xPos = 22;
+            cols.forEach(c => {
+                if(xPos > 170) { xPos = 22; yPos += 6; }
+                doc.setFontSize(9);
+                doc.text(`${c}: ${fila[c]}`, xPos, yPos);
+                xPos += 30;
+            });
+            yPos += 12;
+        }
+    }
+
+    agregarSeccion("TEÓRICOS", "T", ["TECP", "Condición"]);
+    agregarSeccion("TRABAJOS PRÁCTICOS", "P", ["°", "F", "PARCIAL", "PFI", "Condición"]);
+    agregarSeccion("SIMULACIÓN", "S", ["Condición"]);
+    agregarSeccion("AUTOEVALUACIONES", "AE", ["Condición"]);
+
+    // Evaluaciones Especiales
+    const evalCols = keys.filter(k => (k.includes("°") || k.includes("F") || k.includes("PARCIAL") || k.startsWith("PFI") || k.startsWith("TECP")) && !k.toUpperCase().includes("CONDICIÓN") && fila[k]?.trim() !== "");
+    if (evalCols.length > 0) {
+        doc.setFont("helvetica", "bold");
+        doc.text("EXÁMENES Y EVALUACIONES", 22, yPos);
+        yPos += 8;
+        doc.setFont("helvetica", "normal");
+        evalCols.forEach(c => {
+            doc.text(`• ${c}: ${fila[c]}`, 25, yPos);
+            yPos += 6;
+        });
+    }
+
+    // Pie de página con código de barras
+    const barcodeVal = `TOX-${fila['Legajo'].replace('/','-')}`;
+    JsBarcode("#barcode", barcodeVal, { format: "CODE128", displayValue: false });
+    const canvas = document.getElementById("barcode");
+    const barcodeImg = canvas.toDataURL("image/png");
+
+    doc.addImage(barcodeImg, 'PNG', 140, 255, 50, 15);
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text(`ID de Validación: ${barcodeVal}`, 140, 275);
+    doc.text(`Documento generado el: ${fechaDescarga}`, 20, 275);
+    doc.text("Este documento es de carácter informativo y está sujeto a verificación en actas oficiales.", 20, 282);
+
+    // Guardar
+    doc.save(`Antecedentes_Toxicologia_${fila['Legajo'].replace('/','_')}.pdf`);
 }
 
 function aplicarLogicaColores(valor, esEvaluacion = false) {
@@ -256,11 +361,9 @@ function aplicarLogicaColores(valor, esEvaluacion = false) {
 function generarBloque(fila, prefijo, titulo, excluir = [], aclaracion = "") {
   const columnas = Object.keys(fila).filter(col => {
     const c = col.toUpperCase();
-    // Filtro estricto: Debe empezar con el prefijo y NO estar en la lista de excluidos
     return c.startsWith(prefijo.toUpperCase()) && !excluir.some(ex => c.includes(ex.toUpperCase())) && fila[col]?.trim() !== "";
   });
   if (columnas.length === 0) return "";
-  
   let b = `<div class="categoria-bloque"><div class="categoria-titulo">${titulo}</div><div class="grid-datos">`;
   columnas.forEach(c => { 
     const clase = aplicarLogicaColores(fila[c], false);
@@ -273,11 +376,9 @@ function generarBloque(fila, prefijo, titulo, excluir = [], aclaracion = "") {
 function generarBloqueEvaluacion(fila) {
   const columnas = Object.keys(fila).filter(col => {
     const c = col.toUpperCase();
-    // Excluimos explícitamente "Condición" para que no aparezca como un cuadradito de examen
     return (c.includes("°") || c.includes("F") || c.includes("PARCIAL") || c.startsWith("PFI") || c.startsWith("TECP")) && !c.includes("CONDICIÓN") && fila[col]?.trim() !== "";
   });
   if (columnas.length === 0) return "";
-
   let b = `<div class="categoria-bloque"><div class="categoria-titulo">EVALUACIONES</div><div class="grid-datos">`;
   columnas.forEach(c => {
     const clase = aplicarLogicaColores(fila[c], true);
