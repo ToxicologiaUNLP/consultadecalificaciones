@@ -171,9 +171,13 @@ async function cargarDatos() {
 }
 
 async function verificarEstado() {
-  const datos = await cargarDatos(); // Llamada simplificada
-  const filaEstado = datos.data.find(row => row.Estado && row.Estado.trim() !== "");
-  const estado = filaEstado?.Estado?.trim().toLowerCase();
+  const datos = await cargarDatos();
+  
+  // CORRECCIÓN AQUÍ: Buscador de columna "Estado" insensible a mayúsculas/espacios
+  const colNombre = datos.meta.fields.find(f => f.trim().toLowerCase() === 'estado');
+  const filaEstado = datos.data.find(row => row[colNombre] && row[colNombre].trim() !== "");
+  const estado = filaEstado ? filaEstado[colNombre].trim().toLowerCase() : "";
+  
   const contenido = document.getElementById('contenido');
 
   if (estado === 'habilitado') {
@@ -189,7 +193,7 @@ async function verificarEstado() {
       <div id="error" style="color:red; text-align:center; margin-top:10px;"></div>`;
     document.getElementById('btnConsultar').onclick = buscarNota;
   } else {
-    contenido.innerHTML = `<div style="text-align:center; margin:2em; font-weight:bold;">En este momento no es posible acceder.</div>`;
+    contenido.innerHTML = `<div style="text-align:center; margin:2em; font-weight:bold;">TEMPORALMENTE FUERA DE SERVICIO.</div>`;
   }
 }
 
@@ -207,7 +211,7 @@ async function buscarNota(){
   formBuscador.style.display = 'none';
   loader.style.display = 'block';
 
-  const parsed = await cargarDatos(); // Llamada simplificada
+  const parsed = await cargarDatos();
   const fila = parsed.data.find(row => row['Legajo']?.trim().toLowerCase() === legajo && row['Email']?.trim().toLowerCase() === email);
 
   setTimeout(() => {
