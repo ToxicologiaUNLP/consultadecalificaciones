@@ -52,7 +52,6 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
 #btnConsultar { padding: 0.6em 1.5em; font-size: 1.1em; }
 #btnVolver { padding: 0.45em 0.9em; font-size: 0.85em; }
 
-/* BOTÓN PDF AJUSTADO */
 .btn-pdf {
     background: #1a3a40;
     color: #fff;
@@ -64,7 +63,7 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
     align-items: center;
     justify-content: center;
     gap: 10px;
-    width: auto; /* Ya no es ancho total */
+    width: auto;
     min-width: 200px;
     border: 1px solid rgba(255,255,255,0.1);
 }
@@ -231,8 +230,8 @@ async function buscarNota(){
                   <span class="badge-condicion ${claseBadge}">${condicion}</span>
                 </p>`;
     
-    html += generarBloque(fila, "T", "Teóricos", ["TECP", "Condición"], "A: Ausente | P: Presente");
-    html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "Condición"], "A: Ausente | P: Presente");
+    html += generarBloque(fila, "T", "Teóricos", ["TECP", "Condición", "AE", "PFI"], "A: Ausente | P: Presente");
+    html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "Condición", "AE", "PFI"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "S", "Simulación", ["Condición"], "A: Ausente | P: Presente");
     html += generarBloqueEvaluacion(fila);
 
@@ -262,16 +261,14 @@ function generarPDF(fila) {
     const fechaDescarga = new Date().toLocaleString();
     const logoImg = document.getElementById('imgLogo');
 
-    // --- FUNCIÓN DE MARCA DE AGUA DE TEXTO REPETIDO ---
     function agregarMarcaAguaTexto() {
         doc.saveGraphicsState();
-        doc.setGState(new doc.GState({opacity: 0.05})); // Casi transparente
+        doc.setGState(new doc.GState({opacity: 0.05}));
         doc.setFontSize(10);
         doc.setTextColor(150);
         
         const texto = "Cátedra de Toxicología - FCM - UNLP ";
-        // Generamos una rejilla inclinada
-        for (let y = -100; y < 400; y += 15) { // Interlineado fino
+        for (let y = -100; y < 400; y += 15) {
             for (let x = -100; x < 300; x += 80) {
                 doc.text(texto, x, y, { angle: 45 });
             }
@@ -281,7 +278,6 @@ function generarPDF(fila) {
 
     agregarMarcaAguaTexto();
 
-    // Marco y Logo (Lógica existente mejorada)
     doc.setDrawColor(56, 130, 143);
     doc.rect(5, 5, 200, 287); 
 
@@ -289,7 +285,6 @@ function generarPDF(fila) {
     const ratio = logoImg.naturalHeight / logoImg.naturalWidth;
     doc.addImage(logoImg, 'PNG', (210 - finalW) / 2, 12, finalW, finalW * ratio);
 
-    // Datos del Alumno
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
     doc.setTextColor(36, 109, 119);
@@ -301,7 +296,6 @@ function generarPDF(fila) {
     doc.text(`Legajo: ${fila['Legajo']}`, 20, 77);
     doc.text(`Condición Final: ${fila['Condición'] || 'Pendiente'}`, 20, 84);
 
-    // --- RENDERIZADO DE SECCIONES ---
     let yPos = 100;
     const keys = Object.keys(fila);
 
@@ -325,11 +319,10 @@ function generarPDF(fila) {
         }
     }
 
-    // Llamá solo a las que dejaste activas
-    escribirSeccion("TEÓRICOS", "T", ["TECP", "Condición"]);
-    escribirSeccion("TRABAJOS PRÁCTICOS", "P", ["°", "F", "PARCIAL", "Condición"]);
+    escribirSeccion("TEÓRICOS", "T", ["TECP", "Condición", "AE", "PFI"]);
+    escribirSeccion("TRABAJOS PRÁCTICOS", "P", ["°", "F", "PARCIAL", "Condición", "AE", "PFI"]);
+    escribirSeccion("SIMULACIÓN", "S", ["Condición"]);
 
-    // Calificaciones Especiales
     const evalCols = keys.filter(k => (k.includes("°") || k.includes("F") || k.includes("PARCIAL") || k.startsWith("TECP")) && !k.toUpperCase().includes("CONDICIÓN") && fila[k]?.trim() !== "");
     if (evalCols.length > 0) {
         doc.setFont("helvetica", "bold");
@@ -342,13 +335,10 @@ function generarPDF(fila) {
         });
     }
 
-    // --- BLOQUEO Y SEGURIDAD ---
-    // Agregamos metadatos de restricción (Nota: jsPDF es limitado en encriptación real, 
-    // pero configuramos el modo de visualización para desalentar edición)
     doc.setProperties({
         title: 'Reporte de Cursada - Toxicología',
-        creator: 'Cátedra Toxicología FCM -  UNLP',
-        userPermissions: ["print-lowres"] // Sugerencia de permisos
+        creator: 'Cátedra Toxicología FCM - UNLP',
+        userPermissions: ["print-lowres"]
     });
 
     const barcodeVal = `UNLP-TOX-${fila['Legajo'].replace('/','-')}`;
@@ -362,7 +352,6 @@ function generarPDF(fila) {
     doc.setFont("helvetica", "italic");
     doc.text("Documento oficial generado por el Sistema de Gestión de Toxicología. No editable.", 20, 282);
 
-    // Descarga automática
     doc.save(`Situacion_Academica_${fila['Legajo'].replace('/','_')}.pdf`);
 }
 
