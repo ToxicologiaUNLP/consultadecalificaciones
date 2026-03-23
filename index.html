@@ -230,6 +230,7 @@ async function buscarNota(){
                   <span class="badge-condicion ${claseBadge}">${condicion}</span>
                 </p>`;
     
+    // FILTRADO DE COLUMNAS AE Y PFI EN LA WEB
     html += generarBloque(fila, "T", "Teóricos", ["TECP", "Condición", "AE", "PFI"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "Condición", "AE", "PFI"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "S", "Simulación", ["Condición", "AE", "PFI"], "A: Ausente | P: Presente");
@@ -261,16 +262,15 @@ function generarPDF(fila) {
     const fechaDescarga = new Date().toLocaleString();
     const logoImg = document.getElementById('imgLogo');
 
-    // MARCA DE AGUA: TEXTO REPETITIVO DIAGONAL
     function agregarMarcaAguaTexto() {
         doc.saveGraphicsState();
-        doc.setGState(new doc.GState({opacity: 0.05})); // Casi transparente
+        doc.setGState(new doc.GState({opacity: 0.05}));
         doc.setFontSize(10);
-        doc.setTextColor(100);
+        doc.setTextColor(150);
         
-        const texto = "Cátedra de Toxicología - FCM - UNLP   ";
-        for (let y = -100; y < 400; y += 25) {
-            for (let x = -100; x < 300; x += 80) {
+        const texto = "Cátedra de Toxicología - FCM - UNLP ";
+        for (let y = -100; y < 400; y += 20) {
+            for (let x = -100; x < 300; x += 85) {
                 doc.text(texto, x, y, { angle: 45 });
             }
         }
@@ -301,12 +301,11 @@ function generarPDF(fila) {
     const keys = Object.keys(fila);
 
     function escribirSeccion(titulo, prefijo, excluir = []) {
+        // FILTRADO AGRESIVO PARA EL PDF
         const cols = keys.filter(k => 
-            k.toUpperCase().startsWith(prefijo.toUpperCase()) && 
-            !excluir.some(ex => k.toUpperCase().includes(ex.toUpperCase())) && 
-            !k.toUpperCase().includes("AE") && 
-            !k.toUpperCase().includes("PFI") &&
-            fila[k]?.trim() !== ""
+          k.toUpperCase().startsWith(prefijo.toUpperCase()) && 
+          !excluir.some(ex => k.toUpperCase().includes(ex.toUpperCase())) && 
+          fila[k]?.trim() !== ""
         );
         if (cols.length > 0) {
             doc.setFont("helvetica", "bold");
@@ -326,18 +325,18 @@ function generarPDF(fila) {
         }
     }
 
-    escribirSeccion("TEÓRICOS", "T", ["TECP", "Condición"]);
-    escribirSeccion("TRABAJOS PRÁCTICOS", "P", ["°", "F", "PARCIAL", "Condición"]);
-    escribirSeccion("SIMULACIÓN", "S", ["Condición"]);
+    escribirSeccion("TEÓRICOS", "T", ["TECP", "Condición", "AE", "PFI"]);
+    escribirSeccion("TRABAJOS PRÁCTICOS", "P", ["°", "F", "PARCIAL", "Condición", "AE", "PFI"]);
+    escribirSeccion("SIMULACIÓN", "S", ["Condición", "AE", "PFI"]);
 
+    // FILTRADO AGRESIVO EN EVALUACIONES PARA EL PDF
     const evalCols = keys.filter(k => 
-        (k.includes("°") || k.includes("F") || k.includes("PARCIAL") || k.startsWith("TECP")) && 
-        !k.toUpperCase().includes("CONDICIÓN") && 
-        !k.toUpperCase().includes("AE") && 
-        !k.toUpperCase().includes("PFI") && 
-        fila[k]?.trim() !== ""
+      (k.includes("°") || k.includes("F") || k.includes("PARCIAL") || k.startsWith("TECP")) && 
+      !k.toUpperCase().includes("CONDICIÓN") && 
+      !k.toUpperCase().includes("AE") && 
+      !k.toUpperCase().includes("PFI") && 
+      fila[k]?.trim() !== ""
     );
-
     if (evalCols.length > 0) {
         doc.setFont("helvetica", "bold");
         doc.text("EXÁMENES Y EVALUACIONES", 22, yPos);
@@ -348,6 +347,12 @@ function generarPDF(fila) {
             yPos += 6;
         });
     }
+
+    doc.setProperties({
+        title: 'Reporte de Cursada - Toxicología',
+        creator: 'Cátedra Toxicología FCM - UNLP',
+        userPermissions: ["print-lowres"]
+    });
 
     const barcodeVal = `UNLP-TOX-${fila['Legajo'].replace('/','-')}`;
     JsBarcode("#barcode", barcodeVal, { format: "CODE128", displayValue: false });
@@ -378,11 +383,8 @@ function aplicarLogicaColores(valor, esEvaluacion = false) {
 function generarBloque(fila, prefijo, titulo, excluir = [], aclaracion = "") {
   const columnas = Object.keys(fila).filter(col => {
     const c = col.toUpperCase();
-    return c.startsWith(prefijo.toUpperCase()) && 
-           !excluir.some(ex => c.includes(ex.toUpperCase())) && 
-           !c.includes("AE") && 
-           !c.includes("PFI") && 
-           fila[col]?.trim() !== "";
+    // BUSCA SI LA PALABRA "AE" O "PFI" ESTÁ DENTRO DEL NOMBRE DE LA COLUMNA
+    return c.startsWith(prefijo.toUpperCase()) && !excluir.some(ex => c.includes(ex.toUpperCase())) && fila[col]?.trim() !== "";
   });
   if (columnas.length === 0) return "";
   let b = `<div class="categoria-bloque"><div class="categoria-titulo">${titulo}</div><div class="grid-datos">`;
@@ -397,6 +399,7 @@ function generarBloque(fila, prefijo, titulo, excluir = [], aclaracion = "") {
 function generarBloqueEvaluacion(fila) {
   const columnas = Object.keys(fila).filter(col => {
     const c = col.toUpperCase();
+    // EXCLUYE SI CONTIENE AE O PFI
     return (c.includes("°") || c.includes("F") || c.includes("PARCIAL") || c.startsWith("TECP")) && 
            !c.includes("CONDICIÓN") && 
            !c.includes("AE") && 
