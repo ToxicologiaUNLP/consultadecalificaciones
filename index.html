@@ -270,7 +270,7 @@ function generarPDF(fila) {
     // MARCA DE AGUA PROFESIONAL (TEXTO TRANSPARENTE)
     function agregarMarcaAgua() {
         doc.saveGraphicsState();
-        doc.setGState(new doc.GState({opacity: 0.05}));
+        doc.setGState(new doc.GState({opacity: 0.1}));
         doc.setFontSize(10);
         doc.setTextColor(100);
         const txt = "Cátedra de Toxicología - UNLP ";
