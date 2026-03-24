@@ -230,7 +230,7 @@ async function buscarNota(){
                   <span class="badge-condicion ${claseBadge}">${condicion}</span>
                 </p>`;
     
-    // FILTRADO AE Y PFI ELIMINADO
+    // FILTRADO: Se mantienen T, P y S. Se quitan AE y PFI.
     html += generarBloque(fila, "T", "Teóricos", ["TECP", "Condición", "AE", "PFI"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "Condición", "AE", "PFI"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "S", "Simulación", ["Condición", "AE", "PFI"], "A: Ausente | P: Presente");
@@ -267,53 +267,54 @@ function generarPDF(fila) {
         author: 'Cátedra de Toxicología UNLP'
     });
 
-    // NUEVA MARCA DE AGUA DE TEXTO (REEMPLAZA LOGOS REPETIDOS)
-    function agregarMarcaAguaTexto() {
+    // MARCA DE AGUA PROFESIONAL (TEXTO TRANSPARENTE)
+    function agregarMarcaAgua() {
         doc.saveGraphicsState();
-        doc.setGState(new doc.GState({opacity: 0.04}));
+        doc.setGState(new doc.GState({opacity: 0.05}));
         doc.setFontSize(10);
-        doc.setTextColor(150);
-        const texto = "Cátedra de Toxicología - FCM - UNLP ";
-        for (let y = -50; y < 400; y += 30) {
-            for (let x = -50; x < 300; x += 90) {
-                doc.text(texto, x, y, { angle: 45 });
+        doc.setTextColor(100);
+        const txt = "Cátedra de Toxicología - UNLP ";
+        for(let y = 0; y < 300; y += 40) {
+            for(let x = 0; x < 210; x += 80) {
+                doc.text(txt, x, y, { angle: 45 });
             }
         }
         doc.restoreGraphicsState();
     }
-
-    agregarMarcaAguaTexto();
+    agregarMarcaAgua();
 
     doc.setDrawColor(56, 130, 143);
     doc.setLineWidth(0.5);
     doc.rect(5, 5, 200, 287); 
 
-    // ENCABEZADO: LOGO CENTRADO (SIN DISTORSIÓN)
-    const finalW = 75;
-    const ratio = logoImg.naturalHeight / logoImg.naturalWidth;
+    // LOGO SUPERIOR PROPORCIONAL
+    const origW = logoImg.naturalWidth || 100;
+    const origH = logoImg.naturalHeight || 100;
+    const ratio = origH / origW;
+    const finalW = 80;
     const finalH = finalW * ratio;
     doc.addImage(logoImg, 'PNG', (210 - finalW) / 2, 12, finalW, finalH);
     
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
     doc.setTextColor(36, 109, 119);
-    doc.text("INFORME DE SITUACIÓN ACADÉMICA", 105, 20 + finalH, { align: "center" });
+    doc.text("INFORME DE SITUACIÓN ACADÉMICA", 105, 18 + finalH, { align: "center" });
 
     doc.setFontSize(10);
     doc.setTextColor(0);
-    let yPos = 35 + finalH;
-    doc.text(`Estudiante: ${fila[Object.keys(fila)[0]]}`, 22, yPos);
+    let yPos = 30 + finalH;
+    doc.text(`Alumno/a: ${fila[Object.keys(fila)[0]]}`, 22, yPos);
     doc.text(`Legajo: ${fila['Legajo']}`, 22, yPos + 6);
     doc.text(`Condición: ${fila['Condición'] || 'Pendiente'}`, 22, yPos + 12);
 
-    yPos += 22;
+    yPos += 20;
     const keys = Object.keys(fila);
 
     function agregarSeccionPDF(titulo, prefijo, excluir = []) {
         const cols = keys.filter(k => k.toUpperCase().startsWith(prefijo.toUpperCase()) && !excluir.some(ex => k.toUpperCase().includes(ex.toUpperCase())) && fila[k]?.trim() !== "");
         if (cols.length > 0) {
             doc.setFont("helvetica", "bold");
-            doc.setFillColor(240, 246, 247);
+            doc.setFillColor(240, 245, 246);
             doc.rect(20, yPos - 5, 170, 7, 'F');
             doc.text(titulo, 22, yPos);
             yPos += 8;
@@ -321,7 +322,7 @@ function generarPDF(fila) {
             doc.setFontSize(9);
             let xPos = 22;
             cols.forEach(c => {
-                if(xPos > 170) { xPos = 22; yPos += 6; }
+                if(xPos > 175) { xPos = 22; yPos += 6; }
                 doc.text(`${c}: ${fila[c]}`, xPos, yPos);
                 xPos += 30;
             });
@@ -329,7 +330,6 @@ function generarPDF(fila) {
         }
     }
 
-    // FILTRADO AE Y PFI EN PDF
     agregarSeccionPDF("TEÓRICOS", "T", ["TECP", "Condición", "AE", "PFI"]);
     agregarSeccionPDF("TRABAJOS PRÁCTICOS", "P", ["°", "F", "PARCIAL", "Condición", "AE", "PFI"]);
     agregarSeccionPDF("SIMULACIÓN", "S", ["Condición", "AE", "PFI"]);
@@ -337,7 +337,7 @@ function generarPDF(fila) {
     const evalCols = keys.filter(k => (k.includes("°") || k.includes("F") || k.includes("PARCIAL") || k.startsWith("TECP")) && !k.toUpperCase().includes("CONDICIÓN") && !k.toUpperCase().includes("AE") && !k.toUpperCase().includes("PFI") && fila[k]?.trim() !== "");
     if (evalCols.length > 0) {
         doc.setFont("helvetica", "bold");
-        doc.text("EVALUACIONES Y EXÁMENES", 22, yPos);
+        doc.text("EXÁMENES Y EVALUACIONES", 22, yPos);
         yPos += 8;
         doc.setFont("helvetica", "normal");
         evalCols.forEach(c => {
@@ -347,17 +347,15 @@ function generarPDF(fila) {
         });
     }
 
-    const barcodeVal = `UNLP-TOX-${fila['Legajo'].replace('/','-')}`;
+    const barcodeVal = `FCM|UNLP|TOX-${fila['Legajo'].replace('/','-')}`;
     JsBarcode("#barcode", barcodeVal, { format: "CODE128", displayValue: false });
     const barcodeImg = document.getElementById("barcode").toDataURL("image/png");
-
     doc.addImage(barcodeImg, 'PNG', 145, 260, 45, 12);
     doc.setFontSize(7);
     doc.setTextColor(120);
-    doc.text(`Código de Validación: ${barcodeVal}`, 145, 275);
-    doc.text(`Fecha de emisión: ${fechaDescarga}`, 22, 275);
-    doc.setFont("helvetica", "italic");
-    doc.text("Documento digital generado por el Sistema HoSiC - Cátedra de Toxicología.", 22, 280);
+    doc.text(`Emitido: ${fechaDescarga}`, 22, 275);
+    doc.text(`Val: ${barcodeVal}`, 145, 275);
+    doc.text("Este informe es exclusivamente para fines de visualización académica interna. Carece de validez como certificado oficial o documento administrativo.", 22, 280);
 
     doc.save(`Situacion_Academica_${fila['Legajo'].replace('/','_')}.pdf`);
 }
@@ -409,7 +407,6 @@ window.onload = verificarEstado;
 </script>
 </body>
 </html>
-
 
 
 
