@@ -253,6 +253,8 @@ function aceptarModal() {
   const modal = document.getElementById('modalAviso');
   modal.style.transition = "opacity 0.5s";
   modal.style.opacity = "0";
+  // Guarda el consentimiento en el navegador
+  localStorage.setItem('avisoAceptado', 'true');
   setTimeout(() => {
     modal.style.display = 'none';
   }, 500);
@@ -265,6 +267,11 @@ async function cargarDatos(url) {
 }
 
 async function verificarEstado() {
+  // Oculta el modal si ya fue aceptado previamente
+  if (localStorage.getItem('avisoAceptado') === 'true') {
+    document.getElementById('modalAviso').style.display = 'none';
+  }
+
   const datos = await cargarDatos(urlBase + '&_ts=' + Date.now());
   const filaEstado = datos.data.find(row => row.Estado && row.Estado.trim() !== "");
   const estado = filaEstado?.Estado?.trim().toLowerCase();
@@ -281,6 +288,13 @@ async function verificarEstado() {
       </div>
       <div id="resultado"></div>
       <div id="error" style="color:red; text-align:center; margin-top:10px;"></div>`;
+    
+    // Autocompletar datos si existen en el historial
+    const savedLegajo = localStorage.getItem('userLegajo');
+    const savedEmail = localStorage.getItem('userEmail');
+    if(savedLegajo) document.getElementById('legajo').value = savedLegajo;
+    if(savedEmail) document.getElementById('email').value = savedEmail;
+
     document.getElementById('btnConsultar').onclick = buscarNota;
   } else {
     contenido.innerHTML = `<div style="text-align:center; margin:2em; font-weight:bold;">FUERA DE SERVICIO</div>`;
@@ -288,8 +302,10 @@ async function verificarEstado() {
 }
 
 async function buscarNota(){
-  const legajo = document.getElementById('legajo').value.trim().toLowerCase();
-  const email = document.getElementById('email').value.trim().toLowerCase();
+  const legajoInput = document.getElementById('legajo');
+  const emailInput = document.getElementById('email');
+  const legajo = legajoInput.value.trim().toLowerCase();
+  const email = emailInput.value.trim().toLowerCase();
   const resDiv = document.getElementById('resultado');
   const errorDiv = document.getElementById('error');
   const formBuscador = document.getElementById('formBuscador');
@@ -312,11 +328,14 @@ async function buscarNota(){
       return;
     }
 
+    // Guardar datos tras consulta exitosa para la próxima vez
+    localStorage.setItem('userLegajo', legajoInput.value.trim());
+    localStorage.setItem('userEmail', emailInput.value.trim());
+
     const nombreEstudiante = fila[parsed.meta.fields[0]] || "Estudiante";
     const condicion = (fila['Condición'] || "EN CURSO / PENDIENTE").trim().toUpperCase();
     let claseBadge = "badge-pendiente";
 
-    // LÓGICA DE CONDICIÓN CORREGIDA (TOTALMENTE EN MAYÚSCULA)
     if (condicion === "PROMOCIONÓ") { 
       claseBadge = "badge-promocion"; 
     } 
