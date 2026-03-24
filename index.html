@@ -352,13 +352,25 @@ function generarPDF(fila) {
     const barcodeVal = `FCM|UNLP|TOX-${fila['Legajo'].replace('/','-')}`;
     JsBarcode("#barcode", barcodeVal, { format: "CODE128", displayValue: false });
     const barcodeImg = document.getElementById("barcode").toDataURL("image/png");
+    
+    // Imagen del código de barras
     doc.addImage(barcodeImg, 'PNG', 145, 260, 45, 12);
+    
     doc.setFontSize(7);
     doc.setTextColor(120);
+    
+    // Metadatos de emisión
     doc.text(`Emitido: ${fechaDescarga}`, 22, 275);
     doc.text(`Val: ${barcodeVal}`, 145, 275);
-    doc.text("Este informe es exclusivamente para fines de visualización. Carece de validez como certificado oficial o documento administrativo. Su edición o falsificación están sujetos a sanciones.", 22, 280);
 
+    // TEXTO CON SALTO DE LÍNEA: 
+    // Usamos \n para bajar el renglón y splitTextToSize para que no se salga de los márgenes
+    const avisoLegal = "Este informe es exclusivamente para fines de visualización. Carece de validez como certificado oficial o documento administrativo.\nSu edición o falsificación están sujetos a sanciones.";
+    const lineasTexto = doc.splitTextToSize(avisoLegal, 170); // 170 es el ancho máximo permitido
+    
+    doc.text(lineasTexto, 22, 280);
+
+    // Guardar el archivo
     doc.save(`Situacion_Academica_${fila['Legajo'].replace('/','_')}.pdf`);
 }
 
