@@ -22,6 +22,71 @@ body {
   overflow-x: hidden;
 }
 
+/* Estilos para el Modal de Bienvenida Institucional */
+#modalAviso {
+  display: flex;
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background-color: #f9f8f5;
+  margin: 15px;
+  padding: 30px;
+  border-radius: 16px;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  border-top: 8px solid #38828f;
+  animation: modalEntrada 0.4s ease-out;
+}
+@keyframes modalEntrada {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.modal-content h2 {
+  font-family: 'Montserrat', sans-serif;
+  color: #38828f;
+  font-size: 1.25em;
+  margin-top: 0;
+  text-transform: uppercase;
+}
+.modal-content p {
+  font-size: 0.92em;
+  line-height: 1.6;
+  color: #333;
+  text-align: justify;
+}
+.firma-titular {
+  margin-top: 25px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: #1a3a40;
+  border-top: 1px solid #dee2e6;
+  padding-top: 15px;
+  font-size: 0.9em;
+}
+#btnAceptarModal {
+  background: #38828f;
+  color: white;
+  padding: 14px 30px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+  margin-top: 25px;
+  width: 100%;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: background 0.3s;
+}
+#btnAceptarModal:hover { background: #2d6a75; }
+
 main {
   max-width: 600px;
   width: 100%;
@@ -144,6 +209,25 @@ footer { color: #ffffff; text-align: center; padding: 1em; font-size: 0.85em; ma
 </head>
 
 <body>
+
+<div id="modalAviso">
+  <div class="modal-content">
+    <h2>AVISO INSTITUCIONAL IMPORTANTE</h2>
+    <p>
+      Se informa que la visualización de calificaciones y asistencias en este portal se basa estrictamente en los registros guardados en los sistemas informáticos de la Cátedra. 
+      <br><br>
+      La información aquí expuesta constituye una transcripción fiel de los registros oficiales; por lo tanto, <strong>los datos reflejados no se deben a errores del sistema</strong>. Ante cualquier duda razonable, deberá comunicarse exclusivamente por medio de la Secretaría o el correo institucional.
+      <br><br>
+      Al presionar "Aceptar", usted declara haber leído y comprendido lo expuesto.
+    </p>
+    <div class="firma-titular">
+      Prof. Dra. Mariana Remes Lenicov<br>
+      <small>Cátedra de Toxicología - FCM - UNLP</small>
+    </div>
+    <button id="btnAceptarModal" onclick="aceptarModal()">Aceptar y Continuar</button>
+  </div>
+</div>
+
 <main>
   <header>
     <img src="logop.png" alt="Logo Cátedra" id="imgLogo" crossorigin="anonymous" />
@@ -161,6 +245,16 @@ footer { color: #ffffff; text-align: center; padding: 1em; font-size: 0.85em; ma
 
 <script>
 const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTuzuaNqAZG0G2My9L6H3Gs5tuCnJjYh1t7H3kEdzieyg_jrtc8j2b5vtn00IhQv0t2dJxBrn4RJJxI/pub?output=csv';
+
+// Lógica para el Modal
+function aceptarModal() {
+  const modal = document.getElementById('modalAviso');
+  modal.style.transition = "opacity 0.5s";
+  modal.style.opacity = "0";
+  setTimeout(() => {
+    modal.style.display = 'none';
+  }, 500);
+}
 
 async function cargarDatos(url) {
   const res = await fetch(url, { cache: "no-store" });
@@ -230,7 +324,6 @@ async function buscarNota(){
                   <span class="badge-condicion ${claseBadge}">${condicion}</span>
                 </p>`;
     
-    // FILTRADO: Se mantienen T, P y S. Se quitan AE y PFI.
     html += generarBloque(fila, "T", "Teóricos", ["TECP", "Condición", "AE", "PFI"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "Condición", "AE", "PFI"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "S", "Simulación", ["Condición", "AE", "PFI"], "A: Ausente | P: Presente");
@@ -267,8 +360,7 @@ function generarPDF(fila) {
         author: 'Cátedra de Toxicología UNLP'
     });
 
-    // MARCA DE AGUA PROFESIONAL (TEXTO TRANSPARENTE)
-   function agregarMarcaAgua() {
+    function agregarMarcaAgua() {
         doc.saveGraphicsState();
         doc.setGState(new doc.GState({opacity: 0.15})); 
         doc.setFontSize(9); 
@@ -289,7 +381,6 @@ function generarPDF(fila) {
     doc.setLineWidth(0.5);
     doc.rect(5, 5, 200, 287); 
 
-    // LOGO SUPERIOR PROPORCIONAL
     const origW = logoImg.naturalWidth || 100;
     const origH = logoImg.naturalHeight || 100;
     const ratio = origH / origW;
@@ -353,24 +444,17 @@ function generarPDF(fila) {
     JsBarcode("#barcode", barcodeVal, { format: "CODE128", displayValue: false });
     const barcodeImg = document.getElementById("barcode").toDataURL("image/png");
     
-    // Imagen del código de barras
     doc.addImage(barcodeImg, 'PNG', 145, 260, 45, 12);
     
     doc.setFontSize(7);
     doc.setTextColor(120);
-    
-    // Metadatos de emisión
     doc.text(`Emitido: ${fechaDescarga}`, 22, 275);
     doc.text(`Val: ${barcodeVal}`, 145, 275);
 
-    // TEXTO CON SALTO DE LÍNEA: 
-    // Usamos \n para bajar el renglón y splitTextToSize para que no se salga de los márgenes
     const avisoLegal = "Este informe es exclusivamente para fines de visualización. Carece de validez como certificado oficial o documento administrativo.\nSu edición o falsificación están sujetos a sanciones.";
-    const lineasTexto = doc.splitTextToSize(avisoLegal, 170); // 170 es el ancho máximo permitido
-    
+    const lineasTexto = doc.splitTextToSize(avisoLegal, 170);
     doc.text(lineasTexto, 22, 280);
 
-    // Guardar el archivo
     doc.save(`Situacion_Academica_${fila['Legajo'].replace('/','_')}.pdf`);
 }
 
@@ -421,7 +505,6 @@ window.onload = verificarEstado;
 </script>
 </body>
 </html>
-
 
 
 
