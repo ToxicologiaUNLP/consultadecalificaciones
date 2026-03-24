@@ -268,14 +268,16 @@ function generarPDF(fila) {
     });
 
     // MARCA DE AGUA PROFESIONAL (TEXTO TRANSPARENTE)
-    function agregarMarcaAgua() {
+   function agregarMarcaAgua() {
         doc.saveGraphicsState();
-        doc.setGState(new doc.GState({opacity: 0.1}));
-        doc.setFontSize(10);
-        doc.setTextColor(100);
-        const txt = "Cátedra de Toxicología - UNLP ";
-        for(let y = 0; y < 300; y += 40) {
-            for(let x = 0; x < 210; x += 80) {
+        doc.setGState(new doc.GState({opacity: 0.15})); 
+        doc.setFontSize(9); 
+        doc.setTextColor(150); 
+        
+        const txt = "Cátedra de Toxicología - UNLP";
+        
+        for(let y = -10; y < 310; y += 35) {
+            for(let x = -10; x < 220; x += 50) {
                 doc.text(txt, x, y, { angle: 45 });
             }
         }
@@ -355,7 +357,7 @@ function generarPDF(fila) {
     doc.setTextColor(120);
     doc.text(`Emitido: ${fechaDescarga}`, 22, 275);
     doc.text(`Val: ${barcodeVal}`, 145, 275);
-    doc.text("Este informe es exclusivamente para fines de visualización académica interna. Carece de validez como certificado oficial o documento administrativo.", 22, 280);
+    doc.text("Este informe es exclusivamente para fines de visualización. Carece de validez como certificado oficial o documento administrativo. Su edición o falsificación están sujetos a sanciones.", 22, 280);
 
     doc.save(`Situacion_Academica_${fila['Legajo'].replace('/','_')}.pdf`);
 }
