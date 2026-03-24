@@ -146,7 +146,9 @@ button { border-radius: 6px; font-weight: 700; cursor: pointer; margin: 1em auto
   font-weight: 800;
   display: inline-block;
 }
-.badge-promocion { background-color: #38828f; color: white; }
+/* COLORES DE BADGES CORREGIDOS */
+.badge-promocion { background-color: #38828f; color: white; } /* PROMOCIONÓ en Celeste */
+.badge-en-promocion { background-color: #ffc107; color: #333; } /* EN PROMOCIÓN en Amarillo */
 .badge-regular { background-color: #4caf50; color: white; }
 .badge-irregular { 
   background-color: #d32f2f; 
@@ -221,7 +223,7 @@ footer { color: #ffffff; text-align: center; padding: 1em; font-size: 0.85em; ma
       Al presionar "Aceptar", usted declara haber leído y comprendido lo expuesto.
     </p>
     <div class="firma-titular">
-      Prof. Dra.Remes Lenicov Mariana<br>
+      Prof. Dra. Remes Lenicov Mariana<br>
       <small>Titular Cátedra de Toxicología - FCM - UNLP</small>
     </div>
     <button id="btnAceptarModal" onclick="aceptarModal()">Aceptar y Continuar</button>
@@ -311,13 +313,22 @@ async function buscarNota(){
     }
 
     const nombreEstudiante = fila[parsed.meta.fields[0]] || "Estudiante";
-    const condicion = (fila['Condición'] || "EN CURSO / PENDIENTE").trim();
+    const condicion = (fila['Condición'] || "EN CURSO / PENDIENTE").trim().toUpperCase();
     let claseBadge = "badge-pendiente";
 
-    const condUpper = condicion.toUpperCase();
-    if (condUpper.includes("PROMOCION")) { claseBadge = "badge-promocion"; } 
-    else if (condUpper.includes("REGULAR") && !condUpper.includes("NO")) { claseBadge = "badge-regular"; } 
-    else if (condUpper.includes("NO REGULAR")) { claseBadge = "badge-irregular"; }
+    // LÓGICA DE CONDICIÓN CORREGIDA (TOTALMENTE EN MAYÚSCULA)
+    if (condicion === "PROMOCIONÓ") { 
+      claseBadge = "badge-promocion"; 
+    } 
+    else if (condicion === "EN PROMOCIÓN") { 
+      claseBadge = "badge-en-promocion"; 
+    } 
+    else if (condicion === "REGULAR") { 
+      claseBadge = "badge-regular"; 
+    } 
+    else if (condicion.includes("NO REGULAR") || condicion.includes("IRREGULAR")) { 
+      claseBadge = "badge-irregular"; 
+    }
 
     let html = `<p style="font-size: 1.1em; margin-bottom: 20px;">
                   <strong>${nombreEstudiante}:</strong> 
