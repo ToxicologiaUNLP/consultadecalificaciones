@@ -297,7 +297,18 @@ async function verificarEstado() {
 
     document.getElementById('btnConsultar').onclick = buscarNota;
   } else {
-    contenido.innerHTML = `<div style="text-align:center; margin:2em; font-weight:bold;">FUERA DE SERVICIO</div>`;
+    contenido.innerHTML = `
+      <div style="text-align:center; margin:3em auto; max-width:320px; font-family:'Montserrat', sans-serif;">
+        <div style="font-weight:700; font-size:18px; color:#c0392b; letter-spacing:1px; margin-bottom:12px;">
+          FUERA DE SERVICIO
+        </div>
+        <div style="font-size:14px; color:#555; line-height:1.6; font-weight:500;">
+          No hay datos aún para mostrar o se está realizando la carga de nueva información. 
+          <br><br>
+          <span style="font-style:italic; opacity:0.8;">Por favor, intente nuevamente en unos minutos.</span>
+        </div>
+      </div>
+    `;
   }
 }
 
