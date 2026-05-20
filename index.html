@@ -492,20 +492,39 @@ function generarPDF(fila) {
     doc.text(`Emitido: ${fechaDescarga}`, 22, 275);
     doc.text(`Val: ${barcodeVal}`, 145, 275);
 
-    const avisoLegal = "Este informe es exclusivamente para fines de visualización. Carece de validez como certificado oficial o documento administrativo.\nSu edición o falsificación están sujetos a sanciones.";
+    const avisoLegal = "Este informe es exclusivamente para fines de visualización. Carece de validez como certificado oficial o documento administrative.\nSu edición o falsificación están sujetos a sanciones.";
     const lineasTexto = doc.splitTextToSize(avisoLegal, 170);
     doc.text(lineasTexto, 22, 280);
 
     doc.save(`Situacion_Academica_${fila['Legajo'].replace('/','_')}.pdf`);
 }
 
-function aplicarLogicaColores(valor, esEvaluacion = false) {
+function aplicarLogicaColores(valor, nombreColumna = "") {
     if (!valor) return "";
     const v = valor.trim().toUpperCase();
-    if (v === "A" && !esEvaluacion) return "desaprobado"; 
-    if (v === "P") return "promocion"; 
-    if (v === "A" && esEvaluacion) return "promocion"; 
-    if (v === "D") return "desaprobado"; 
+    const colName = nombreColumna.toUpperCase();
+
+    // Lógica específica si la celda pertenece a un taller de evaluación continua (TECP)
+    if (colName.startsWith("TECP")) {
+      if (v === "A") return "promocion";    // Continúa en promoción (Verde)
+      if (v === "D") return "desaprobado";  // No continúa en promoción (Rojo)
+      return "";
+    }
+
+    // Lógica estándar para el resto de las columnas (Asistencias, parciales numéricos)
+    if (colName.startsWith("T") || colName.startsWith("P") || colName.startsWith("S")) {
+      // Si son asistencias generales de cursada
+      if (!colName.includes("PARCIAL") && !colName.includes("°") && !colName.includes("F")) {
+        if (v === "A") return "desaprobado"; // Ausente (Rojo)
+        if (v === "P") return "promocion";    // Presente (Verde)
+        return "";
+      }
+    }
+
+    // Evaluaciones tradicionales (Parciales, recuperatorios)
+    if (v === "A") return "promocion"; // Aprobado tradicional (Verde)
+    if (v === "D") return "desaprobado"; // Desaprobado tradicional (Rojo)
+    
     const num = parseFloat(v);
     if (!isNaN(num)) return (num >= 4) ? "promocion" : "desaprobado";
     return "";
@@ -519,7 +538,7 @@ function generarBloque(fila, prefijo, titulo, excluir = [], aclaracion = "") {
   if (columnas.length === 0) return "";
   let b = `<div class="categoria-bloque"><div class="categoria-titulo">${titulo}</div><div class="grid-datos">`;
   columnas.forEach(c => { 
-    const clase = aplicarLogicaColores(fila[c], false);
+    const clase = aplicarLogicaColores(fila[c], c);
     b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`; 
   });
   b += `</div><div class="aclaracion-chiquita">${aclaracion}</div></div>`;
@@ -533,12 +552,25 @@ function generarBloqueEvaluacion(fila) {
            !c.includes("CONDICIÓN") && !c.includes("AE") && !c.includes("PFI") && fila[col]?.trim() !== "";
   });
   if (columnas.length === 0) return "";
+  
+  // Verificamos si en la lista de notas de este alumno figura al menos un módulo TECP
+  const tieneTecp = columnas.some(c => c.toUpperCase().startsWith("TECP"));
+
   let b = `<div class="categoria-bloque"><div class="categoria-titulo">EVALUACIONES</div><div class="grid-datos">`;
   columnas.forEach(c => {
-    const clase = aplicarLogicaColores(fila[c], true);
+    const clase = aplicarLogicaColores(fila[c], c);
     b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`;
   });
-  b += `</div><div class="aclaracion-chiquita">(A: Aprobado | D: Desaprobado | Calificación numérica)</div></div>`;
+  
+  // Si tiene cargado un taller TECP, le agregamos el aviso explícito de qué significa cada letra en ese módulo
+  let leyendaAclaratoria = "(A: Aprobado | D: Desaprobado | Calificación numérica)";
+  if (tieneTecp) {
+    leyendaAclaratoria += `<div style="margin-top: 4px; border-top: 1px dashed #cbd5e1; padding-top: 4px; color: #475569;">
+      <b>Módulos TECP:</b> A = Alumno Continúa en Promoción | D = Alumno No Continúa en Promoción
+    </div>`;
+  }
+
+  b += `</div><div class="aclaracion-chiquita">${leyendaAclaratoria}</div></div>`;
   return b;
 }
 
