@@ -384,9 +384,9 @@ async function buscarNota(){
 
     // 🎯 RESTRICCIÓN DE RANGO BLINDADA (COLUMNA D A COLUMNA R)
     let contadorAusentes = 0;
-    const camposDeLaTabla = parsed.meta.fields; // Array ordenado con los nombres de las columnas
+    const camposDeLaTabla = parsed.meta.fields;
 
-    for (let i = 3; i <= 17; i++) { // Índice 3 = Columna 4 (D) | Índice 17 = Columna 18 (R)
+    for (let i = 3; i <= 17; i++) {
       let nombreColumna = camposDeLaTabla[i];
       if (nombreColumna) {
         let valorCelda = fila[nombreColumna];
@@ -396,7 +396,6 @@ async function buscarNota(){
       }
     }
 
-    // Disparador de alerta
     if (contadorAusentes === 3 && localStorage.getItem('inasistencias_alertado_' + legajoAlumnoActual) !== 'true') {
       document.getElementById('datosAlumnoAlerta').innerText = `Alumno: ${nombreEstudiante} (Legajo: ${legajoInput.value.trim()})`;
       const modalFaltas = document.getElementById('modalAlertaInasistencias');
@@ -542,7 +541,7 @@ function generarPDF(fila) {
     doc.text(`Emitido: ${fechaDescarga}`, 22, 275);
     doc.text(`Val: ${barcodeVal}`, 145, 275);
 
-    const avisoLegal = "Este informe es exclusivamente para fines de visualización. Carece de validez como certificado oficial o documento administrativo.\nSu edición o falsificación están sujetos a sanciones.";
+    const avisoLegal = "Este informe es exclusivamente para fines de visualización. Carece de validez como certificado oficial o documento administrative.\nSu edición o falsificación están sujetos a sanciones.";
     const lineasTexto = doc.splitTextToSize(avisoLegal, 170);
     doc.text(lineasTexto, 22, 280);
 
@@ -554,20 +553,32 @@ function aplicarLogicaColores(valor, nombreColumna = "") {
     const v = valor.trim().toUpperCase();
     const colName = nombreColumna.toUpperCase();
 
+    // 1. MÓDULOS TECP: A = Aprobado, D = Desaprobado
     if (colName.startsWith("TECP")) {
       if (v === "A") return "promocion"; 
       if (v === "D") return "desaprobado"; 
       return "";
     }
 
-    if (colName.startsWith("T") || colName.startsWith("P") || colName.startsWith("S")) {
-      if (!colName.includes("PARCIAL") && !colName.includes("°") && !colName.includes("F")) {
-        if (v === "A") return "desaprobado"; 
-        if (v === "P") return "promocion";    
-        return "";
-      }
+    // 2. PARCIALES (Contienen ° o F, ej: P1°F, P2°F): A = Ausente (Rojo)
+    const esFechaParcial = colName.includes("°") || colName.includes("F") || colName.includes("PARCIAL");
+    if (esFechaParcial) {
+      if (v === "A") return "desaprobado"; // Ausente va en rojo
+      if (v === "D") return "desaprobado";
+      
+      const num = parseFloat(v);
+      if (!isNaN(num)) return (num >= 4) ? "promocion" : "desaprobado";
+      return "";
     }
 
+    // 3. ASISTENCIAS (Clases normales T, P, S)
+    if (colName.startsWith("T") || colName.startsWith("P") || colName.startsWith("S")) {
+      if (v === "A") return "desaprobado"; // Ausente
+      if (v === "P") return "promocion";    // Presente
+      return "";
+    }
+
+    // 4. FALLBACK GENERAL
     if (v === "A") return "promocion"; 
     if (v === "D") return "desaprobado"; 
     
@@ -607,7 +618,7 @@ function generarBloqueEvaluacion(fila) {
     b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`;
   });
   
-  let leyendaAclaratoria = "(A: Aprobado | D: Desaprobado | Calificación numérica)";
+  let leyendaAclaratoria = "<b>Parciales (°/F):</b> Calificación numérica | A = Ausente (No Promociona)";
   if (tieneTecp) {
     leyendaAclaratoria += `<div style="margin-top: 4px; border-top: 1px dashed #cbd5e1; padding-top: 4px; color: #475569;">
       <b>Módulos TECP:</b> A = Alumno Continúa en Promoción | D = Alumno No Continúa en Promoción
