@@ -618,10 +618,10 @@ function generarBloqueEvaluacion(fila) {
     b += `<div class="dato-item ${clase}"><span class="dato-label">${c}</span><span class="dato-valor">${fila[c]}</span></div>`;
   });
   
-  let leyendaAclaratoria = "<b>Parciales (°/F):</b> Calificación numérica | A = Ausente (No Promociona)";
+  let leyendaAclaratoria = "<b>Parciales (°/F):</b> Calificación numérica | A = Ausente";
   if (tieneTecp) {
     leyendaAclaratoria += `<div style="margin-top: 4px; border-top: 1px dashed #cbd5e1; padding-top: 4px; color: #475569;">
-      <b>Módulos TECP:</b> A = Alumno Continúa en Promoción | D = Alumno No Continúa en Promoción
+      <b>Módulos TECP:</b> A = Continúa en Promoción | D = No Continúa en Promoción
     </div>`;
   }
 
