@@ -22,8 +22,8 @@ body {
   overflow-x: hidden;
 }
 
-/* Estilos para los Modales */
-#modalAviso, #modalAlertaInasistencias {
+/* Estilos para el Modal de Aviso Inicial */
+#modalAviso {
   display: flex;
   position: fixed;
   z-index: 9999;
@@ -45,10 +45,6 @@ body {
   border-top: 8px solid #38828f;
   animation: modalEntrada 0.4s ease-out;
 }
-/* Variación para el cartel crítico de faltas */
-.border-alerta-critica {
-  border-top: 8px solid #d32f2f !important;
-}
 
 @keyframes modalEntrada {
   from { transform: scale(0.8); opacity: 0; }
@@ -60,9 +56,6 @@ body {
   font-size: 1.25em;
   margin-top: 0;
   text-transform: uppercase;
-}
-.modal-content h2.texto-alerta {
-  color: #d32f2f;
 }
 .modal-content p {
   font-size: 0.92em;
@@ -79,7 +72,7 @@ body {
   padding-top: 15px;
   font-size: 0.9em;
 }
-#btnAceptarModal, #btnEntendidoInasistencias {
+#btnAceptarModal {
   background: #38828f;
   color: white;
   padding: 14px 30px;
@@ -94,8 +87,6 @@ body {
   transition: background 0.3s;
 }
 #btnAceptarModal:hover { background: #2d6a75; }
-#btnEntendidoInasistencias { background: #d32f2f; }
-#btnEntendidoInasistencias:hover { background: #b71c1c; }
 
 main {
   max-width: 600px;
@@ -239,21 +230,6 @@ footer { color: #ffffff; text-align: center; padding: 1em; font-size: 0.85em; ma
   </div>
 </div>
 
-<div id="modalAlertaInasistencias" style="display: none;">
-  <div class="modal-content border-alerta-critica">
-    <h2 class="texto-alerta">⚠️ ALERTA DE REGULARIDAD</h2>
-    <p style="text-align: center; font-weight: bold; margin-bottom: 15px; color: #b71c1c;" id="datosAlumnoAlerta"></p>
-    <p>
-      El sistema ha detectado que usted posee actualmente 3 inasistencias computadas en las actividades obligatorias de la cursada.
-      <br><br>
-      <span style="color: #d32f2f; font-weight: bold;">ADVERTENCIA:</span> Disponer de una (1) inasistencia más significará quedar automáticamente en condición de ALUMNO IRREGULAR (LIBRE), perdiendo todo derecho a la promoción o regularización de la asignatura, según las normativas vigentes de la Cátedra.
-      <br><br>
-      Al cerrar este cartel, se da por notificado formalmente de su situación límite.
-    </p>
-    <button id="btnEntendidoInasistencias" onclick="cerrarAlertaInasistencias()">Aceptar e ingresar</button>
-  </div>
-</div>
-
 <main>
   <header>
     <img src="logop.png" alt="Logo Cátedra" id="imgLogo" crossorigin="anonymous" />
@@ -272,8 +248,6 @@ footer { color: #ffffff; text-align: center; padding: 1em; font-size: 0.85em; ma
 <script>
 const urlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTuzuaNqAZG0G2My9L6H3Gs5tuCnJjYh1t7H3kEdzieyg_jrtc8j2b5vtn00IhQv0t2dJxBrn4RJJxI/pub?output=csv';
 
-let legajoAlumnoActual = "";
-
 function aceptarModal() {
   const modal = document.getElementById('modalAviso');
   modal.style.transition = "opacity 0.5s";
@@ -281,20 +255,6 @@ function aceptarModal() {
   localStorage.setItem('avisoAceptado', 'true');
   setTimeout(() => {
     modal.style.display = 'none';
-  }, 500);
-}
-
-function cerrarAlertaInasistencias() {
-  const modalFaltas = document.getElementById('modalAlertaInasistencias');
-  modalFaltas.style.transition = "opacity 0.5s";
-  modalFaltas.style.opacity = "0";
-  
-  if (legajoAlumnoActual) {
-    localStorage.setItem('inasistencias_alertado_' + legajoAlumnoActual, 'true');
-  }
-  
-  setTimeout(() => {
-    modalFaltas.style.display = 'none';
   }, 500);
 }
 
@@ -374,34 +334,11 @@ async function buscarNota(){
       return;
     }
 
-    legajoAlumnoActual = legajoInput.value.trim().replace('/', '-');
-
     localStorage.setItem('userLegajo', legajoInput.value.trim());
     localStorage.setItem('userEmail', emailInput.value.trim());
 
     const nombreEstudiante = fila[parsed.meta.fields[0]] || "Estudiante";
     const condFil = (fila['Condición'] || "EN CURSO / PENDIENTE").trim().toUpperCase();
-
-    // 🎯 RESTRICCIÓN DE RANGO BLINDADA (COLUMNA D A COLUMNA R)
-    let contadorAusentes = 0;
-    const camposDeLaTabla = parsed.meta.fields;
-
-    for (let i = 3; i <= 17; i++) {
-      let nombreColumna = camposDeLaTabla[i];
-      if (nombreColumna) {
-        let valorCelda = fila[nombreColumna];
-        if (valorCelda && valorCelda.trim().toUpperCase() === "A") {
-          contadorAusentes++;
-        }
-      }
-    }
-
-    if (contadorAusentes === 3 && localStorage.getItem('inasistencias_alertado_' + legajoAlumnoActual) !== 'true') {
-      document.getElementById('datosAlumnoAlerta').innerText = `Alumno: ${nombreEstudiante} (Legajo: ${legajoInput.value.trim()})`;
-      const modalFaltas = document.getElementById('modalAlertaInasistencias');
-      modalFaltas.style.opacity = "1";
-      modalFaltas.style.display = "flex";
-    }
 
     let claseBadge = "badge-pendiente";
     if (condFil === "PROMOCIONÓ") claseBadge = "badge-promocion"; 
@@ -410,9 +347,9 @@ async function buscarNota(){
     else if (condFil.includes("NO REGULAR") || condFil.includes("IRREGULAR")) claseBadge = "badge-irregular";
 
     let html = `<p style="font-size: 1.1em; margin-bottom: 20px;">
-                  <strong>${nombreEstudiante}:</strong> 
-                  <span class="badge-condicion ${claseBadge}">${condFil}</span>
-                </p>`;
+                <strong>${nombreEstudiante}:</strong> 
+                <span class="badge-condicion ${claseBadge}">${condFil}</span>
+              </p>`;
     
     html += generarBloque(fila, "T", "Teóricos", ["TECP", "Condición", "AE", "PFI"], "A: Ausente | P: Presente");
     html += generarBloque(fila, "P", "Trabajos Prácticos", ["°", "F", "PARCIAL", "Condición", "AE", "PFI"], "A: Ausente | P: Presente");
@@ -553,17 +490,15 @@ function aplicarLogicaColores(valor, nombreColumna = "") {
     const v = valor.trim().toUpperCase();
     const colName = nombreColumna.toUpperCase();
 
-    // 1. MÓDULOS TECP: A = Aprobado, D = Desaprobado
     if (colName.startsWith("TECP")) {
       if (v === "A") return "promocion"; 
       if (v === "D") return "desaprobado"; 
       return "";
     }
 
-    // 2. PARCIALES (Contienen ° o F, ej: P1°F, P2°F): A = Ausente (Rojo)
     const esFechaParcial = colName.includes("°") || colName.includes("F") || colName.includes("PARCIAL");
     if (esFechaParcial) {
-      if (v === "A") return "desaprobado"; // Ausente va en rojo
+      if (v === "A") return "desaprobado";
       if (v === "D") return "desaprobado";
       
       const num = parseFloat(v);
@@ -571,14 +506,12 @@ function aplicarLogicaColores(valor, nombreColumna = "") {
       return "";
     }
 
-    // 3. ASISTENCIAS (Clases normales T, P, S)
     if (colName.startsWith("T") || colName.startsWith("P") || colName.startsWith("S")) {
-      if (v === "A") return "desaprobado"; // Ausente
-      if (v === "P") return "promocion";    // Presente
+      if (v === "A") return "desaprobado";
+      if (v === "P") return "promocion"; 
       return "";
     }
 
-    // 4. FALLBACK GENERAL
     if (v === "A") return "promocion"; 
     if (v === "D") return "desaprobado"; 
     
